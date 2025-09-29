@@ -75,7 +75,7 @@ tags:
        - Sending Emails with branded links that support click tracking.
        - Sending Emails scheduled for future delivery.
        - Receiving inbound Email replies and relaying the event to you for handling.
-  - name: Push Notifications
+  - name: PushNotifications
     description: |-
       🚧 *Use `PushNotifications` to send push notifications to your mobile apps
       via Firebase Cloud Messaging and Apple Push Notification services
@@ -85,6 +85,26 @@ tags:
       🚧 *Use `Communications` to send and receive communications across all channels of all communication types.
       Reach each and every customer with personalized content, on the right channel, at the optimal time, at scale.
       Just send it!*
+  - name: Sessions
+    description: |-
+      🚧 Use `Sessions` directly with primitives, such as `Messages`, `Emails`, `PushNotifications`, and `Communications`
+      to support two-way communication with your customers and maintain a
+      logical view of the communication*
+
+      Use `Rosters` to view the Contacts and Agents in a Session.
+
+      For example, a Session could be a single group conference Call, or a series of Messages back and forth
+      between a Contact and an Agent.
+  - name: Rosters
+    description: |-
+      🚧 Use `Sessions` directly with primitives, such as `Messages`, `Emails`, `PushNotifications`, and `Communications`
+      to support two-way communication with your customers and maintain a
+      logical view of the communication*
+
+      Use `Rosters` to view the Contacts and Agents in a Session.
+
+      For example, a Session could be a single group conference Call, or a series of Messages back and forth
+      between a Contact and an Agent.
   - name: Agents
     description: |-
       *Use `Agents` to build the sending and receiving identities that represent your business and applications.*
@@ -139,11 +159,9 @@ tags:
         - Fetch a wrapped URL by its id.
 paths:
   /Contacts:
-    x-twilio-domain: contacts-and-audiences
     post:
       summary: Create Contacts
       operationId: CreateContacts
-      x-twilio-version: 1
       description: This operation creates Contacts. A contact must have at least one address or a user_identifier supplied in order to be created.
       tags:
         - Contacts
@@ -212,8 +230,8 @@ paths:
                         $ref: '#/components/schemas/ContactCustomFields'
                   minItems: 1
             examples:
-              Example 1 - Create a Contact with an email address, phone number and custom fields:
-                x-twilio-version: 1
+              CreateAContactWithAnEmailAddressPhoneNumberAndCustomFields:
+                summary: Create a Contact with an email address, phone number and custom fields
                 value:
                   contacts:
                     - first_name: Ivan
@@ -238,8 +256,8 @@ paths:
                             - purple
                             - blue
                             - green
-              Example 2 - Create a Contact with an email address and phone number:
-                x-twilio-version: 1
+              CreateAContactWithAnEmailAddressAndPhoneNumber:
+                summary: Create a Contact with an email address and phone number
                 value:
                   contacts:
                     - first_name: Don
@@ -254,8 +272,8 @@ paths:
                           address: don.conama@example.com
                       tags:
                         shirt_size: X-Large
-              Example 3 - Create a Contact with a push device token and sms address for a mobile app:
-                x-twilio-version: 1
+              CreateAContactWithAPushDeviceTokenAndSmsAddressForAMobileApp:
+                summary: Create a Contact with a push device token and sms address for a mobile app
                 value:
                   contacts:
                     - first_name: David
@@ -266,8 +284,8 @@ paths:
                           address: comms_deviceregistrations_01h9krwprkeee8fzqspvwy6nq8
                         - channel: phone
                           address: '+37259000022'
-              Example 4 - Create a Contact with push device tokens for 2 different mobile apps:
-                x-twilio-version: 1
+              CreateAContactWithPushDeviceTokensFor2DifferentMobileApps:
+                summary: Create a Contact with push device tokens for 2 different mobile apps
                 value:
                   contacts:
                     - first_name: David
@@ -281,7 +299,6 @@ paths:
     get:
       summary: List Contacts
       operationId: ListContacts
-      x-twilio-version: 1
       description: This operation fetches a paginated list of Contacts.
       tags:
         - Contacts
@@ -332,7 +349,7 @@ paths:
           name: tags
           description: |-
             Match contacts by one or many tags. If more than one tag is specified in the query, the search will return contacts that have all the tags.
-            _Example:_ ``` GET /Contacts?tags=age_group:20s;industry:engineering; ```
+            For Example:  ``` GET /Contacts?tags=age_group:20s;industry:engineering; ```
           schema:
             $ref: '#/components/schemas/TagsString'
       responses:
@@ -354,8 +371,8 @@ paths:
                   - contacts
                   - pagination
               examples:
-                Example 1 - First page of Contacts for list read with no filter:
-                  x-twilio-version: 1
+                FirstPageOfContactsForListReadWithNoFilter:
+                  summary: First page of Contacts for list read with no filter
                   value:
                     contacts:
                       - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
@@ -405,18 +422,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Contacts/{contact_id}:
-    x-twilio-domain: contacts-and-audiences
     parameters:
       - schema:
           $ref: '#/components/schemas/ContactId'
-        x-twilio-version: 1
         name: contact_id
         in: path
         required: true
     get:
       summary: Fetch a Contact
       operationId: FetchSingleContact
-      x-twilio-version: 1
       description: This operation fetches a single contact using its Id.
       tags:
         - Contacts
@@ -428,8 +442,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Contact'
               examples:
-                Example 1 - Fetch Contact:
-                  x-twilio-version: 1
+                FetchContact:
+                  summary: Fetch Contact
                   value:
                     id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                     first_name: Ivan
@@ -460,7 +474,6 @@ paths:
     patch:
       summary: Update a Contact
       operationId: UpdateContact
-      x-twilio-version: 1
       description: This operation partially updates a Contact
       tags:
         - Contacts
@@ -515,21 +528,21 @@ paths:
                 custom_fields:
                   $ref: '#/components/schemas/ContactCustomFieldsNullable'
             examples:
-              Example 1 - Update Contact addresses:
-                x-twilio-version: 1
+              UpdateContactAddresses:
+                summary: Update Contact addresses
                 value:
                   addresses:
                     - channel: phone
                       address: '+37259000000'
                     - channel: email
                       address: ipletnjov@example.com
-              Example 2 - Update Contact tags:
-                x-twilio-version: 1
+              UpdateContactTags:
+                summary: Update Contact tags
                 value:
                   tags:
                     shirt_size: X-Large
-              Example 3 - Update Contact custom fields:
-                x-twilio-version: 1
+              UpdateContactCustomFields:
+                summary: Update Contact custom fields
                 value:
                   custom_fields:
                     favorite_color:
@@ -546,7 +559,6 @@ paths:
     delete:
       summary: Delete a Contact
       operationId: DeleteContact
-      x-twilio-version: 1
       description: This operation deletes a Contact
       tags:
         - Contacts
@@ -564,18 +576,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Contacts/{contact_id}/Addresses:
-    x-twilio-domain: contacts-and-audiences
     parameters:
       - schema:
           $ref: '#/components/schemas/ContactId'
-        x-twilio-version: 1
         name: contact_id
         in: path
         required: true
     get:
       summary: List of Contact Addresses
       operationId: ListContactAddresses
-      x-twilio-version: 1
       description: This operation fetches list of contact addresses
       tags:
         - Contacts
@@ -597,8 +606,8 @@ paths:
                 required:
                   - addresses
               examples:
-                Example 1 - List of contact addresses:
-                  x-twilio-version: 1
+                ListOfContactAddresses:
+                  summary: List of contact addresses
                   value:
                     addresses:
                       - channel: email
@@ -618,7 +627,6 @@ paths:
     post:
       summary: Add Addresses to the Contact
       operationId: AddContactAddresses
-      x-twilio-version: 1
       description: This operation adds addresses to the contact
       tags:
         - Contacts
@@ -652,14 +660,14 @@ paths:
               required:
                 - addresses
             examples:
-              Example 1 - Add addresses to the Contact:
-                x-twilio-version: 1
+              AddAddressesToTheContact:
+                summary: Add addresses to the Contact
                 value:
                   addresses:
                     - channel: phone
                       address: '+37259000000'
-              Example 2 - Add multiple addresses to the Contact:
-                x-twilio-version: 1
+              AddMultipleAddressesToTheContact:
+                summary: Add multiple addresses to the Contact
                 value:
                   addresses:
                     - channel: phone
@@ -669,7 +677,6 @@ paths:
     delete:
       summary: Delete Addresses from the Contact
       operationId: DeleteContactAddresses
-      x-twilio-version: 1
       description: This operation deletes Contact Addresses
       tags:
         - Contacts
@@ -709,30 +716,27 @@ paths:
               required:
                 - addresses
             examples:
-              Example 1 - Delete Contact phone address:
-                x-twilio-version: 1
+              DeleteContactPhoneAddress:
+                summary: Delete Contact phone address
                 value:
                   addresses:
                     - channel: phone
                       address: '+37259000000'
-              Example 2 - Delete all email Contact addresses:
-                x-twilio-version: 1
+              DeleteAllContactEmailAddresses:
+                summary: Delete all email addresses for Contact
                 value:
                   addresses:
                     - channel: email
   /Contacts/{contact_id}/Tags:
-    x-twilio-domain: contacts-and-audiences
     parameters:
       - schema:
           $ref: '#/components/schemas/ContactId'
-        x-twilio-version: 1
         name: contact_id
         in: path
         required: true
     get:
       summary: List of Contact Tags
       operationId: ListContactTags
-      x-twilio-version: 1
       description: This operation fetches list of contact tags
       tags:
         - Contacts
@@ -751,8 +755,8 @@ paths:
                 required:
                   - tags
               examples:
-                Example 1 - List of contact tags:
-                  x-twilio-version: 1
+                ListOfContactTags:
+                  summary: List of contact tags
                   value:
                     tags:
                       campaign1: fb-leads-ad-7
@@ -770,7 +774,6 @@ paths:
     post:
       summary: Add Tags to the Contact
       operationId: AddContactTags
-      x-twilio-version: 1
       description: This operation adds tags to the contact
       tags:
         - Contacts
@@ -799,8 +802,8 @@ paths:
               required:
                 - tags
             examples:
-              Example 1 - Add tags to the Contact:
-                x-twilio-version: 1
+              AddTagsToTheContact:
+                summary: Add tags to the Contact
                 value:
                   tags:
                     campaign1: fb-leads-ad-7
@@ -808,7 +811,6 @@ paths:
     delete:
       summary: Delete Tags from the Contact
       operationId: DeleteContactTags
-      x-twilio-version: 1
       description: This operation deletes Contact Tags
       tags:
         - Contacts
@@ -838,18 +840,16 @@ paths:
                   items:
                     type: string
             examples:
-              Example 1 - Delete Contact tags:
-                x-twilio-version: 1
+              DeleteContactTags:
+                summary: Delete Contact tags
                 value:
                   tags:
                     - fb-leads-ad-7
                     - fb-leads-ad-8
   /Contacts/Search:
-    x-twilio-domain: contacts-and-audiences
     post:
       summary: Search Contacts
       operationId: SearchContacts
-      x-twilio-version: 1
       description: Search for contacts based on the specified criteria.
       tags:
         - Contacts
@@ -883,8 +883,8 @@ paths:
                   - contacts
                   - pagination
               examples:
-                Example 1 - First page of Contacts for the search request:
-                  x-twilio-version: 1
+                PageOfContactsForTheSearch:
+                  summary: First page of Contacts for the search request
                   value:
                     contacts:
                       - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
@@ -955,11 +955,9 @@ paths:
                   description: Match contacts by one or many tags. If more than one tag is specified, the search will return contacts that have all the tags.
                   $ref: '#/components/schemas/Tags'
   /Contacts/Operations:
-    x-twilio-domain: contacts-and-audiences
     get:
       summary: List Contact Operations
       operationId: ListContactOperations
-      x-twilio-version: 1
       description: This operation fetches a paginated list of Contact Operations.
       tags:
         - Contacts
@@ -1019,18 +1017,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Contacts/Operations/{operation_id}:
-    x-twilio-domain: contacts-and-audiences
     parameters:
       - schema:
           $ref: '#/components/schemas/OperationId'
-        x-twilio-version: 1
         name: operation_id
         in: path
         required: true
     get:
       summary: Fetch a Contact Operation
       operationId: FetchContactOperation
-      x-twilio-version: 1
       description: This operation fetches a single Contact Operation using its Id.
       tags:
         - Contacts
@@ -1052,11 +1047,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Contacts/Fields:
-    x-twilio-domain: contacts-and-audiences
     post:
       summary: Create New Contact Custom Field
       operationId: CreateContactCustomField
-      x-twilio-version: 1
       description: Create a new Contact Custom Field.
       tags:
         - Contacts
@@ -1072,23 +1065,23 @@ paths:
                 - $ref: '#/components/schemas/ContactFieldStringArray'
                 - $ref: '#/components/schemas/ContactFieldEnum'
             examples:
-              Create a contact custom field of type string:
-                x-twilio-version: 1
+              StringCustomField:
+                summary: Create a contact custom field of type string
                 value:
                   name: favorite_color
                   type: string
-              Create a contact custom field of type boolean:
-                x-twilio-version: 1
+              BooleanCustomField:
+                summary: Create a contact custom field of type boolean
                 value:
                   name: is_purple_my_favorite_color
                   type: boolean
-              Create a contact custom field of type number:
-                x-twilio-version: 1
+              NumberCustomField:
+                summary: Create a contact custom field of type number
                 value:
                   name: favorite_number
                   type: number
-              Create a contact custom field of type enum:
-                x-twilio-version: 1
+              EnumCustomField:
+                summary: Create a contact custom field of type enum
                 value:
                   name: favorite_sport
                   type: enum
@@ -1113,7 +1106,6 @@ paths:
     get:
       summary: List Contact Fields
       operationId: ListContactFields
-      x-twilio-version: 1
       description: List all contact fields, both custom and standard.
       tags:
         - Contacts
@@ -1137,8 +1129,8 @@ paths:
                       $ref: '#/components/schemas/ContactCustomField'
                     maxItems: 10
               examples:
-                Get contacts fields:
-                  x-twilio-version: 1
+                GetContactsFields:
+                  summary: Get Contact Fields
                   value:
                     fields:
                       - name: first_name
@@ -1195,18 +1187,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Contacts/Fields/{custom_field_id}:
-    x-twilio-domain: contacts-and-audiences
     parameters:
       - schema:
           $ref: '#/components/schemas/ContactCustomFieldId'
-        x-twilio-version: 1
         name: custom_field_id
         in: path
         required: true
     get:
       summary: Fetch a Contact Field
       operationId: FetchSingleContactField
-      x-twilio-version: 1
       description: This operation fetches a single contact field using its Id. *Currently it's only applicable to custom fields.*
       tags:
         - Contacts
@@ -1230,7 +1219,6 @@ paths:
     patch:
       summary: Update a Contact Custom Field
       operationId: UpdateContactCustomField
-      x-twilio-version: 1
       description: This operation partially updates a Contact Custom Field
       tags:
         - Contacts
@@ -1260,8 +1248,8 @@ paths:
                   items:
                     type: string
             examples:
-              Example 1 - Update Contact Custom Field values:
-                x-twilio-version: 1
+              UpdateContactCustomFieldValues:
+                summary: Update Contact Custom Field values
                 value:
                   values:
                     - purple
@@ -1270,7 +1258,6 @@ paths:
     delete:
       summary: Delete a Contact Custom Field
       operationId: DeleteContactCustomField
-      x-twilio-version: 1
       description: This operation deletes a Contact Custom Field.
       tags:
         - Contacts
@@ -1288,11 +1275,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Audiences:
-    x-twilio-domain: contacts-and-audiences
     post:
       summary: Create an Audience
       operationId: CreateAudience
-      x-twilio-version: 1
       description: |-
         This operation creates an Audience. There are three different types of audiences.
         - **Static Audience** - This is the standard type of audience. It is created with a name,
@@ -1358,8 +1343,8 @@ paths:
               required:
                 - name
             examples:
-              Example 1 - Create Audience:
-                x-twilio-version: 1
+              CreateAudience:
+                summary: Create Audience
                 value:
                   name: FB Lead Ads - New Sign Ups
                   tags:
@@ -1367,7 +1352,6 @@ paths:
     get:
       summary: List Audiences
       operationId: ListAudiences
-      x-twilio-version: 1
       description: This operation fetches a paginated list of Audiences.
       tags:
         - Audiences
@@ -1403,7 +1387,7 @@ paths:
           name: tags
           description: |-
             Match audiences by one or many tags. If more than one tag is specified in the query, the search will return audiences that have all the tags.
-            _Example:_ ``` GET /Audiences?tags=age_group:20s;industry:engineering; ```
+            For example: ``` GET /Audiences?tags=age_group:20s;industry:engineering; ```
           schema:
             $ref: '#/components/schemas/TagsString'
       responses:
@@ -1425,8 +1409,8 @@ paths:
                   - audiences
                   - pagination
               examples:
-                Example 1 - List Audiences:
-                  x-twilio-version: 1
+                ListAudiences:
+                  summary: List Audiences
                   value:
                     audiences:
                       - id: comms_audience_01h9krwprkeee8fzqspvwy6nq8
@@ -1457,18 +1441,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Audiences/{audience_id}:
-    x-twilio-domain: contacts-and-audiences
     parameters:
       - schema:
           $ref: '#/components/schemas/AudienceId'
-        x-twilio-version: 1
         name: audience_id
         in: path
         required: true
     get:
       summary: Fetch an Audience
       operationId: FetchSingleAudience
-      x-twilio-version: 1
       description: This operation fetches a single Audience using its Id.
       tags:
         - Audiences
@@ -1480,8 +1461,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Audience'
               examples:
-                Example 1 - Static Audience:
-                  x-twilio-version: 1
+                StaticAudience:
+                  summary: Static Audience
                   value:
                     id: comms_audience_01h9krwprkeee8fzqspvwy6nq8
                     name: Repeat Buyers
@@ -1491,8 +1472,8 @@ paths:
                     created_at: '2023-08-24T14:15:22Z'
                     updated_at: '2023-08-24T14:15:22Z'
                     deleted_at: null
-                Example 2 - Dynamic Audience:
-                  x-twilio-version: 1
+                DynamicAudience:
+                  summary: Dynamic Audience
                   value:
                     id: comms_audience_01h9krwprkeee8fzqspvwy6nq9
                     name: Technology & Finance Contacts
@@ -1515,7 +1496,6 @@ paths:
     patch:
       summary: Update an Audience
       operationId: UpdateAudience
-      x-twilio-version: 1
       description: This operation partially updates an Audience
       tags:
         - Audiences
@@ -1547,23 +1527,22 @@ paths:
                 tags:
                   $ref: '#/components/schemas/TagsNullable'
             examples:
-              Example 1 - Update Audience's name:
-                x-twilio-version: 1
+              UpdateAudienceSName:
+                summary: Update Audience's name
                 value:
                   name: New Name
-              Example 2 - Update Audience's tags:
-                x-twilio-version: 1
+              UpdateAudienceSTags:
+                summary: Update Audience's tags
                 value:
                   tags:
                     group_size: X-Large
-              Example 3 - Change an Audience's filter:
-                x-twilio-version: 1
+              ChangeAnAudienceSFilter:
+                summary: Change an Audience's filter
                 value:
                   filter: Contact.location.country_code == 'US' AND Contact.custom_fields.industry IN('Technology', 'Telecom')
     delete:
       summary: Delete an Audience
       operationId: DeleteAudience
-      x-twilio-version: 1
       description: This operation deletes an Audience using its Id.
       tags:
         - Audiences
@@ -1581,18 +1560,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Audiences/{audience_id}/Contacts:
-    x-twilio-domain: contacts-and-audiences
     parameters:
       - schema:
           $ref: '#/components/schemas/AudienceId'
-        x-twilio-version: 1
         name: audience_id
         in: path
         required: true
     post:
       summary: Add Contacts to an Audience
       operationId: AddContactsToAudience
-      x-twilio-version: 1
       description: This operation adds list of Contacts to an Audience
       tags:
         - Audiences
@@ -1621,8 +1597,8 @@ paths:
                   items:
                     $ref: '#/components/schemas/ContactId'
             examples:
-              Example 1 - Add Contacts to Audience:
-                x-twilio-version: 1
+              AddContactsToAudience:
+                summary: Add Contacts to Audience
                 value:
                   contact_ids:
                     - comms_contact_01h9krwprkeee8fzqspvwy6nq8
@@ -1630,7 +1606,6 @@ paths:
     get:
       summary: List Contacts in Audience
       operationId: ListContactsInAudience
-      x-twilio-version: 1
       description: This operation fetches a paginated list of Contacts that belong to an Audience.
       tags:
         - Audiences
@@ -1673,8 +1648,8 @@ paths:
                   pagination:
                     $ref: '#/components/schemas/PaginationMetadata'
               examples:
-                Example 1 - Page of Contacts that belong to an Audience:
-                  x-twilio-version: 1
+                PageOfContactsThatBelongToAnAudience:
+                  summary: Page of Contacts that belong to an Audience
                   value:
                     contacts:
                       - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
@@ -1715,24 +1690,20 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Audiences/{audience_id}/Contacts/{contact_id}:
-    x-twilio-domain: contacts-and-audiences
     parameters:
       - schema:
           $ref: '#/components/schemas/AudienceId'
-        x-twilio-version: 1
         name: audience_id
         in: path
         required: true
       - schema:
           $ref: '#/components/schemas/ContactId'
-        x-twilio-version: 1
         name: contact_id
         in: path
         required: true
     delete:
       summary: Remove Contact from Audience
       operationId: RemoveContactFromAudience
-      x-twilio-version: 1
       description: This operation removes a Contact from an Audience
       tags:
         - Audiences
@@ -1750,18 +1721,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Audiences/{audience_id}/Tags:
-    x-twilio-domain: contacts-and-audiences
     parameters:
       - schema:
           $ref: '#/components/schemas/AudienceId'
-        x-twilio-version: 1
         name: audience_id
         in: path
         required: true
     get:
       summary: List of Audience Tags
       operationId: ListAudienceTags
-      x-twilio-version: 1
       description: This operation fetches list of audience tags
       tags:
         - Audiences
@@ -1780,8 +1748,8 @@ paths:
                 required:
                   - tags
               examples:
-                Example 1 - List of audience tags:
-                  x-twilio-version: 1
+                ListOfAudienceTags:
+                  summary: List of audience tags
                   value:
                     tags:
                       campaign1: fb-leads-ad-7
@@ -1799,7 +1767,6 @@ paths:
     post:
       summary: Add Tags to the Audience
       operationId: AddAudienceTags
-      x-twilio-version: 1
       description: This operation adds tags to the audience
       tags:
         - Audiences
@@ -1828,8 +1795,8 @@ paths:
               required:
                 - tags
             examples:
-              Example 1 - Add tags to the Audience:
-                x-twilio-version: 1
+              AddTagsToTheAudience:
+                summary: Add tags to the Audience
                 value:
                   tags:
                     campaign1: fb-leads-ad-7
@@ -1837,7 +1804,6 @@ paths:
     delete:
       summary: Delete Tags from the Audience
       operationId: DeleteAudienceTags
-      x-twilio-version: 1
       description: This operation deletes Audience Tags
       tags:
         - Audiences
@@ -1867,18 +1833,16 @@ paths:
                   items:
                     type: string
             examples:
-              Example 1 - Delete Audience tags:
-                x-twilio-version: 1
+              DeleteAudienceTags:
+                summary: Delete Audience tags
                 value:
                   tags:
                     - fb-leads-ad-7
                     - fb-leads-ad-8
   /Audiences/Operations:
-    x-twilio-domain: contacts-and-audiences
     get:
       summary: List Audience Operations
       operationId: ListAudienceOperations
-      x-twilio-version: 1
       description: This operation fetches a paginated list of Audience Operations.
       tags:
         - Audiences
@@ -1938,18 +1902,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Audiences/Operations/{operation_id}:
-    x-twilio-domain: contacts-and-audiences
     parameters:
       - schema:
           $ref: '#/components/schemas/OperationId'
-        x-twilio-version: 1
         name: operation_id
         in: path
         required: true
     get:
       summary: Fetch an Audience Operation
       operationId: FetchAudienceOperation
-      x-twilio-version: 1
       description: This operation fetches a single Audience Operation using its Id.
       tags:
         - Audiences
@@ -1971,12 +1932,10 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Engagements:
-    x-twilio-domain: contacts-and-audiences
     post:
       summary: Create Engagement
       operationId: CreateEngagement
       description: This operation creates an Engagement. It is used internally by Twilio and by external customers to create custom engagements.
-      x-twilio-version: preview
       tags:
         - Engagements
       responses:
@@ -2009,8 +1968,8 @@ paths:
                 - source
                 - engagement_type
             examples:
-              Example:
-                x-twilio-version: preview
+              Engagement:
+                summary: Create Engagement
                 value:
                   contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                   source:
@@ -2020,7 +1979,6 @@ paths:
       summary: List Engagements
       operationId: ListEngagements
       description: This operation fetches a paginated list of Engagements.
-      x-twilio-version: preview
       tags:
         - Engagements
       parameters:
@@ -2088,8 +2046,8 @@ paths:
                   - engagements
                   - pagination
               examples:
-                Example:
-                  x-twilio-version: preview
+                ListEngagements:
+                  summary: List Engagements
                   value:
                     engagements:
                       - id: comms_engagement_01h2xcejqtf2nbrexx3vqjhp41
@@ -2132,12 +2090,10 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Engagements/{engagement_id}:
-    x-twilio-domain: contacts-and-audiences
     get:
       summary: Fetch Engagement
       operationId: FetchEngagement
       description: This operation fetches an Engagement.
-      x-twilio-version: preview
       tags:
         - Engagements
       parameters:
@@ -2154,8 +2110,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Engagement'
               examples:
-                Example:
-                  x-twilio-version: preview
+                MessageLinkClickEngagement:
+                  summary: Message Link Click Engagement
                   value:
                     id: comms_engagement_01h2xcejqtf2nbrexx3vqjhp41
                     contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
@@ -2183,7 +2139,6 @@ paths:
       summary: Delete Engagement
       operationId: DeleteEngagement
       description: This operation deletes an Engagement.
-      x-twilio-version: preview
       tags:
         - Engagements
       parameters:
@@ -2206,11 +2161,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Emails:
-    x-twilio-domain: emails
     post:
       summary: Send Emails
       operationId: SendEmails
-      x-twilio-version: preview
       description: This operation creates and sends out emails to the specified recipients.
       tags:
         - Emails
@@ -2351,8 +2304,8 @@ paths:
               required:
                 - content
             examples:
-              Example 1 - Send from, to direct entities:
-                x-twilio-version: preview
+              SendFromToDirectEntities:
+                summary: Send from, to direct entities
                 value:
                   from:
                     address: support@example.company.io
@@ -2364,8 +2317,8 @@ paths:
                     text: Hey, the cake is ready.
                     html: <html><body>Hey, <br/><br/>Cake</b></body></html>
                     attachments: []
-              Example 2 - Send from, to indirect entities:
-                x-twilio-version: preview
+              SendFromToIndirectEntities:
+                summary: Send from, to indirect entities
                 value:
                   from:
                     agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -2377,8 +2330,8 @@ paths:
                     text: Hey you, your cake is ready.
                     html: <html><body>Hey you, your cake is ready.<br/><br/></body></html>
                     attachments: []
-              Example 3 - Send from, to direct entities with personalization:
-                x-twilio-version: preview
+              SendFromToDirectEntitiesWithPersonalization:
+                summary: Send from, to direct entities with personalization
                 value:
                   from:
                     agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -2399,8 +2352,8 @@ paths:
                     default_variables:
                       first_name: there
                       last_name: ''
-              Example 4 - Send to Contact with Contact-referencing personalization:
-                x-twilio-version: preview
+              SendToContactWithContactReferencingPersonalization:
+                summary: Send to Contact with Contact-referencing personalization
                 value:
                   from:
                     agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -2415,8 +2368,8 @@ paths:
                     default_variables:
                       name: there
                     attachments: []
-              Example 5 - Send a scheduled Email:
-                x-twilio-version: preview
+              SendAScheduledEmail:
+                summary: Send a scheduled Email
                 value:
                   from:
                     agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -2436,8 +2389,8 @@ paths:
                   schedule:
                     send_at:
                       - '2023-12-15T14:15:22Z'
-              Example 5 - Send simply using default Email Sender:
-                x-twilio-version: preview
+              SendSimplyUsingDefaultEmailSender:
+                summary: Send simply using default Email Sender
                 value:
                   to:
                     - address: cool@example.com
@@ -2451,7 +2404,6 @@ paths:
     get:
       summary: List Emails
       operationId: ListEmails
-      x-twilio-version: preview
       description: This operation fetches a paginated list of Emails.
       tags:
         - Emails
@@ -2487,7 +2439,7 @@ paths:
           name: tags
           description: |-
             Match emails by one or many tags. If more than one tag is specified in the query, the search will return emails that have all the tags.
-            _Example:_ ``` GET /Emails?tags=age_group:20s;industry:engineering; ```
+            For Example:  ``` GET /Emails?tags=age_group:20s;industry:engineering; ```
           schema:
             $ref: '#/components/schemas/TagsString'
       responses:
@@ -2509,8 +2461,8 @@ paths:
                   - emails
                   - pagination
               examples:
-                Example 1 - List of Emails:
-                  x-twilio-version: preview
+                ListOfEmails:
+                  summary: List of Emails
                   value:
                     emails:
                       - id: comms_email_01h9krwprkeee8fzqspvwy6nq8
@@ -2600,18 +2552,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Emails/{email_id}:
-    x-twilio-domain: emails
     parameters:
       - schema:
           $ref: '#/components/schemas/Identifier'
-        x-twilio-version: preview
         name: email_id
         in: path
         required: true
     get:
       summary: Fetch an Email
       operationId: FetchEmail
-      x-twilio-version: preview
       description: This operation fetches a single Email using its Id.
       tags:
         - Emails
@@ -2623,8 +2572,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Email'
               examples:
-                Example 1 - Outbound email, group:
-                  x-twilio-version: preview
+                OutboundEmailGroup:
+                  summary: Outbound email, group
                   value:
                     id: comms_email_01h9krwprkeee8fzqspvwy6nq8
                     content:
@@ -2665,8 +2614,8 @@ paths:
                     created_at: '2023-08-24T14:15:22Z'
                     updated_at: '2023-08-24T14:15:22Z'
                     deleted_at: null
-                Example 2 - Inbound email, 1:1:
-                  x-twilio-version: preview
+                InboundEmail11:
+                  summary: Inbound email, 1:1
                   value:
                     id: comms_email_01h9krwprkeee8fzqspvwy6nq9
                     content:
@@ -2727,7 +2676,6 @@ paths:
     delete:
       summary: Delete an Email
       operationId: DeleteEmail
-      x-twilio-version: preview
       description: This operation deletes an Email
       tags:
         - Emails
@@ -2745,11 +2693,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Emails/Senders:
-    x-twilio-domain: emails
     post:
       summary: Create an Email Sender
       operationId: CreateEmailSender
-      x-twilio-version: preview
       description: This operation creates Email Senders.
       tags:
         - Emails
@@ -2793,14 +2739,14 @@ paths:
                 - address
                 - name
             examples:
-              create a default email sender:
-                x-twilio-version: preview
+              CreateDefaultEmailSender:
+                summary: Create default Email Sender
                 value:
                   address: newsletter@example.com
                   name: The Dude
                   is_default: true
-              create a non-default email sender:
-                x-twilio-version: preview
+              NonDefaultEmailSender:
+                summary: create a non-default email sender
                 value:
                   address: donnie@example.com
                   name: Donnie
@@ -2808,7 +2754,6 @@ paths:
     get:
       summary: List Email Senders
       operationId: ListEmailSenders
-      x-twilio-version: preview
       description: This operation fetches a paginated list of Email Senders.
       tags:
         - Emails
@@ -2855,8 +2800,8 @@ paths:
                   pagination:
                     $ref: '#/components/schemas/PaginationMetadata'
               examples:
-                Example 1 - List of Email Senders:
-                  x-twilio-version: preview
+                ListOfEmailSenders:
+                  summary: List of Email Senders
                   value:
                     senders:
                       - id: comms_emailsender_01h9krwprkeee8fzqspvwy6nq8
@@ -2887,19 +2832,16 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Emails/Senders/{sender_id}:
-    x-twilio-domain: emails
     parameters:
       - name: sender_id
         in: path
         description: The Id of the Email Sender
         required: true
-        x-twilio-version: preview
         schema:
           type: string
     get:
       summary: Fetch an Email Sender
       operationId: FetchEmailSender
-      x-twilio-version: preview
       description: This operation fetches a single Email Sender using its Id.
       tags:
         - Emails
@@ -2911,8 +2853,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmailSender'
               examples:
-                Example response - a single Email Sender:
-                  x-twilio-version: preview
+                ASingleEmailSender:
+                  summary: a single Email Sender
                   value:
                     id: comms_emailsender_01h9krwprkeee8fzqspvwy6nq8
                     address: newsletter@example.com
@@ -2935,7 +2877,6 @@ paths:
     patch:
       summary: Update an Email Sender
       operationId: UpdateEmailSender
-      x-twilio-version: preview
       description: This operation updates an Email Sender.
       tags:
         - Emails
@@ -2979,16 +2920,14 @@ paths:
               minProperties: 1
               additionalProperties: false
             examples:
-              Example request - update Email Sender:
-                x-twilio-version: preview
+              UpdateEmailSender:
+                summary: update Email Sender
                 value:
                   name: El Duderino
   /Emails/Senders/Operations:
-    x-twilio-domain: emails
     get:
       summary: List Email Sender Operations
       operationId: ListEmailSenderOperations
-      x-twilio-version: preview
       description: This operation fetches a paginated list of Email Sender Operations.
       tags:
         - Emails
@@ -3029,8 +2968,8 @@ paths:
                   - operations
                   - pagination
               examples:
-                Example 1 - List of Email Sender Operations:
-                  x-twilio-version: preview
+                ListOfEmailSenderOperations:
+                  summary: List of Email Sender Operations
                   value:
                     operations:
                       - id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
@@ -3053,18 +2992,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Emails/Senders/Operations/{operation_id}:
-    x-twilio-domain: emails
     parameters:
       - schema:
           $ref: '#/components/schemas/Identifier'
-        x-twilio-version: preview
         name: operation_id
         in: path
         required: true
     get:
       summary: Fetch an Email Sender Operation
       operationId: FetchEmailSenderOperation
-      x-twilio-version: preview
       description: This operation fetches a single Email Sender Operation using its Id.
       tags:
         - Emails
@@ -3076,8 +3012,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmailSenderOperation'
               examples:
-                Example response - a single Email Sender Operation:
-                  x-twilio-version: preview
+                ASingleEmailSenderOperation:
+                  summary: a single Email Sender Operation
                   value:
                     id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
                     status: completed
@@ -3094,11 +3030,10 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Emails/Credential:
-    x-twilio-domain: emails
     post:
       summary: Create Email Credential
       operationId: CreateEmailCredential
-      x-twilio-version: preview
+      x-twilio-status: deprecated
       description: This operation creates Email Credential (singleton).
       tags:
         - Emails
@@ -3140,17 +3075,15 @@ paths:
               required:
                 - sendgrid_api_key
             examples:
-              Create Email Credential with SendGrid API Key:
-                x-twilio-version: preview
+              CreateEmailCredentialWithSendGridKey:
+                summary: Create Email Credential with SendGrid API Key
                 value:
                   name: my-sendgrid-credential
                   sendgrid_api_key: SG.KabcCB5ABCDEjkLmno1pqR.StuV2WxYzaBCdEF123gh_i-jk1lmnOP1TUVW-1Abc1d
   /Emails/Operations:
-    x-twilio-domain: emails
     get:
       summary: List Email Operations
       operationId: ListEmailOperations
-      x-twilio-version: preview
       description: This operation fetches a paginated list of Email Operations.
       tags:
         - Emails
@@ -3199,18 +3132,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Emails/Operations/{operation_id}:
-    x-twilio-domain: emails
     parameters:
       - schema:
           $ref: '#/components/schemas/Identifier'
-        x-twilio-version: preview
         name: operation_id
         in: path
         required: true
     get:
       summary: Fetch an Email Operation
       operationId: FetchEmailOperation
-      x-twilio-version: preview
       description: This operation fetches a single Email Operation using its Id.
       tags:
         - Emails
@@ -3222,8 +3152,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmailOperation'
               examples:
-                Fetch an Email Operation - single Email:
-                  x-twilio-version: preview
+                EmailOperationWithSingleEmail:
+                  summary: Fetch an Email Operation - single Email
                   value:
                     id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
                     status: completed
@@ -3242,8 +3172,8 @@ paths:
                       canceled: 0
                     created_at: '2024-04-05T06:20:00Z'
                     updated_at: '2024-04-05T06:20:00Z'
-                Fetch an Email Operation - two separate Emails:
-                  x-twilio-version: preview
+                EmailOperationWithTwoSeparateEmails:
+                  summary: Fetch an Email Operation - two separate Emails
                   value:
                     id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
                     status: completed
@@ -3262,8 +3192,8 @@ paths:
                       canceled: 0
                     created_at: '2024-04-05T06:20:00Z'
                     updated_at: '2024-04-05T06:20:00Z'
-                Fetch an Email Operation - one Email with 3 recipients:
-                  x-twilio-version: preview
+                EmailOperationWithThreeRecipients:
+                  summary: Fetch an Email Operation - one Email with 3 recipients
                   value:
                     id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
                     status: completed
@@ -3293,11 +3223,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Messages:
-    x-twilio-domain: messages
     post:
       summary: Send Messages
       operationId: SendMessages
-      x-twilio-version: 1
       description: This operation creates and sends out messages to the specified recipients.
       tags:
         - Messages
@@ -3323,18 +3251,22 @@ paths:
                   title: SendMessagesRequestTo
                   description: |-
                     An array of recipient objects to send the message(s) to.
-                    - Use `AddressRecipient` to describe the recipient by their address.
+
+                    - Use `AddressRecipient` to describe the recipient by their
+                    address.
+
                     - Use `ConnectedAddressRecipient` to send a message to a recipient
                       with multiple addresses, Twilio will select the optimal channel and perform
                       retries across channels (if necessary).
 
                     - Use `ContactRecipient` to reference a stored `Contact`.
+
                     - Use `ContactRecipientFinder` to reference a stored `Contact` by a field
                       other than the `Contact.Id`.
 
                     - Use `AudienceRecipient` to send a message to an audience.
+
                     - Use `GroupRecipient` for group messaging.
-                  x-twilio-version: 1
                   type: array
                   minItems: 1
                   maxItems: 10000
@@ -3343,7 +3275,6 @@ paths:
                     oneOf:
                       - type: object
                         title: SendMessagesAddressRecipient
-                        x-twilio-version: 1
                         description: The address and channel to reach your recipient.
                         allOf:
                           - $ref: '#/components/schemas/MessageAddressRecipient'
@@ -3351,7 +3282,6 @@ paths:
                       - type: object
                         title: SendMessagesConnectedAddressRecipient
                         description: A recipient with multiple address for Messaging. Provide a list of addresses for a recipient and Twilio will pick the best one.  Twilio will automatically handle errors and retry across channels if necessary.
-                        x-twilio-version: 1
                         properties:
                           addresses:
                             type: array
@@ -3366,7 +3296,6 @@ paths:
                       - type: object
                         title: SendMessagesContactRecipient
                         description: A Twilio `Contact` identified by `Contact.Id`.
-                        x-twilio-version: 1
                         properties:
                           contact_id:
                             $ref: '#/components/schemas/ContactId'
@@ -3377,7 +3306,6 @@ paths:
                       - type: object
                         title: SendMessagesAudienceRecipient
                         description: A Twilio `Audience` identified by `Audience.Id`.
-                        x-twilio-version: 1
                         properties:
                           audience_id:
                             $ref: '#/components/schemas/AudienceId'
@@ -3390,19 +3318,36 @@ paths:
                   type: object
                   description: |-
                     The content of the Message.
+
                     - Use `MessageContentTextWithMedia` to send a Message with just text and/or media.
+
                     - Use `MessageContentTemplate` to reference a stored `Content` template.
+
                     - Use `MessageContentChannelModules` to send rich content and 
                       different content per channel.
 
                     ***
-                    * Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.
-                    * When using a templated content, use the `variables` field on each recipient to specify the values to substitute.
-                    * For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.
-                    * For each variable in your template, you may also specify a default in `default_variables`.
-                    * When targeting an `Audience`, it is *mandatory* to define defaults in `default_variables` for all variables in the template.
-                    * When targeting `Audience` or `Contact` recipients, you may specify `variables` with values that reference stored fields, including custom fields, on the `Contact` -- for example: `${Twilio.Contact.first_name}` or `${Twilio.Contact.my_custom_field}`.
-                  x-twilio-version: 1
+
+                    * Use the [Liquid](https://shopify.github.io/liquid/)
+                    templating language for personalization in any text-based field.
+
+                    * When using a templated content,
+                    use the `variables` field on each recipient to specify
+                    the values to substitute.
+
+                    * For each variable you specify in your template, you should have
+                    a matching key in each recipient's `variables` object.
+
+                    * For each variable in your template, you may also specify a default in
+                    `default_variables`.
+
+                    * When targeting an `Audience`, it is *mandatory* to define defaults
+                    in `default_variables` for all variables in the template.
+
+                    * When targeting `Audience` or `Contact` recipients, you may specify `variables`
+                    with values that reference stored fields, including custom fields,
+                    on the `Contact` -- for example:
+                    `${Twilio.Contact.first_name}` or `${Twilio.Contact.my_custom_field}`.
                   oneOf:
                     - $ref: '#/components/schemas/MessageContentTextWithMedia'
                     - $ref: '#/components/schemas/MessageContentTemplate'
@@ -3410,24 +3355,10 @@ paths:
                 from:
                   title: SendMessagesRequestFrom
                   description: The sending identity to associate with the Message(s).
-                  x-twilio-version: 1
                   oneOf:
                     - $ref: '#/components/schemas/MessageAddressSender'
                     - $ref: '#/components/schemas/AgentIdSender'
                     - $ref: '#/components/schemas/MessageAgentPoolIdSender'
-                    - title: ConnectedAddressSender
-                      description: |-
-                        Define a pool of sender addresses (or `Agents`)
-                          with optional channel controls to send 'from'.
-
-                        Twilio will select the best `Agent` 
-                        and automatically handle errors and channel fallbacks.
-                      x-twilio-version: 1
-                      properties:
-                        channels:
-                          $ref: '#/components/schemas/MessageAgentChannelControl'
-                      additionalProperties: false
-                      minProperties: 1
                 schedule:
                   x-twilio-version: 1
                   $ref: '#/components/schemas/Schedule'
@@ -3438,16 +3369,16 @@ paths:
                 - to
                 - content
             examples:
-              Example 0 - Send simplest sms:
-                x-twilio-version: 1
+              SendSimplestSms:
+                summary: Send simplest sms
                 value:
                   to:
                     - address: '+14153902337'
                       channel: phone
                   content:
                     text: Hello, World!
-              Example 1 - Send a simple sms:
-                x-twilio-version: 1
+              SendASimpleSms:
+                summary: Send a simple sms
                 value:
                   from:
                     address: '+14153901002'
@@ -3457,8 +3388,8 @@ paths:
                       channel: phone
                   content:
                     text: Hello, World!
-              Example 2 - Send a Message to one recipient (wa, rcs, mms, sms) that has multiple addresses:
-                x-twilio-version: 1
+              SendAMessageToOneRecipientWaRcsMmsSmsThatHasMultipleAddresses:
+                summary: Send a Message to one recipient (wa, rcs, mms, sms) that has multiple addresses
                 value:
                   from:
                     address: '+14153901002'
@@ -3471,8 +3402,8 @@ paths:
                           channel: phone
                   content:
                     text: Hello, World!
-              Example 3 - Send one Message from Agent to Contact:
-                x-twilio-version: 1
+              SendOneMessageFromAgentToContact:
+                summary: Send one Message from Agent to Contact
                 value:
                   from:
                     agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -3480,8 +3411,8 @@ paths:
                     - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     text: Hello, World!
-              Example 4 - Send rcs Messages to multiple recipients:
-                x-twilio-version: 1
+              SendRcsMessagesToMultipleRecipients:
+                summary: Send rcs Messages to multiple recipients
                 value:
                   from:
                     address: rbm_abc123_agent
@@ -3493,8 +3424,8 @@ paths:
                       channel: phone
                   content:
                     text: Hello, World!
-              Example 5 - Send sms Messages to multiple Contact recipients:
-                x-twilio-version: 1
+              SendSmsMessagesToMultipleContactRecipients:
+                summary: Send sms Messages to multiple Contact recipients
                 value:
                   from:
                     address: '+14155551002'
@@ -3504,8 +3435,8 @@ paths:
                     - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     text: Hello, World!
-              Example 6 - Send Messages from an Agent to multiple Contact recipients:
-                x-twilio-version: 1
+              SendMessagesFromAnAgentToMultipleContactRecipients:
+                summary: Send Messages from an Agent to multiple Contact recipients
                 value:
                   from:
                     agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -3514,8 +3445,8 @@ paths:
                     - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     text: Hello, World!
-              Example 7 - Send Messages from Agent Pool to a mix of recipient types:
-                x-twilio-version: 1
+              SendMessagesFromAgentPoolToAMixOfRecipientTypes:
+                summary: Send Messages from Agent Pool to a mix of recipient types
                 value:
                   from:
                     agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
@@ -3529,8 +3460,8 @@ paths:
                       channel: phone
                   content:
                     text: Hello, World!
-              Example 8 - Send multiple Messages with personalization:
-                x-twilio-version: 1
+              SendMultipleMessagesWithPersonalization:
+                summary: Send multiple Messages with personalization
                 value:
                   from:
                     agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -3545,8 +3476,8 @@ paths:
                         last_name: Doe
                   content:
                     text: Hello, {{ first_name }} {{ last_name }}!
-              Example 9 - Send multiple Messages with Contact reference personalization:
-                x-twilio-version: 1
+              SendMultipleMessagesWithContactReferencePersonalization:
+                summary: Send multiple Messages with Contact reference personalization
                 value:
                   from:
                     agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -3564,8 +3495,8 @@ paths:
                     default_variables:
                       first_name: Valued
                       last_name: Customer
-              Example 10 - Send Messages to Audience with personalization:
-                x-twilio-version: 1
+              SendMessagesToAudienceWithPersonalization:
+                summary: Send Messages to Audience with personalization
                 value:
                   from:
                     agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -3586,8 +3517,8 @@ paths:
                       first_name: Valued Customer
                       last_name: ''
                       gender: other
-              Example 11 - Send Messages, constrained to whatsapp, and sms:
-                x-twilio-version: 1
+              SendMessagesConstrainedToWhatsappAndSms:
+                summary: Send Messages, constrained to whatsapp, and sms
                 value:
                   from:
                     agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
@@ -3610,8 +3541,8 @@ paths:
                       last_name: Customer
                     media:
                       - url: https://cdn.bikinibottom.com/bikinibottom.jpg
-              Example 13 - Add a Message and Participant to an existing Session:
-                x-twilio-version: 1
+              AddAMessageAndParticipantToAnExistingSession:
+                summary: Add a Message and Participant to an existing Session
                 value:
                   from:
                     address: '+19144178063'
@@ -3621,8 +3552,8 @@ paths:
                   session_id: comms_session_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     text: Hey, I don't think I can see the entrance.
-              Example 15 - Send a message with media:
-                x-twilio-version: 1
+              SendAMessageWithMedia:
+                summary: Send a message with media
                 value:
                   from:
                     address: '+14158871002'
@@ -3634,8 +3565,8 @@ paths:
                     media:
                       - url: https://example.com/steelers.jpg
                       - url: https://example.com/cowboys.png
-              Example 16 - Send a scheduled sms:
-                x-twilio-version: 1
+              SendAScheduledSms:
+                summary: Send a scheduled sms
                 value:
                   from:
                     address: '+14153901002'
@@ -3648,8 +3579,8 @@ paths:
                   schedule:
                     send_at:
                       - '2030-04-01T10:04:01Z'
-              Example 17 - Send a message with automatic suppression management:
-                x-twilio-version: 1
+              SendAMessageWithAutomaticSuppressionManagement:
+                summary: Send a message with automatic suppression management
                 value:
                   from:
                     address: '+14153901002'
@@ -3661,15 +3592,15 @@ paths:
                     text: Hello, World!
                   use_preference:
                     preference_id: comms_preference_01h9krwprkeee8fzqspvwy6nq8
-              Example 18 - Send a Message with just recipient and content:
-                x-twilio-version: 1
+              SendAMessageWithJustRecipientAndContent:
+                summary: Send a Message with just recipient and content
                 value:
                   to:
                     - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     text: Look ma, no 'from' ✨!
-              Example 27 - Flexible content, per channel control:
-                x-twilio-version: 1
+              FlexibleContentPerChannelControl:
+                summary: Flexible content, per channel control
                 value:
                   from:
                     agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
@@ -3700,8 +3631,8 @@ paths:
                           text: We hope you enjoyed the roller coaster! Here's your photo!
                           media:
                             - url: https://example.com/image.jpg
-              Example 28 - WhatsApp rich content:
-                x-twilio-version: 1
+              WhatsappRichContent:
+                summary: WhatsApp rich content
                 value:
                   from:
                     address: '+12065558844'
@@ -3734,8 +3665,7 @@ paths:
                       - sms:
                           text: Choose a product from https://example.com/products?order_id=x39sdf1
       x-code-samples:
-        - x-twilio-version: 1
-          lang: curl
+        - lang: curl
           label: cURL
           source: |
             curl --location 'https://comms.twilio.com/preview/Messages' \
@@ -3753,7 +3683,6 @@ paths:
     get:
       summary: List Messages
       operationId: ListMessages
-      x-twilio-version: 1
       description: This operation fetches a paginated list of Messages.
       tags:
         - Messages
@@ -3761,65 +3690,55 @@ paths:
         - in: query
           name: operation_id
           description: Filter Messages by Operation Id.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/OperationId'
         - in: query
           name: session_id
           description: Filter Messages by Session Id.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/SessionId'
         - in: query
           name: start_date
           description: Filter to Messages created after the specified date and time. The date is in RFC3339 format. (e.g., 2025-06-18T12:00:00Z)
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: end_date
           description: Filter to Messages created before the specified date and time. The date is in RFC3339 format and must be greater  than start_date if provided. (e.g., 2025-06-18T12:00:00Z)
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: contact
           description: Filter Messages sent or received by Contact Id.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/ContactId'
         - in: query
           name: channel
           description: Filter Messages by channel.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/MessageAgentChannel'
         - in: query
           name: status
           description: Filter Messages by Delivery Status.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/MessageStatus'
         - in: query
           name: tags
           description: |-
             Match messages by one or many tags. If more than one tag is specified in the query, the search will return messages that have all the tags.
-            _Example:_ ``` GET /Messages?tags=region:EMEA;campaign:BUY_STUFF; ```
-          x-twilio-version: 1
+            For Example: ``` GET /Messages?tags=region:EMEA;campaign:BUY_STUFF; ```
           schema:
             $ref: '#/components/schemas/TagsString'
         - in: query
           name: page_token
           description: The token to retrieve the next page of results.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/PageToken'
         - in: query
           name: page_size
           description: The number of resources to return in a page.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/PageSize'
       responses:
@@ -3830,7 +3749,6 @@ paths:
               schema:
                 title: ListMessagesResponse
                 description: A list of Messages and pagination metadata.
-                x-twilio-version: 1
                 type: object
                 properties:
                   messages:
@@ -3844,8 +3762,8 @@ paths:
                   - messages
                   - pagination
               examples:
-                List with one sms and one whatsapp message:
-                  x-twilio-version: 1
+                ListMessagesInOperationWithMixedChannels:
+                  summary: List with one sms and one whatsapp message
                   value:
                     messages:
                       - id: comms_message_01h2xcejqtf2nbrexx3vqjhp41
@@ -3890,8 +3808,8 @@ paths:
                     pagination:
                       next: null
                       self: https://comms.twilio.com/v1/Messages
-                Outbound message, 1:n:
-                  x-twilio-version: 1
+                ListMessagesFilterByContact:
+                  summary: List Messages filtered by Contact
                   value:
                     messages:
                       - id: comms_message_01h2xcejqtf2nbrexx3vqjhp41
@@ -3935,8 +3853,8 @@ paths:
                     pagination:
                       next: null
                       self: https://comms.twilio.com/v1/Messages
-                Messages in a Session:
-                  x-twilio-version: 1
+                ListMessagesInSession:
+                  summary: List Messages in a Session
                   value:
                     messages:
                       - id: comms_message_01h9krwprkeee8fzqspvwy6nq8
@@ -3983,8 +3901,8 @@ paths:
                     pagination:
                       next: null
                       self: https://comms.twilio.com/v1/Messages
-                Inbound messages from the same contact:
-                  x-twilio-version: 1
+                ListMessagesFilteredByInboundStatusAndContact:
+                  summary: List only inbound Messages from the same Contact
                   value:
                     messages:
                       - id: comms_message_01h9krwprkeee8fzqspvwy6nq5
@@ -4037,18 +3955,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Messages/{message_id}:
-    x-twilio-domain: messages
     parameters:
       - schema:
           $ref: '#/components/schemas/MessageId'
         name: message_id
         in: path
         required: true
-        x-twilio-version: 1
     get:
       summary: Fetch a Message
       operationId: FetchMessage
-      x-twilio-version: 1
       description: This operation fetches a single Message using its Id.
       tags:
         - Messages
@@ -4060,8 +3975,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Message'
               examples:
-                Example Response - Inbound message, 1:1 or 1:n:
-                  x-twilio-version: 1
+                InboundMessage:
+                  summary: Inbound message, 1:1 or 1:n
                   value:
                     id: comms_message_01h2xcejqtf2nbrexx3vqjhp41
                     from:
@@ -4085,68 +4000,8 @@ paths:
                     created_at: '2023-08-24T14:15:22Z'
                     updated_at: '2023-08-24T14:15:22Z'
                     deleted_at: null
-                Inbound message, group:
-                  x-twilio-version: 1
-                  value:
-                    id: comms_message_2x4y6z8a0b1c2d3e4f5g6h7j8k
-                    from:
-                      address: '+12065558844'
-                      channel: phone
-                      contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    to:
-                      - address: '+15264013448'
-                        channel: sms
-                        agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
-                      - address: '+14153902337'
-                        channel: phone
-                        contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq7
-                      - address: '+14153901004'
-                        channel: phone
-                        contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq6
-                    content:
-                      text: Thanks, any time slot on Friday works for me.
-                    status: inbound
-                    attempts: []
-                    related:
-                      - name: session
-                        id: comms_session_01h2xcejqtf2nbrexx3vqjhp41
-                        uri: /Sessions/01h2xcejqtf2nbrexx3vqjhp41
-                    tags: {}
-                    scheduled_for: null
-                    created_at: '2023-08-24T14:15:22Z'
-                    updated_at: '2023-08-24T14:15:22Z'
-                    deleted_at: null
-                Inbound message, group - with proxy:
-                  x-twilio-version: 1
-                  value:
-                    id: comms_message_2x4y6z8a0b1c2d3e4f5g6h7j8k
-                    from:
-                      address: '+12065558844'
-                      channel: phone
-                      contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                      proxy:
-                        agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
-                    to:
-                      - address: '+14153901002'
-                        channel: phone
-                        contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                        proxy:
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
-                    content:
-                      text: Thanks, any time slot on Friday works for me.
-                    attempts: []
-                    related:
-                      - name: session
-                        id: comms_session_01h2xcejqtf2nbrexx3vqjhp41
-                        uri: /Sessions/01h2xcejqtf2nbrexx3vqjhp41
-                    status: inbound
-                    tags: {}
-                    scheduled_for: null
-                    created_at: '2023-08-24T14:15:22Z'
-                    updated_at: '2023-08-24T14:15:22Z'
-                    deleted_at: null
-                Outbound rcs message:
-                  x-twilio-version: 1
+                OutboundRCSMessage:
+                  summary: Outbound rcs message
                   value:
                     id: comms_message_2x4y6z8a0b1c2d3e4f5g6h7j8k
                     from:
@@ -4205,8 +4060,8 @@ paths:
                     created_at: '2023-08-24T14:15:22Z'
                     updated_at: '2023-08-24T14:15:22Z'
                     deleted_at: null
-                Outbound, scheduled, first attempt over rcs fails, 2nd attempt with sms/mms succeeds:
-                  x-twilio-version: 1
+                OutboundScheduledFallbackRcsToSms:
+                  summary: Outbound, scheduled, first attempt over rcs fails, 2nd attempt with sms/mms succeeds
                   value:
                     id: comms_message_2x4y6z8a0b1c2d3e4f5g6h7j8k
                     from:
@@ -4270,11 +4125,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Messages/Operations:
-    x-twilio-domain: messages
     get:
       summary: List Message Operations
       operationId: ListMessageOperations
-      x-twilio-version: 1
       description: This operation fetches a paginated list of Message Operations.
       tags:
         - Messages
@@ -4282,33 +4135,28 @@ paths:
         - in: query
           name: start_date
           description: Filter to Operations created after the specified date and time.
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: end_date
           description: Filter to Operations created before the specified date and time.
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: status
           description: Filter to Operations with the specified status.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/CommunicationOperationStatus'
         - in: query
           name: page_token
           description: The token to retrieve the next page of results.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/PageToken'
         - in: query
           name: page_size
           description: The number of resources to return in a page.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/PageSize'
       responses:
@@ -4339,18 +4187,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Messages/Operations/{operation_id}:
-    x-twilio-domain: messages
     parameters:
       - schema:
           $ref: '#/components/schemas/OperationId'
         name: operation_id
         in: path
         required: true
-        x-twilio-version: 1
     get:
       summary: Fetch a Message Operation
       operationId: FetchMessageOperation
-      x-twilio-version: 1
       description: This operation fetches a single Message Operation using its Id.
       tags:
         - Messages
@@ -4362,8 +4207,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/MessageOperation'
               examples:
-                Example Response - Fetch a Message Operation - single Message:
-                  x-twilio-version: 1
+                FetchAMessageOperationSingleMessage:
+                  summary: Fetch a Message Operation - single Message
                   value:
                     id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
                     status: completed
@@ -4382,8 +4227,8 @@ paths:
                       canceled: 0
                     created_at: '2024-04-05T06:20:00Z'
                     updated_at: '2024-04-05T06:20:00Z'
-                Example Response - Fetch a Message Operation - two Messages:
-                  x-twilio-version: 1
+                FetchAMessageOperationTwoMessages:
+                  summary: Fetch a Message Operation - two Messages
                   value:
                     id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
                     status: completed
@@ -4402,8 +4247,8 @@ paths:
                       canceled: 0
                     created_at: '2024-04-05T06:20:00Z'
                     updated_at: '2024-04-05T06:20:00Z'
-                Example Response - Fetch a Message Operation - one group Message with 3 recipients:
-                  x-twilio-version: 1
+                ResponseFetchAMessageOperationOneGroupMessageWith3Recipients:
+                  summary: Fetch a Message Operation - one group Message with 3 recipients
                   value:
                     id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
                     status: completed
@@ -4422,8 +4267,8 @@ paths:
                       canceled: 0
                     created_at: '2024-04-05T06:20:00Z'
                     updated_at: '2024-04-05T06:20:00Z'
-                one recipient, unaddressable, therefore no messages and no attempts:
-                  x-twilio-version: 1
+                UnaddressableNoAttempts:
+                  summary: unaddressable - therefore no messages and no attempts
                   value:
                     id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
                     status: completed
@@ -4453,18 +4298,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Messages/Operations/{operation_id}/Cancel:
-    x-twilio-domain: messages
     parameters:
       - schema:
           $ref: '#/components/schemas/OperationId'
-        x-twilio-version: 1
         name: operation_id
         in: path
         required: true
     post:
       summary: Cancel a Message Operation
       operationId: CancelMessageOperation
-      x-twilio-version: 1
       description: This operation cancels a Message Operation using its Id.
       tags:
         - Messages
@@ -4482,7 +4324,6 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Messages/Seek/{identifier}:
-    x-twilio-domain: messages
     parameters:
       - name: identifier
         schema:
@@ -4490,11 +4331,9 @@ paths:
         in: path
         required: true
         description: The unique identifier that belongs to a `Message`. This will be used to seek out the message.
-        x-twilio-version: 1
     get:
       summary: Seek Message by Identifier
       operationId: SeekMessageByIdentifier
-      x-twilio-version: 1
       description: This operation seeks out a message based upon an identifier retrieved by another system.
       tags:
         - Messages
@@ -4519,11 +4358,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /PushNotifications/DeviceRegistrations:
-    x-twilio-domain: push-notifications
     post:
       summary: Register Device for Push Notifications
       operationId: CreateDeviceRegistration
-      x-twilio-version: preview
       description: |-
         This operation registers the push notifications token of the device/browser to the
         Registration set of a Contact with the corresponding `app_name`.
@@ -4532,7 +4369,7 @@ paths:
 
         * If a Contact Id is provided and the Contact exists, the device is registered to the Contact.
       tags:
-        - Push Notifications
+        - PushNotifications
       requestBody:
         required: true
         content:
@@ -4562,15 +4399,15 @@ paths:
                 - token
                 - provider
             examples:
-              Example 1 - existing contact:
-                x-twilio-version: preview
+              ExistingContact:
+                summary: Existing contact
                 value:
                   contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                   token: dqWD7WEC83K41WHyufTS7:APA91bFcrVaOLqKeJfSiEutJXX2Tr9wN_tYOwYd8rFA6mYUMBFqdz9n6k3v5EpFA_ukXD89hGqG3OarzbVfdjGnLOIAQfwbQcqJkjQWMrhwElrtU1y3JLDPfnjc0eTJLxzhyYvDFopEh
                   app_name: limonade_app
                   provider: fcm
-              Example 2 - new contact:
-                x-twilio-version: preview
+              NewContact:
+                summary: New contact
                 value:
                   token: dqWD7WEC83K41WHyufTS7:APA91bFcrVaOLqKeJfSiEutJXX2Tr9wN_tYOwYd8rFA6mYUMBFqdz9n6k3v5EpFA_ukXD89hGqG3OarzbVfdjGnLOIAQfwbQcqJkjQWMrhwElrtU1y3JLDPfnjc0eTJLxzhyYvDFopEh
                   app_name: limonade_app
@@ -4589,7 +4426,6 @@ paths:
     get:
       summary: List Device Registrations
       operationId: ListDeviceRegistrations
-      x-twilio-version: preview
       description: |-
         This operation fetches a paginated list of Device Registrations
           with the Id of the `Contact` they belong to and the name of the `App` that they are for.
@@ -4605,7 +4441,7 @@ paths:
           devices registered under the Device Registration with the corresponding `app_name`
           are targets for the Push Notification.
       tags:
-        - Push Notifications
+        - PushNotifications
       parameters:
         - in: query
           name: contact_id
@@ -4678,18 +4514,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /PushNotifications/DeviceRegistrations/{device_registration_id}:
-    x-twilio-domain: push-notifications
     parameters:
       - schema:
           $ref: '#/components/schemas/DeviceRegistrationId'
-        x-twilio-version: preview
         name: device_registration_id
         in: path
         required: true
     get:
       summary: Get a single Device Registration
       operationId: GetDeviceRegistration
-      x-twilio-version: preview
       description: |-
         This operation fetches a single Device Registration.
 
@@ -4704,7 +4537,7 @@ paths:
           devices registered under the Device Registration with the corresponding `app_name`
           are targets for the Push Notification.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '200':
           description: OK
@@ -4742,13 +4575,12 @@ paths:
     delete:
       summary: Delete a Device Registration
       operationId: DeleteDeviceRegistration
-      x-twilio-version: preview
       description: |-
         This operation deletes a Device Registration.
 
         Once deleted, the Contact will no longer receive Push Notifications for the specified App until new devices are registered.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithResource'
@@ -4763,14 +4595,12 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /PushNotifications:
-    x-twilio-domain: push-notifications
     post:
       summary: Send Push Notifications
       operationId: SendPushNotifications
-      x-twilio-version: preview
       description: This operation creates and sends out push notifications to the specified recipients.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithOperation'
@@ -4904,8 +4734,8 @@ paths:
                 - to
                 - content
             examples:
-              Example 1 - Send one push to direct entities:
-                x-twilio-version: preview
+              SendOnePushToDirectEntities:
+                summary: Send one push to direct entities
                 value:
                   from:
                     fcm: comms_credential_01h9krwprkeee8fzqspvwy6nq8
@@ -4922,8 +4752,8 @@ paths:
                       activity: open_boarding_info_intent
                   priority: high
                   sound: ring
-              Example 2 - Send multiple pushes to indirect entities with personalization:
-                x-twilio-version: preview
+              SendMultiplePushesToIndirectEntitiesWithPersonalization:
+                summary: Send multiple pushes to indirect entities with personalization
                 value:
                   to:
                     - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
@@ -4949,8 +4779,8 @@ paths:
                         message:
                           data:
                             analytics_label: wishlist_item_on_sale
-              Example 4 - Send a scheduled push:
-                x-twilio-version: preview
+              SendAScheduledPush:
+                summary: Send a scheduled push
                 value:
                   from:
                     fcm: comms_credential_01h9krwprkeee8fzqspvwy6nq8
@@ -4967,8 +4797,8 @@ paths:
                   schedule:
                     send_at:
                       - '2023-08-31T14:15:22Z'
-              Example 6 - Send a push to a Contact:
-                x-twilio-version: preview
+              SendAPushToAContact:
+                summary: Send a push to a Contact
                 value:
                   to:
                     - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
@@ -4985,8 +4815,8 @@ paths:
                       is_vip: 'false'
                   priority: low
                   sound: saxophone
-              Example 5 - Send a push to a Contact's mobile app when there are multiple:
-                x-twilio-version: preview
+              SendAPushToAContactSMobileAppWhenThereAreMultiple:
+                summary: Send a push to a Contact's mobile app when there are multiple
                 value:
                   from:
                     app_name: limonade_eats_app
@@ -4998,7 +4828,7 @@ paths:
                     click_action:
                       activity: open_order_page_intent
                   priority: high
-              Passthrough Example:
+              Passthrough:
                 summary: Real-world example using provider_passthrough for APNs and FCM
                 value:
                   from:
@@ -5043,10 +4873,9 @@ paths:
     get:
       summary: List Push Notifications
       operationId: ListPushNotifications
-      x-twilio-version: preview
       description: This operation fetches a paginated list of Push Notifications.
       tags:
-        - Push Notifications
+        - PushNotifications
       parameters:
         - in: query
           name: operation_id
@@ -5104,8 +4933,8 @@ paths:
                   - push_notifications
                   - pagination
               examples:
-                List of Push Notifications:
-                  x-twilio-version: preview
+                ListOfPushNotifications:
+                  summary: List of Push Notifications
                   value:
                     push_notifications:
                       - id: comms_pushnotification_3de3vbxqx0aghtdy1jgf9qdteh
@@ -5137,21 +4966,18 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /PushNotifications/{push_notification_id}:
-    x-twilio-domain: push-notifications
     parameters:
       - schema:
           $ref: '#/components/schemas/PushNotificationId'
-        x-twilio-version: preview
         name: push_notification_id
         in: path
         required: true
     get:
       summary: Fetch a PushNotification
       operationId: FetchPushNotification
-      x-twilio-version: preview
       description: This operation fetches a single Push Notification using its Id.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '200':
           description: OK
@@ -5160,8 +4986,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/PushNotification'
               examples:
-                A Push Notifications:
-                  x-twilio-version: preview
+                PushNotificationSent:
+                  summary: Push Notification Sent
                   value:
                     id: comms_pushnotification_3de3vbxqx0aghtdy1jgf9qdteh
                     from:
@@ -5196,10 +5022,9 @@ paths:
     delete:
       summary: Delete a PushNotification
       operationId: DeletePushNotification
-      x-twilio-version: preview
       description: This operation deletes a Push Notification
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithResource'
@@ -5214,14 +5039,12 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /PushNotifications/Operations:
-    x-twilio-domain: push-notifications
     get:
       summary: List Push Notification Operations
       operationId: ListPushNotificationOperations
-      x-twilio-version: preview
       description: This operation fetches a paginated list of Push Notification Operations.
       tags:
-        - Push Notifications
+        - PushNotifications
       parameters:
         - in: query
           name: start_date
@@ -5268,21 +5091,18 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /PushNotifications/Operations/{operation_id}:
-    x-twilio-domain: push-notifications
     parameters:
       - schema:
           $ref: '#/components/schemas/OperationId'
-        x-twilio-version: preview
         name: operation_id
         in: path
         required: true
     get:
       summary: Fetch a Push Notification Operation
       operationId: FetchPushNotificationOperation
-      x-twilio-version: preview
       description: This operation fetches a single Push Notification Operation using its Id.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '200':
           description: OK
@@ -5301,11 +5121,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /PushNotifications/Credentials:
-    x-twilio-domain: push-notifications
     post:
       summary: Create Push Credential
       operationId: CreatePushCredential
-      x-twilio-version: preview
       description: |-
         This operation creates Credentials for sending Push Notifications. A credential must always be registered under an App.
 
@@ -5317,7 +5135,7 @@ paths:
         * There is a limit of 10 Credentials per App
           * Creating a credential under an App that already has the maximum amount of credentials will cause the creation to fail.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithResource'
@@ -5359,47 +5177,47 @@ paths:
                 - content
                 - app_name
             examples:
-              Example 1 - Create a new APN Certificate Credential:
-                x-twilio-version: preview
+              CreateANewApnCertificateCredential:
+                summary: Create a new APN Certificate Credential
                 value:
                   credential_type: apn
                   app_name: limonade_app
                   content:
                     certificate: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tTUlJRm5UQ0NCSVdnQXdJQkFnSUlBank5SDg0OStFOHdEUVlKS29aSWh2Y05BUUVGQlFBd2daWXhDekFKQmdOVi4uLi4uQT09LS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==
                     private_key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLU1JSUVwUUlCQUFLQ0FRRUF1eWYvbE5ySDljazhEbU55bzNmR2d2Q0kxbDlzK2NtQlkzV0l6K2NVRHFteGlpZVIKLi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0t
-              Example 2 - Create a new APN Certificate Credential  for Sandbox:
-                x-twilio-version: preview
+              CreateANewApnCertificateCredentialForSandbox:
+                summary: Create a new APN Certificate Credential  for Sandbox
                 value:
                   credential_type: apn_sandbox
                   app_name: limonade_app
                   content:
                     certificate: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tTUlJRm5UQ0NCSVdnQXdJQkFnSUlBank5SDg0OStFOHdEUVlKS29aSWh2Y05BUUVGQlFBd2daWXhDekFKQmdOVi4uLi4uQT09LS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==
                     private_key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLU1JSUVwUUlCQUFLQ0FRRUF1eWYvbE5ySDljazhEbU55bzNmR2d2Q0kxbDlzK2NtQlkzV0l6K2NVRHFteGlpZVIKLi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0t
-              Example 3 - Create a new APN Signing Key Credential:
-                x-twilio-version: preview
+              CreateANewApnSigningKeyCredential:
+                summary: Create a new APN Signing Key Credential
                 value:
                   credential_type: apn
                   app_name: limonade_app
                   content:
                     key_id: 3CGDUC4Q4G
                     signing_key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JR1RBZ0VBTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEJIa3dkd0lCQVFRZ3l1QXp3aFR5bFhKRVhYUXoKWWtDaSs4WEFlUkhvamFlQi9EZXhvTkJET1BxZ0NnWUlLb1pJemowREFRZWhSQU5DQUFUcWlvSGVMSlpkQ1lQZApsU2Judk4wTFpYeGFrTkVSRlMvR1JON2VzSkJCWGNKQmJKWEhYV1JUQllMVXBRZ2RnV3dBYlIxYWdxN0tESGJYCmZ1Q3JjaHFhCi0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0=
-              Example 4 - Create a new APN Signing Key Credential  for Sandbox:
-                x-twilio-version: preview
+              CreateANewApnSigningKeyCredentialForSandbox:
+                summary: Create a new APN Signing Key Credential  for Sandbox
                 value:
                   credential_type: apn_sandbox
                   app_name: limonade_app
                   content:
                     key_id: 3CGDUC4Q4G
                     signing_key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JR1RBZ0VBTUJNR0J5cUdTTTQ5QWdFR0NDcUdTTTQ5QXdFSEJIa3dkd0lCQVFRZ3l1QXp3aFR5bFhKRVhYUXoKWWtDaSs4WEFlUkhvamFlQi9EZXhvTkJET1BxZ0NnWUlLb1pJemowREFRZWhSQU5DQUFUcWlvSGVMSlpkQ1lQZApsU2Judk4wTFpYeGFrTkVSRlMvR1JON2VzSkJCWGNKQmJKWEhYV1JUQllMVXBRZ2RnV3dBYlIxYWdxN0tESGJYCmZ1Q3JjaHFhCi0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0=
-              Example 5 - Create a new FCM Credential:
-                x-twilio-version: preview
+              CreateANewFcmCredential:
+                summary: Create a new FCM Credential
                 value:
                   credential_type: fcm
                   app_name: limonade_app
                   content:
                     private_key: eyJ0eXBlIjoic2VydmljZV9hY2NvdW50IiwicHJvamVjdF9pZCI6Im15LXByb2plY3QiLCJwcml2YXRlX2tleV9pZCI6Im15LXByaXZhdGUta2V5LWlkIiwicHJpdmF0ZV9rZXkiOiItLS0tLUJFR0lOIFBSSVZBVEUgS0VZLS0tLS1cbiBleGFtcGxlIHByaXZhdGUga2V5IFxuLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLVxuIn0=
-              Example 6 - Create a new Default Credential:
-                x-twilio-version: preview
+              CreateANewDefaultCredential:
+                summary: Create a new Default Credential
                 value:
                   credential_type: apn
                   app_name: limonade_app
@@ -5410,10 +5228,9 @@ paths:
     get:
       summary: List Push Credentials
       operationId: ListPushCredentials
-      x-twilio-version: preview
       description: This operation fetches a paginated list of Push Credentials.
       tags:
-        - Push Notifications
+        - PushNotifications
       parameters:
         - in: query
           name: start_date
@@ -5471,8 +5288,8 @@ paths:
                   - credentials
                   - pagination
               examples:
-                A list of Credentials filtered to a specific App:
-                  x-twilio-version: preview
+                ListOfCredentialsFilteredToASpecificApp:
+                  summary: A list of Credentials filtered to a specific App
                   value:
                     credentials:
                       - id: comms_credential_01h9krwprkeee8fzqspvwy6nq8
@@ -5511,21 +5328,18 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /PushNotifications/Credentials/{credential_id}:
-    x-twilio-domain: push-notifications
     parameters:
       - schema:
           $ref: '#/components/schemas/CredentialId'
-        x-twilio-version: preview
         name: credential_id
         in: path
         required: true
     patch:
       summary: Update a Push Credential
       operationId: PatchPushCredential
-      x-twilio-version: preview
       description: This operation partially updates a Push Credential.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithResource'
@@ -5553,17 +5367,16 @@ paths:
               required:
                 - is_default
             examples:
-              Update to Default Credential:
-                x-twilio-version: preview
+              UpdateToDefaultCredential:
+                summary: Update to Default Credential
                 value:
                   is_default: true
     get:
       summary: Fetch a Push Credential
       operationId: FetchPushCredential
-      x-twilio-version: preview
       description: This operation fetches a single Push Notifications Credential using its Id.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '200':
           description: OK
@@ -5572,8 +5385,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/PushNotificationCredential'
               examples:
-                An APN Certificate Credential:
-                  x-twilio-version: preview
+                APNCertificateCredential:
+                  summary: An APN Certificate Credential
                   value:
                     id: comms_credential_01h9krwprkeee8fzqspvwy6nq8
                     credential_type: apn
@@ -5587,8 +5400,8 @@ paths:
                     created_at: '2023-08-31T14:15:22Z'
                     updated_at: '2023-08-31T14:15:22Z'
                     deleted_at: null
-                An APN Certificate Credential for Sandbox:
-                  x-twilio-version: preview
+                APNCertificateSandboxCredential:
+                  summary: An APN Certificate Credential for Sandbox
                   value:
                     id: comms_credential_01h9krwprkeee8fzqspvwy6nq8
                     credential_type: apn_sandbox
@@ -5602,8 +5415,8 @@ paths:
                     created_at: '2023-08-31T14:15:22Z'
                     updated_at: '2023-08-31T14:15:22Z'
                     deleted_at: null
-                An APN Signing Key Credential:
-                  x-twilio-version: preview
+                SigningKeyCredential:
+                  summary: An APN Signing Key Credential
                   value:
                     id: comms_credential_01h9krwprkeee8fzqspvwy6nq8
                     credential_type: apn
@@ -5617,8 +5430,8 @@ paths:
                     created_at: '2023-08-31T14:15:22Z'
                     updated_at: '2023-08-31T14:15:22Z'
                     deleted_at: null
-                An APN Signing Key Credential for Sandbox:
-                  x-twilio-version: preview
+                SandboxSigningKeyCredential:
+                  summary: An APN Signing Key Credential for Sandbox
                   value:
                     id: comms_credential_01h9krwprkeee8fzqspvwy6nq8
                     credential_type: apn_sandbox
@@ -5632,8 +5445,8 @@ paths:
                     created_at: '2023-08-31T14:15:22Z'
                     updated_at: '2023-08-31T14:15:22Z'
                     deleted_at: null
-                An FCM Credential:
-                  x-twilio-version: preview
+                FCMCredential:
+                  summary: FCM Credential
                   value:
                     id: comms_credential_01h9krwprkeee8fzqspvwy6nq8
                     credential_type: fcm
@@ -5647,8 +5460,8 @@ paths:
                     created_at: '2023-08-31T14:15:22Z'
                     updated_at: '2023-08-31T14:15:22Z'
                     deleted_at: null
-                A Default Credential:
-                  x-twilio-version: preview
+                DefaultCredential:
+                  summary: A Default Credential
                   value:
                     id: comms_credential_01h9krwprkeee8fzqspvwy6nq8
                     credential_type: apn
@@ -5675,13 +5488,12 @@ paths:
     delete:
       summary: Delete a Push Credential
       operationId: DeletePushCredential
-      x-twilio-version: preview
       description: |-
         This operation deletes a Push Credential. 
 
         If all Credentials belonging to an App are deleted, the App and its Device Registrations are deleted as well.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithResource'
@@ -5696,7 +5508,6 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /PushNotifications/Apps:
-    x-twilio-domain: push-notifications
     get:
       summary: List Push Notification Apps
       operationId: ListPushNotificationApps
@@ -5704,9 +5515,8 @@ paths:
         List an account's Apps that match the provided filters.
 
         An account may have up to 10 Apps at a time.
-      x-twilio-version: preview
       tags:
-        - Push Notifications
+        - PushNotifications
       parameters:
         - in: query
           name: start_date
@@ -5754,8 +5564,8 @@ paths:
                   - apps
                   - pagination
               examples:
-                List Push Apps response:
-                  x-twilio-version: preview
+                ListOfPushApps:
+                  summary: List of Push Apps
                   value:
                     apps:
                       - name: limonade_app
@@ -5817,21 +5627,18 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /PushNotifications/Apps/{app_name}:
-    x-twilio-domain: push-notifications
     parameters:
       - schema:
           $ref: '#/components/schemas/PushNotificationAppName'
-        x-twilio-version: preview
         name: app_name
         in: path
         required: true
     patch:
       summary: Update a Push Notification App
       operationId: PatchPushNotificationApp
-      x-twilio-version: preview
       description: This operation partially updates a Push Notification App.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithResource'
@@ -5863,17 +5670,16 @@ paths:
               required:
                 - is_default
             examples:
-              Example 1 - Update default App:
-                x-twilio-version: preview
+              UpdateDefaultApp:
+                summary: Update default App
                 value:
                   is_default: true
     get:
       summary: Fetch a Push Notification App
       operationId: FetchPushNotificationApp
-      x-twilio-version: preview
       description: This operation fetches a single Push Notification `App` using its name.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '200':
           description: OK
@@ -5882,8 +5688,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/PushNotificationApp'
               examples:
-                Example Response - Push Notification App:
-                  x-twilio-version: preview
+                PushNotificationApp:
+                  summary: Push Notification App
                   value:
                     name: limonade_app
                     is_default: true
@@ -5919,10 +5725,9 @@ paths:
     delete:
       summary: Delete a Push Notification App
       operationId: DeletePushNotificationApp
-      x-twilio-version: preview
       description: Delete an App and all the Credentials and Device Registrations associated with it.
       tags:
-        - Push Notifications
+        - PushNotifications
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithResource'
@@ -5937,11 +5742,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Communications:
-    x-twilio-domain: communications
     post:
       summary: Send Communications
       operationId: SendCommunications
-      x-twilio-version: preview
       description: |-
         This operation sends communications to audiences across all channels. 
         This operation can also be used to directly send Messages, Emails, and Push Notifications.
@@ -6136,8 +5939,8 @@ paths:
               required:
                 - to
             examples:
-              Example 0 - Send across multiple channels, specify recipient and what to say:
-                x-twilio-version: preview
+              SendAcrossMultipleChannelsSpecifyRecipientAndWhatToSay:
+                summary: Send across multiple channels, specify recipient and what to say
                 value:
                   to:
                     - addresses:
@@ -6151,8 +5954,8 @@ paths:
                   push_notification:
                     content:
                       body: Sometimes you eat the bar, and sometimes the bar, well, it eats you...
-              Example 1 - Send to a single Contact, let Twilio pick the channel:
-                x-twilio-version: preview
+              SendToASingleContactLetTwilioPickTheChannel:
+                summary: Send to a single Contact, let Twilio pick the channel
                 value:
                   from:
                     agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
@@ -6167,8 +5970,8 @@ paths:
                   email:
                     content:
                       content_id: HX78e8e67fc0246521490fb9907fd0c165
-              Example 2 - Send to two Contacts, personalized content, optimized channel:
-                x-twilio-version: preview
+              SendToTwoContactsPersonalizedContentOptimizedChannel:
+                summary: Send to two Contacts, personalized content, optimized channel
                 value:
                   from:
                     agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
@@ -6193,8 +5996,8 @@ paths:
                         </body></html>
                       default_variables:
                         greeting: Good day
-              Example 3 - Send to an audience with channel optimization through an agent pool:
-                x-twilio-version: preview
+              SendToAnAudienceWithChannelOptimizationThroughAnAgentPool:
+                summary: Send to an audience with channel optimization through an agent pool
                 value:
                   from:
                     agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
@@ -6209,8 +6012,8 @@ paths:
                   email:
                     content:
                       content_id: HX78e8e67fc0246521490fb9907fd0c165
-              Example 4 - Channel optimization (Message only) for an Audience, personalized content:
-                x-twilio-version: preview
+              ChannelOptimizationMessageOnlyForAnAudiencePersonalizedContent:
+                summary: Channel optimization (Message only) for an Audience, personalized content
                 value:
                   from:
                     agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
@@ -6244,16 +6047,16 @@ paths:
                               Visit https://dude.info?campaign=bmV3IHNoaX to learn more.
                       default_variables:
                         name: there
-              Example 6 - Channel optimization for a single Contact via an app:
-                x-twilio-version: preview
+              ChannelOptimizationForASingleContactViaAnApp:
+                summary: Channel optimization for a single Contact via an app
                 value:
                   to:
                     - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                   push_notification:
                     content:
                       body: 10% off your next ride! Use code TWILIO10 at checkout.
-              Example 7 - Push notifications for an Audience via an app:
-                x-twilio-version: preview
+              PushNotificationsForAnAudienceViaAnApp:
+                summary: Push notifications for an Audience via an app
                 value:
                   to:
                     - audience_id: comms_audience_01h9krwprkeee8fzqspvwy6nq8
@@ -6261,16 +6064,16 @@ paths:
                     app_name: limonade_app
                     content:
                       body: 5% off your next ride! Use code TWILIO5 at checkout.
-              Example 8 - Send templated content to a Contact:
-                x-twilio-version: preview
+              SendTemplatedContentToAContact:
+                summary: Send templated content to a Contact
                 value:
                   to:
                     - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                   email:
                     content:
                       content_id: HX78e8e67fc0246521490fb9907fd0c165
-              Example 9 - Send to an audience with channel optimization and constrain to a specific Messaging channel:
-                x-twilio-version: preview
+              SendToAnAudienceWithChannelOptimizationAndConstrainToASpecificMessagingChannel:
+                summary: Send to an audience with channel optimization and constrain to a specific Messaging channel
                 value:
                   from:
                     agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
@@ -6286,8 +6089,8 @@ paths:
                       content_id: HX78e8e67fc0246521490fb9907fd0c165
                   use_preference:
                     preference_id: comms_preference_01h9krwprkeee8fzqspvwy6nq8
-              Example 11 - Send an Email from specific address:
-                x-twilio-version: preview
+              SendAnEmailFromSpecificAddress:
+                summary: Send an Email from specific address
                 value:
                   to:
                     - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
@@ -6297,8 +6100,8 @@ paths:
                   email:
                     content:
                       content_id: HX78e8e67fc0246521490fb9907fd0c165
-              Example 12 - Send RCS explicitly:
-                x-twilio-version: preview
+              SendRcsExplicitly:
+                summary: Send RCS explicitly
                 value:
                   to:
                     - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
@@ -6308,20 +6111,16 @@ paths:
                   content:
                     text: We've got information! New stuff has come to light.
   /Communications/{communication_id}:
-    x-twilio-domain: communications
     parameters:
       - schema:
           $ref: '#/components/schemas/CommunicationId'
-        x-twilio-version: preview
         name: communication_id
         in: path
         required: true
   /Communications/Operations:
-    x-twilio-domain: communications
     get:
       summary: List Communication Operations
       operationId: ListCommunicationOperations
-      x-twilio-version: preview
       description: This operation fetches a paginated list of Communication Operations.
       tags:
         - Communications
@@ -6370,18 +6169,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Communications/Operations/{operation_id}:
-    x-twilio-domain: communications
     parameters:
       - schema:
           $ref: '#/components/schemas/OperationId'
-        x-twilio-version: preview
         name: operation_id
         in: path
         required: true
     get:
       summary: Fetch an Communication Operation
       operationId: FetchCommunicationOperation
-      x-twilio-version: preview
       description: This operation fetches a single Communication Operation using its Id.
       tags:
         - Communications
@@ -6403,11 +6199,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Agents:
-    x-twilio-domain: agents-and-agentpools
     get:
       summary: List Agents
       operationId: ListAgents
-      x-twilio-version: 1
       description: This operation fetches a paginated list of Agents.
       tags:
         - Agents
@@ -6415,38 +6209,32 @@ paths:
         - in: query
           name: channel
           description: Filter to Agents that match a specific channel.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/AgentCommunicationChannel'
         - in: query
           name: status
           description: Filter to Agents with the specified status.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/AgentStatus'
         - in: query
           name: start_date
           description: Filter to Agents created after the specified date and time.
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: end_date
           description: Filter to Agents created before the specified date and time.
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: page_token
           description: A page token that represents the start agent of a page
-          x-twilio-version: 1
           schema:
             type: string
         - in: query
           name: page_size
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/PageSize'
       responses:
@@ -6470,8 +6258,8 @@ paths:
                   - agents
                   - pagination
               examples:
-                Example page of Agents:
-                  x-twilio-version: 1
+                PageOfAgents:
+                  summary: Page of Agents
                   value:
                     agents:
                       - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -6510,18 +6298,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Agents/{agent_id}:
-    x-twilio-domain: agents-and-agentpools
     parameters:
       - schema:
           $ref: '#/components/schemas/AgentId'
         name: agent_id
         in: path
         required: true
-        x-twilio-version: 1
     get:
       summary: Fetch an Agent
       operationId: FetchAgent
-      x-twilio-version: 1
       description: This operation fetches a single Agent using its Id.
       tags:
         - Agents
@@ -6533,8 +6318,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Agent'
               examples:
-                Example Message Agent:
-                  x-twilio-version: 1
+                MessageAgent:
+                  summary: Message Agent
                   value:
                     id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
                     display_name: Cool Support
@@ -6544,8 +6329,8 @@ paths:
                     tags: {}
                     created_at: '2022-08-24T14:15:22Z'
                     updated_at: '2023-09-13T12:00:24Z'
-                Example Push Agent:
-                  x-twilio-version: 1
+                PushAgent:
+                  summary: Push Agent
                   value:
                     id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
                     display_name: limonade_app
@@ -6555,8 +6340,8 @@ paths:
                     tags: {}
                     created_at: '2022-08-24T14:15:22Z'
                     updated_at: '2023-09-13T12:00:24Z'
-                Example RCS Agent:
-                  x-twilio-version: 1
+                RcsAgent:
+                  summary: RCS Agent
                   value:
                     id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
                     display_name: Cool Support
@@ -6577,12 +6362,10 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Agents/Search:
-    x-twilio-domain: agents-and-agentpools
     post:
       summary: Search Agents
       description: This operation allows searching on agents on specific filters.
       operationId: SearchAgents
-      x-twilio-version: 1
       tags:
         - Agents
       requestBody:
@@ -6608,8 +6391,8 @@ paths:
                 - address
                 - channel
             examples:
-              Example Request:
-                x-twilio-version: 1
+              SearchAddressAndChannel:
+                summary: Search using address and channel filters
                 value:
                   address: '+14153902337'
                   channel: sms
@@ -6633,8 +6416,8 @@ paths:
                   - agents
                   - pagination
               examples:
-                Example page of Agents:
-                  x-twilio-version: 1
+                PageOfAgents:
+                  summary: Page of Agents
                   value:
                     agents:
                       - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -6675,13 +6458,11 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Agents/Resolve:
-    x-twilio-domain: agents-and-agentpools
     parameters: []
     post:
       summary: Resolve Agents
       description: This operation resolves a list of eligible Agents for sending and receiving communications for the given criteria.
       operationId: ResolveAgents
-      x-twilio-version: 1
       tags:
         - Agents
       requestBody:
@@ -6731,8 +6512,8 @@ paths:
                     - recipient_addresses
                     - sender_addresses
             examples:
-              Example 1 - Multiple Addresses:
-                x-twilio-version: 1
+              MultipleAddresses:
+                summary: Multiple Addresses
                 value:
                   recipient_addresses:
                     - address: '+14153902337'
@@ -6741,8 +6522,8 @@ paths:
                       channel: whatsapp
                     - address: davidpletnjov@example.com
                       channel: email
-              Example 2 - Using an Agent Pool:
-                x-twilio-version: 1
+              UsingAnAgentPool:
+                summary: Using an Agent Pool
                 value:
                   agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
                   recipient_addresses:
@@ -6814,8 +6595,8 @@ paths:
                 required:
                   - results
               examples:
-                Example 1 - Response for single recipient address:
-                  x-twilio-version: 1
+                SingleRecipientAddress:
+                  summary: Response for single recipient address
                   value:
                     results:
                       - from:
@@ -6836,8 +6617,8 @@ paths:
                           address: '+14153902337'
                           channel: phone
                         priority: 1
-                Example 2 - Response for two recipient addresses (rcs, whatsapp):
-                  x-twilio-version: 1
+                TwoRecipientAddressesRcsWhatsapp:
+                  summary: Response for two recipient addresses (rcs, whatsapp)
                   value:
                     results:
                       - from:
@@ -6867,12 +6648,12 @@ paths:
                           address: '+14153902337'
                           channel: phone
                         priority: 2
-                Example 3 - Response with no matches:
-                  x-twilio-version: 1
+                NoMatches:
+                  summary: Response with no matches
                   value:
                     results: []
-                Example 4 - Response for Email address:
-                  x-twilio-version: 1
+                EmailAddress:
+                  summary: Response for Email address
                   value:
                     results:
                       - from:
@@ -6884,8 +6665,8 @@ paths:
                           address: seth.limon@example.com
                           channel: email
                         priority: 0
-                Example 5 - Response with multiple Push Notification apps:
-                  x-twilio-version: 1
+                MultiplePushNotificationApps:
+                  summary: Response with multiple Push Notification apps
                   value:
                     results:
                       - from:
@@ -6913,11 +6694,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /AgentPools:
-    x-twilio-domain: agents-and-agentpools
     post:
       summary: Create an AgentPool
       operationId: CreateAgentPool
-      x-twilio-version: 1
       description: This operation creates an AgentPool
       tags:
         - AgentPools
@@ -6958,14 +6737,14 @@ paths:
                 tags:
                   $ref: '#/components/schemas/Tags'
             examples:
-              Example 1 - Creating a simple sms & whatsapp capable AgentPool:
-                x-twilio-version: 1
+              CreatingASimpleSmsWhatsappCapableAgentPool:
+                summary: Creating a simple sms & whatsapp capable AgentPool
                 value:
                   name: Sales Leads - APAC
                   tags:
                     region: APAC
-              Example 2 - Creating an AgentPool with initial list of Agents:
-                x-twilio-version: 1
+              CreatingAnAgentPoolWithInitialListOfAgents:
+                summary: Creating an AgentPool with initial list of Agents
                 value:
                   name: Sales Leads - APAC
                   agents:
@@ -6976,7 +6755,6 @@ paths:
     get:
       summary: List AgentPools
       operationId: ListAgentPools
-      x-twilio-version: 1
       description: This operation fetches a paginated list of AgentPools.
       tags:
         - AgentPools
@@ -6984,32 +6762,27 @@ paths:
         - in: query
           name: start_date
           description: Filter to AgentPools created after the specified date and time.
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: end_date
           description: Filter to AgentPools created before the specified date and time.
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: operation_id
           description: Filter to AgentPools by operation Id.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/OperationId'
         - in: query
           name: page_token
           description: A page token that represents the start AgentPool of a page
-          x-twilio-version: 1
           schema:
             type: string
         - in: query
           name: page_size
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/PageSize'
       responses:
@@ -7019,7 +6792,6 @@ paths:
             application/json:
               schema:
                 title: ListAgentPoolsResponse
-                x-twilio-version: 1
                 type: object
                 properties:
                   agent_pools:
@@ -7038,18 +6810,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /AgentPools/{agent_pool_id}:
-    x-twilio-domain: agents-and-agentpools
     parameters:
       - schema:
           $ref: '#/components/schemas/AgentPoolId'
         name: agent_pool_id
         in: path
         required: true
-        x-twilio-version: 1
     get:
       summary: Fetch an AgentPool
       operationId: FetchAgentPool
-      x-twilio-version: 1
       description: This operation fetches a single AgentPool using its Id.
       tags:
         - AgentPools
@@ -7061,8 +6830,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/AgentPool'
               examples:
-                Example Response - A simple sms & whatsapp capable AgentPool:
-                  x-twilio-version: 1
+                SimpleSmsWhatsappCapableAgentPool:
+                  summary: A simple sms & whatsapp capable AgentPool
                   value:
                     id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
                     name: Customer Support - NAMER
@@ -7082,7 +6851,6 @@ paths:
     patch:
       summary: Update an AgentPool
       operationId: UpdateAgentPool
-      x-twilio-version: 1
       description: This operation partially updates an AgentPool
       tags:
         - AgentPools
@@ -7112,8 +6880,8 @@ paths:
                 tags:
                   $ref: '#/components/schemas/Tags'
             examples:
-              Example 1 - Update AgentPool name:
-                x-twilio-version: 1
+              UpdateAgentPoolName:
+                summary: Update AgentPool name
                 value:
                   name: Customer Support Agents - Tier 1
                   tags:
@@ -7121,7 +6889,6 @@ paths:
     delete:
       summary: Delete an AgentPool
       operationId: DeleteAgentPool
-      x-twilio-version: 1
       description: This operation deletes an AgentPool
       tags:
         - AgentPools
@@ -7139,18 +6906,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /AgentPools/{agent_pool_id}/Agents:
-    x-twilio-domain: agents-and-agentpools
     parameters:
       - schema:
           $ref: '#/components/schemas/AgentPoolId'
         name: agent_pool_id
         in: path
         required: true
-        x-twilio-version: 1
     post:
       summary: Add Agents to an AgentPool
       operationId: AddAgentsToAgentPool
-      x-twilio-version: 1
       description: This operation adds Agents to an AgentPool
       tags:
         - AgentPools
@@ -7177,7 +6941,6 @@ paths:
               items:
                 title: AddAgentsToAgentPoolRequestItem
                 description: An Agent identified by Id to add to the AgentPool.
-                x-twilio-version: 1
                 type: object
                 properties:
                   agent_id:
@@ -7187,12 +6950,12 @@ paths:
               minItems: 1
               maxItems: 10000
             examples:
-              Example 1 - Add Agent to AgentPool:
-                x-twilio-version: 1
+              AddAgentToAgentPool:
+                summary: Add Agent to AgentPool
                 value:
                   - agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
-              Example 2 - Add multiple Agents to AgentPool:
-                x-twilio-version: 1
+              AddMultipleAgentsToAgentPool:
+                summary: Add multiple Agents to AgentPool
                 value:
                   - agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
                   - agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq7
@@ -7200,7 +6963,6 @@ paths:
     get:
       summary: List Agents in AgentPool
       operationId: ListAgentsInAgentPool
-      x-twilio-version: 1
       description: This operation fetches a paginated list of Agents that belong to a AgentPool.
       tags:
         - AgentPools
@@ -7208,38 +6970,32 @@ paths:
         - in: query
           name: channel
           description: Filter to Agents that match a specific channel.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/AgentCommunicationChannel'
         - in: query
           name: status
           description: Filter to Agents with the specified status.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/AgentStatus'
         - in: query
           name: start_date
           description: Filter to Agents created after the specified date and time.
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: end_date
           description: Filter to Agents created before the specified date and time.
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: page_token
           description: A page token that represents the start Agent of a page
-          x-twilio-version: 1
           schema:
             type: string
         - in: query
           name: page_size
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/PageSize'
       responses:
@@ -7249,7 +7005,6 @@ paths:
             application/json:
               schema:
                 title: ListAgentsInAgentPoolResponse
-                x-twilio-version: 1
                 type: object
                 properties:
                   agents:
@@ -7260,8 +7015,8 @@ paths:
                   pagination:
                     $ref: '#/components/schemas/PaginationMetadata'
               examples:
-                Example 1 - Page of Agents that belong to an AgentPool:
-                  x-twilio-version: 1
+                PageOfAgentsThatBelongToAnAgentPool:
+                  summary: Page of Agents that belong to an AgentPool
                   value:
                     agents:
                       - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
@@ -7310,24 +7065,20 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /AgentPools/{agent_pool_id}/Agents/{agent_id}:
-    x-twilio-domain: agents-and-agentpools
     parameters:
       - schema:
           $ref: '#/components/schemas/AgentPoolId'
         name: agent_pool_id
         in: path
         required: true
-        x-twilio-version: 1
       - schema:
           $ref: '#/components/schemas/AgentId'
         name: agent_id
         in: path
         required: true
-        x-twilio-version: 1
     delete:
       summary: Remove Agent from AgentPool
       operationId: RemoveAgentFromAgentPool
-      x-twilio-version: 1
       description: This operation removes an Agent from an AgentPool
       tags:
         - AgentPools
@@ -7345,11 +7096,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /AgentPools/Operations:
-    x-twilio-domain: agents-and-agentpools
     get:
       summary: List Agent Pool Operations
       operationId: ListAgentPoolOperations
-      x-twilio-version: 1
       description: This operation fetches a paginated list of Agent Pool Operations.
       tags:
         - AgentPools
@@ -7357,33 +7106,28 @@ paths:
         - in: query
           name: start_date
           description: Filter to Operations created after the specified date and time.
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: end_date
           description: Filter to Operations created before the specified date and time.
-          x-twilio-version: 1
           schema:
             type: string
             format: date-time
         - in: query
           name: status
           description: Filter to Operations with the specified status.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/OperationStatus'
         - in: query
           name: page_token
           description: The token to retrieve the next page of results.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/PageToken'
         - in: query
           name: page_size
           description: The number of resources to return in a page.
-          x-twilio-version: 1
           schema:
             $ref: '#/components/schemas/PageSize'
       responses:
@@ -7406,8 +7150,8 @@ paths:
                   - operations
                   - pagination
               examples:
-                Example 1 - List AgentPool Operations:
-                  x-twilio-version: 1
+                ListAgentPoolOperations:
+                  summary: List AgentPool Operations
                   value:
                     operations:
                       - id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
@@ -7440,18 +7184,15 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /AgentPools/Operations/{operation_id}:
-    x-twilio-domain: agents-and-agentpools
     parameters:
       - schema:
           $ref: '#/components/schemas/OperationId'
         name: operation_id
         in: path
         required: true
-        x-twilio-version: 1
     get:
       summary: Fetch an AgentPool Operation
       operationId: FetchAgentPoolOperation
-      x-twilio-version: 1
       description: This operation fetches a single Agent Pool Operation using its Id.
       tags:
         - AgentPools
@@ -7463,8 +7204,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/AgentPoolOperation'
               examples:
-                Example 1 - Fetch Agent Pool Operation:
-                  x-twilio-version: 1
+                FetchAgentPoolOperation:
+                  summary: Fetch Agent Pool Operation
                   value:
                     id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
                     status: completed
@@ -7486,11 +7227,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Domains:
-    x-twilio-domain: domains
     post:
       summary: Create a Domain
       operationId: CreateDomain
-      x-twilio-version: preview
       description: This operation creates a Domain. Verification of your Domain is required before you can use it. See 'Check a Domain' next.
       tags:
         - Domains
@@ -7532,8 +7271,8 @@ paths:
               minItems: 1
               maxItems: 10
             examples:
-              create domain and subdomain for links:
-                x-twilio-version: 1
+              CreateDomainAndSubdomainForLinks:
+                summary: create domain and subdomain for links
                 value:
                   - domain_name: example.com
                     capabilities:
@@ -7544,7 +7283,6 @@ paths:
     get:
       summary: List Domains
       operationId: ListDomains
-      x-twilio-version: preview
       description: |-
         This operation fetches a paginated list of Domains. Domains are used to authenticate domain names and configure DNS records
          for sending Email and communication links.
@@ -7578,8 +7316,8 @@ paths:
                   pagination:
                     $ref: '#/components/schemas/PaginationMetadata'
               examples:
-                Example Response - List Domains with links capability:
-                  x-twilio-version: preview
+                ListDomainsWithLinksCapability:
+                  summary: List Domains with links capability
                   value:
                     domains:
                       - domain_name: example.com
@@ -7653,11 +7391,9 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
   /Domains/{domain_name}:
-    x-twilio-domain: domains
     parameters:
       - in: path
         name: domain_name
-        x-twilio-version: preview
         description: The name of the Domain.
         required: true
         schema:
@@ -7665,7 +7401,6 @@ paths:
     get:
       summary: Fetch a Domain
       operationId: FetchDomain
-      x-twilio-version: preview
       description: This operation fetches a Domain by its name.
       tags:
         - Domains
@@ -7677,8 +7412,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Domain'
               examples:
-                Example Response - Domain with links capability:
-                  x-twilio-version: preview
+                DomainWithLinksCapability:
+                  summary: Domain with links capability
                   value:
                     domain_name: example.com
                     is_ownership_verified: true
@@ -7752,7 +7487,6 @@ paths:
     patch:
       summary: Update a Domain
       operationId: UpdateDomain
-      x-twilio-version: preview
       description: This operation updates a Domain by its name.
       tags:
         - Domains
@@ -7785,18 +7519,16 @@ paths:
               required:
                 - capabilities
             examples:
-              Example Request - Update Domain with links capability:
-                x-twilio-version: 1
+              UpdateDomainWithLinksCapability:
+                summary: Update Domain with links capability
                 value:
                   capabilities:
                     - type: links
                       is_default: true
   /Links:
-    x-twilio-domain: links
     post:
       summary: Create Links
       operationId: CreateWrappedLinks
-      x-twilio-version: preview
       description: This operation creates a Wrapped Link. Wrapped Links are used to create a wrapped URL for some original URL. See 'Check a Wrapped Link' next.
       tags:
         - Links
@@ -7839,7 +7571,8 @@ paths:
                 - communication_id
                 - contact_id
             examples:
-              create short link for a long URL:
+              CreateShortLink:
+                summary: create short link for a long URL
                 value:
                   domain_name: example.com
                   url: https://www.example.com/long-url
@@ -7847,10 +7580,8 @@ paths:
                   contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                   communication_id: 01h9krwprkeee8fzqspvwy6nq8
   /Links/{link_id}:
-    x-twilio-domain: links
     parameters:
       - in: path
-        x-twilio-version: preview
         name: link_id
         description: The id of the Link.
         required: true
@@ -7859,7 +7590,6 @@ paths:
     get:
       summary: Fetch a Link
       operationId: FetchLink
-      x-twilio-version: preview
       description: This operation fetches a Link by its id.
       tags:
         - Links
@@ -7871,7 +7601,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Link'
               examples:
-                Example Response - Link:
+                Link:
+                  summary: Link
                   value:
                     id: comms_link_01h9krwprkeee8fzqspvwy6nq9
                     wrapped_url: https://example.com/wrapped-url
@@ -7904,7 +7635,6 @@ components:
       scheme: bearer
   schemas:
     OperationId:
-      x-twilio-version: 1
       description: |-
         An identifier that correlates resources created in the same (request).
         This can be used for convenient retrieval of correlated resources and their aggregates.
@@ -7914,18 +7644,15 @@ components:
       example: comms_operation_01h9krwprkeee8fzqspvwy6nq8
     ContactId:
       description: A reference to a Contact.
-      x-twilio-version: 1
       title: ContactId
       type: string
       pattern: ^comms_contact_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_contact_01h9krwprkeee8fzqspvwy6nq8
     PageToken:
-      x-twilio-version: 1
       description: The token that identifies the page of resources to fetch.
       title: PageToken
       type: string
     PageSize:
-      x-twilio-version: 1
       description: Total number of items returned in a single page, the minimum is 1 and maximum is 1000. Default is 50.
       title: PageSize
       type: integer
@@ -7934,7 +7661,6 @@ components:
       default: 50
       example: 50
     TagsString:
-      x-twilio-version: 1
       title: TagsString
       type: string
       description: |-
@@ -7956,7 +7682,6 @@ components:
       pattern: ^(?:[a-zA-Z0-9._~-]+:[a-zA-Z0-9._~-]+;){1,10}$
       example: key_1:value;key_2:value;
     UserIdentifier:
-      x-twilio-version: 1
       title: UserIdentifier
       type: string
       description: |-
@@ -7966,7 +7691,6 @@ components:
       maxLength: 36
     ContactLocation:
       type: object
-      x-twilio-version: 1
       title: ContactLocation
       description: The physical geo-location of the Contact.
       properties:
@@ -8002,7 +7726,6 @@ components:
           type: string
           format: iso-country-code
     ContactIdentity:
-      x-twilio-version: 1
       title: ContactIdentity
       type: object
       description: An Identity is the schema of a person or user.
@@ -8030,12 +7753,10 @@ components:
           format: YYYY-MM-DD
           type: string
     Address:
-      x-twilio-version: 1
       title: Address
       type: string
       description: The identifier that uniquely addresses an actor within a communications channel.
     ContactCommunicationChannel:
-      x-twilio-version: 1
       title: ContactCommunicationChannel
       description: |-
         The medium which a unit of communication is transmitted through.
@@ -8048,7 +7769,6 @@ components:
         - whatsapp
         - push
     ContactAddress:
-      x-twilio-version: 1
       type: object
       title: ContactAddress
       properties:
@@ -8060,12 +7780,10 @@ components:
         - address
         - channel
     ExternalIdentifier:
-      x-twilio-version: 1
       title: ExternalIdentifier
       description: An external identifier is a unique identifier for a Contact in an external system, such as a CRM or CDP.
       type: string
     ContactFieldValue:
-      x-twilio-version: 1
       title: ContactFieldValue
       description: |-
         A custom field value for Contacts.
@@ -8076,7 +7794,6 @@ components:
       required:
         - value
     ContactCustomFields:
-      x-twilio-version: 1
       title: ContactCustomFields
       type: object
       description: |-
@@ -8100,7 +7817,6 @@ components:
             - blue
             - green
     Tags:
-      x-twilio-version: 1
       title: Tags
       type: object
       description: |-
@@ -8118,7 +7834,6 @@ components:
         maxLength: 256
         pattern: ^[a-zA-Z0-9._~-]+$
     RelatedResource:
-      x-twilio-version: 1
       title: RelatedResource
       type: object
       description: A reference to a related resource.
@@ -8147,7 +7862,6 @@ components:
           description: The path to the related resource.
           type: string
     Contact:
-      x-twilio-version: 1
       title: Contact
       type: object
       description: |-
@@ -8161,7 +7875,6 @@ components:
             id:
               $ref: '#/components/schemas/ContactId'
             addresses:
-              x-twilio-version: 1
               title: ContactAddresses
               description: The communications addresses of the Contact (phone number, email, push device token ).
               type: array
@@ -8174,7 +7887,6 @@ components:
             tags:
               $ref: '#/components/schemas/Tags'
             related:
-              x-twilio-version: 1
               title: ContactRelatedResources
               description: A list of resources that are associated with the Contact.
               type: array
@@ -8197,7 +7909,6 @@ components:
             - updated_at
             - deleted_at
     PaginationMetadata:
-      x-twilio-version: 1
       title: PaginationMetadata
       description: |-
         Metadata for paginated of results. 
@@ -8219,7 +7930,6 @@ components:
         - next
         - self
     TwilioError:
-      x-twilio-version: 1
       title: TwilioError
       type: object
       description: A generic error object communicating client and server side API errors.
@@ -8250,7 +7960,6 @@ components:
         info_url: https://www.twilio.com/docs/api/errors/21614
         context: $.to[0].address
     TwilioErrors:
-      x-twilio-version: 1
       title: TwilioErrors
       type: object
       properties:
@@ -8274,7 +7983,6 @@ components:
             status: 400
             context: $.content.text
     TagsNullable:
-      x-twilio-version: 1
       title: TagsNullable
       type:
         - object
@@ -8289,7 +7997,6 @@ components:
         type: string
       maxProperties: 10
     ContactCustomFieldsNullable:
-      x-twilio-version: 1
       title: ContactCustomFieldsNullable
       type:
         - object
@@ -8317,7 +8024,6 @@ components:
             - green
     CommunicationChannel:
       title: CommunicationChannel
-      x-twilio-version: 1
       description: |-
         The medium which a unit of communication is transmitted through.
         These are differentiated by a mix of transmission protocol, network controller/owner, endpoint and address model,
@@ -8329,7 +8035,6 @@ components:
         - whatsapp
         - push
     OperationStatus:
-      x-twilio-version: 1
       title: OperationStatus
       type: string
       description: The status of an Operation.
@@ -8338,7 +8043,6 @@ components:
         - completed
         - canceled
     ContactOperation:
-      x-twilio-version: 1
       title: ContactOperation
       type: object
       description: |-
@@ -8375,7 +8079,6 @@ components:
         - created_at
         - updated_at
     ContactStandardField:
-      x-twilio-version: 1
       title: ContactStandardField
       type: object
       description: A standard field that exists on a contact, every account has these.
@@ -8408,14 +8111,12 @@ components:
         - type
         - is_filterable
     ContactCustomFieldId:
-      x-twilio-version: 1
       description: A reference to a Contact Custom Field.
       title: ContactCustomFieldId
       type: string
       pattern: ^comms_customfield_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_customfield_01h9krwprkeee8fzqspvwy6nq8
     ContactCustomField:
-      x-twilio-version: 1
       title: ContactCustomField
       type: object
       description: A custom field that can be added to a contact.
@@ -8471,7 +8172,6 @@ components:
         - updated_at
         - deleted_at
     ContactFieldString:
-      x-twilio-version: 1
       title: ContactFieldString
       description: |-
         A custom field of type 'string' for Contacts.
@@ -8492,7 +8192,6 @@ components:
         - type
         - name
     ContactFieldNumber:
-      x-twilio-version: 1
       title: ContactFieldNumber
       description: |-
         A custom field of type 'number' for Contacts.
@@ -8513,7 +8212,6 @@ components:
         - type
         - name
     ContactFieldBoolean:
-      x-twilio-version: 1
       title: ContactFieldBoolean
       description: |-
         A custom field of type boolean for Contacts.
@@ -8534,7 +8232,6 @@ components:
         - type
         - name
     ContactFieldStringArray:
-      x-twilio-version: 1
       title: ContactFieldStringArray
       description: |-
         A custom field of type 'array' for Contacts.
@@ -8555,7 +8252,6 @@ components:
         - type
         - name
     ContactFieldEnum:
-      x-twilio-version: 1
       title: ContactFieldEnum
       description: |-
         Represents a custom field of type 'enum' for contacts.
@@ -8583,14 +8279,12 @@ components:
         - name
         - values
     AudienceId:
-      x-twilio-version: 1
       title: AudienceId
       description: A reference to an Audience.
       type: string
       pattern: ^comms_audience_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_audience_01h9krwprkeee8fzqspvwy6nq8
     AudienceFilter:
-      x-twilio-version: 1
       title: AudienceFilter
       description: |-
         A set of predicates for Contacts that defines the Audience. For examples:
@@ -8602,7 +8296,6 @@ components:
       type: string
       example: Contact.location.country_code == 'US' AND Contact.custom_fields.industry IN('Technology', 'Finance')
     Audience:
-      x-twilio-version: 1
       title: Audience
       type: object
       description: 'An Audience represents a group of people or entities to communicate with. '
@@ -8645,7 +8338,6 @@ components:
         - updated_at
         - deleted_at
     EngagementSourceString:
-      x-twilio-version: preview
       title: EngagementSourceString
       type: string
       description: |-
@@ -8666,7 +8358,6 @@ components:
       pattern: ^(?:[a-zA-Z0-9._~-]+:[a-zA-Z0-9._~-]+;){1}$
       example: message_id:comms_message_01h9krwprkeee8fzqspvwy6nq8;
     EngagementType:
-      x-twilio-version: preview
       title: EngagementType
       description: The engagement types available. Those that are defined by Twilio are prefixed, while custom engagement types are not.
       type: string
@@ -8679,21 +8370,18 @@ components:
         - twilio:opt_out
       pattern: .*
     EngagementId:
-      x-twilio-version: preview
       title: EngagementId
       description: A reference to an Engagement.
       type: string
       pattern: ^comms_engagement_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_engagement_01h9krwprkeee8fzqspvwy6nq8
     MessageId:
-      x-twilio-version: 1
       description: A reference to a Message.
       title: MessageId
       type: string
       pattern: ^comms_message_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_message_01h9krwprkeee8fzqspvwy6nq8
     EngagementSourceMessageId:
-      x-twilio-version: preview
       title: EngagementSourceMessageId
       description: A Message Id that is the source of an Engagement.
       type: object
@@ -8703,14 +8391,12 @@ components:
       required:
         - message_id
     EmailId:
-      x-twilio-version: preview
       title: EmailId
       description: A reference to an Email.
       type: string
       pattern: ^comms_email_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_email_01h9krwprkeee8fzqspvwy6nq8
     EngagementSourceEmailId:
-      x-twilio-version: preview
       title: EngagementSourceEmailId
       description: An Email Id that is the source of an Engagement.
       type: object
@@ -8720,14 +8406,12 @@ components:
       required:
         - email_id
     PushNotificationId:
-      x-twilio-version: preview
       title: PushNotificationId
       description: A reference to a PushNotification.
       type: string
       pattern: ^comms_pushnotification_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_pushnotification_01h9krwprkeee8fzqspvwy6nq8
     EngagementSourcePushNotificationId:
-      x-twilio-version: preview
       title: EngagementSourcePushNotificationId
       description: A PushNotification Id that is the source of an Engagement.
       type: object
@@ -8737,7 +8421,6 @@ components:
       required:
         - push_notification_id
     EngagementSourceURI:
-      x-twilio-version: preview
       title: EngagementSourceURI
       description: A URI that is the source of an Engagement.
       type: object
@@ -8748,7 +8431,6 @@ components:
       required:
         - uri
     EngagementSource:
-      x-twilio-version: preview
       title: EngagementSource
       type: object
       description: The source of an Engagement.
@@ -8758,7 +8440,6 @@ components:
         - $ref: '#/components/schemas/EngagementSourcePushNotificationId'
         - $ref: '#/components/schemas/EngagementSourceURI'
     Engagement:
-      x-twilio-version: preview
       title: Engagement
       type: object
       description: An Engagement represents an interaction or activity related to a message. This can include actions such as clicking a link within a message or any other form of customer engagement with the message.
@@ -8794,21 +8475,18 @@ components:
         - created_at
         - deleted_at
     SessionId:
-      x-twilio-version: 1
       title: SessionId
       description: A reference to a Session.
       type: string
       pattern: ^comms_session_[a-hjkmnpqrstv-z0-9]{26,34}
       example: comms_session_01h9krwprkeee8fzqspvwy6nq8
     AgentId:
-      x-twilio-version: 1
       description: A reference to an Agent.
       title: AgentId
       type: string
       pattern: ^comms_agent_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_agent_01h9krwprkeee8fzqspvwy6nq8
     EmailActor:
-      x-twilio-version: preview
       title: EmailActor
       description: An Email actor is a person or entity that communicates via Email (both Senders and Recipients).
       type: object
@@ -8826,7 +8504,6 @@ components:
       required:
         - address
     EmailStatus:
-      x-twilio-version: preview
       title: EmailStatus
       description: |-
         The status of an `Email`. The status can be one of the following:
@@ -8859,7 +8536,6 @@ components:
         - canceled
         - inbound
     EmailBase:
-      x-twilio-version: preview
       title: EmailBase
       type: object
       description: The atomic unit of communication for the email channel.
@@ -8929,14 +8605,12 @@ components:
         - updated_at
         - deleted_at
     EmailMetadata:
-      x-twilio-version: preview
       title: EmailMetadata
       type: object
       description: The EmailMetadata provides information about the Email. Does not include the Content.
       allOf:
         - $ref: '#/components/schemas/EmailBase'
     EmailAddressSender:
-      x-twilio-version: preview
       title: EmailAddressSender
       description: An email address and associated name
       type: object
@@ -8954,7 +8628,6 @@ components:
     AgentIdSender:
       title: AgentIdSender
       description: A reference to an Agent.
-      x-twilio-version: 1
       type: object
       properties:
         agent_id:
@@ -8962,7 +8635,6 @@ components:
       required:
         - agent_id
     EmailAddressRecipient:
-      x-twilio-version: preview
       title: EmailAddressRecipient
       description: An email address and associated name that define a recipient.
       type: object
@@ -8974,21 +8646,18 @@ components:
       required:
         - address
     ContentPersonalization:
-      x-twilio-version: 1
       title: ContentPersonalization
       type: object
       description: To personalize content for each recipient, supply variables here with values to substitute into any [Liquid](https://shopify.github.io/liquid/) templated content string or pre-stored Content template.
       additionalProperties:
         type: string
     RecipientVariables:
-      x-twilio-version: 1
       title: RecipientVariables
       type: object
       properties:
         variables:
           $ref: '#/components/schemas/ContentPersonalization'
     ContactRecipient:
-      x-twilio-version: 1
       description: A reference to a Contact.
       title: ContactRecipient
       type: object
@@ -8998,7 +8667,6 @@ components:
       required:
         - contact_id
     AudienceRecipient:
-      x-twilio-version: 1
       title: AudienceRecipient
       description: A reference to an Audience.
       type: object
@@ -9008,7 +8676,6 @@ components:
       required:
         - audience_id
     MediaUrl:
-      x-twilio-version: 1
       title: MediaUrl
       type: object
       description: A publicly accessible URL of a media file (image, etc.) to include in the message. The media file will be copied to Twilio's servers and then sent to the recipient.
@@ -9025,7 +8692,6 @@ components:
       required:
         - url
     ContentMediaInput:
-      x-twilio-version: 1
       title: ContentMediaInput
       type: array
       description: |-
@@ -9047,7 +8713,6 @@ components:
       additionalProperties:
         type: string
     EmailHtmlContent:
-      x-twilio-version: preview
       title: EmailHtmlContent
       type: object
       properties:
@@ -9083,13 +8748,11 @@ components:
         - html
     ContentId:
       description: A reference to a Content template.
-      x-twilio-version: 1
       title: ContentId
       type: string
       pattern: ^HX[a-zA-Z0-9]{26,34}$
       example: HX78e8e67fc0246521490fb9907fd0c165
     EmailContentTemplate:
-      x-twilio-version: preview
       title: EmailContentTemplate
       description: A reference to a stored Content template  that can be used to generate content for an Email.
       type: object
@@ -9105,7 +8768,6 @@ components:
     Schedule:
       title: Schedule
       description: A schedule defines *when* a communication will be sent to a recipient.
-      x-twilio-version: 1
       type: object
       properties:
         send_at:
@@ -9124,20 +8786,17 @@ components:
       minProperties: 1
       additionalProperties: false
     Identifier:
-      x-twilio-version: 1
       description: A 128-bit UUIDv7 encoded as a 26-character string using a modified base32 encoding. This schema is used for identifier path params as the type prefix ('<type>_') is redundant in URIs.
       type: string
       pattern: ^[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: 01h9krwprkeee8fzqspvwy6nq8
     MimeType:
-      x-twilio-version: 1
       title: MimeType
       type: string
       example: text/plain
       default: text/plain
       description: A MIME type (or "media type") identifies the type of data of an object.
     Media:
-      x-twilio-version: 1
       title: Media
       type: object
       description: A document, image or other type of file attached to a message, email or push notification.
@@ -9182,7 +8841,6 @@ components:
         - updated_at
         - created_at
     EmailContentResolved:
-      x-twilio-version: preview
       title: EmailContentResolved
       description: The resolved content of the Email. If no `plain/text` MIME is provided,  one will be generated from the `text/html` MIME.
       type: object
@@ -9208,7 +8866,6 @@ components:
       required:
         - text
     Email:
-      x-twilio-version: preview
       title: Email
       type: object
       description: The atomic unit of communication for the email channel.
@@ -9222,14 +8879,12 @@ components:
           required:
             - content
     EmailSenderId:
-      x-twilio-version: preview
       title: EmailSenderId
       description: A reference to an Email Sender.
       type: string
       pattern: ^comms_emailsender_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_emailsender_01h9krwprkeee8fzqspvwy6nq8
     EmailSenderStatus:
-      x-twilio-version: preview
       title: EmailSenderStatus
       description: |-
         The status of an Email Sender.
@@ -9240,7 +8895,6 @@ components:
         - activated
         - deactivated
     EmailSender:
-      x-twilio-version: preview
       title: EmailSender
       description: |-
         Email Senders are the identity that you send `Emails` 'from'.
@@ -9299,7 +8953,6 @@ components:
         - updated_at
         - deleted_at
     EmailSenderOperation:
-      x-twilio-version: preview
       title: EmailSenderOperation
       type: object
       description: |-
@@ -9322,7 +8975,6 @@ components:
         - created_at
         - updated_at
     CommunicationOperationStatus:
-      x-twilio-version: 1
       title: CommunicationOperationStatus
       type: string
       description: The status of an Operation.
@@ -9332,7 +8984,6 @@ components:
         - completed
         - canceled
     EmailOperationStats:
-      x-twilio-version: preview
       title: EmailOperationStats
       type: object
       example:
@@ -9421,7 +9072,6 @@ components:
         - undelivered
         - canceled
     EmailOperation:
-      x-twilio-version: preview
       title: EmailOperation
       type: object
       description: |-
@@ -9447,7 +9097,6 @@ components:
         - created_at
         - updated_at
     MessageAgentChannel:
-      x-twilio-version: 1
       title: MessageAgentChannel
       description: The channels available for Message entity.
       type: string
@@ -9457,7 +9106,6 @@ components:
         - whatsapp
       example: sms
     MessageStatus:
-      x-twilio-version: 1
       title: MessageStatus
       description: |-
         The status of a `Message`. The status can be one of the following:
@@ -9495,7 +9143,6 @@ components:
         - group
         - inbound
     MessageAgent:
-      x-twilio-version: 1
       title: MessageAgent
       description: A Message Agent is a person or entity whose communication identity is hosted by Twilio.
       type: object
@@ -9513,14 +9160,12 @@ components:
         - agent_id
       additionalProperties: false
     AgentPoolId:
-      x-twilio-version: 1
       description: A reference to an AgentPool.
       title: AgentPoolId
       type: string
       pattern: ^comms_agentpool_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
     MessageAgentAndPool:
-      x-twilio-version: 1
       title: MessageAgentAndPool
       description: A Message Agent is a person or entity whose communication identity is hosted by Twilio. The `agent_pool_id` field indicates the pool for which the `Agent` was resolved from.
       type: object
@@ -9540,7 +9185,6 @@ components:
         - agent_id
         - agent_pool_id
     MessageContactChannel:
-      x-twilio-version: 1
       title: MessageContactChannel
       description: |-
         The channels available for specifying a Message Contact.
@@ -9554,7 +9198,6 @@ components:
         - whatsapp
       example: phone
     MessageContact:
-      x-twilio-version: 1
       title: MessageContact
       description: A Message Contact is a person or entity that is not hosted by Twilio.
       type: object
@@ -9573,7 +9216,6 @@ components:
         - channel
         - contact_id
     MessageBase:
-      x-twilio-version: 1
       title: MessageBase
       type: object
       properties:
@@ -9635,14 +9277,12 @@ components:
         - updated_at
         - deleted_at
     MessageMetadata:
-      x-twilio-version: 1
       title: MessageMetadata
       type: object
       description: The MessageMetadata provides information about the Message but does not include the Content or Attempts.
       allOf:
         - $ref: '#/components/schemas/MessageBase'
     MessageAddressRecipient:
-      x-twilio-version: 1
       title: MessageAddressRecipient
       description: A messaging address and channel that defines the recipient of a Message.
       type: object
@@ -9658,7 +9298,6 @@ components:
     MessageContentTextWithMedia:
       title: MessageContentTextWithMedia
       description: The text and media content of a `Message`.
-      x-twilio-version: 1
       type: object
       properties:
         text:
@@ -9684,7 +9323,6 @@ components:
       additionalProperties: false
       minProperties: 1
     MessageContentTemplate:
-      x-twilio-version: 1
       title: MessageContentTemplate
       description: A reference to a stored Content template  that can be used to generate content for a Message.
       type: object
@@ -9696,7 +9334,6 @@ components:
     MessageContentSms:
       title: MessageContentSms
       description: The text and media content of the SMS/MMS `Message`. If media is provided, Twilio will attempt to send the message as an MMS.
-      x-twilio-version: 1
       type: object
       properties:
         text:
@@ -9720,7 +9357,6 @@ components:
       additionalProperties: false
       minProperties: 1
     MessageContentModuleSms:
-      x-twilio-version: 1
       title: MessageContentModuleSms
       description: |-
         The `sms` (includes mms) content module for Messages.
@@ -9733,13 +9369,11 @@ components:
       required:
         - sms
     MessageContentRcsSuggestionPostbackData:
-      x-twilio-version: 1
       title: MessageContentRcsSuggestionPostbackData
       description: The postback data to send when the suggestion item is selected.
       type: string
       minLength: 1
     MessageContentRcsDialAction:
-      x-twilio-version: 1
       title: MessageContentRcsDialAction
       description: An RCS suggested action of type Dial.
       type: object
@@ -9750,7 +9384,6 @@ components:
       required:
         - phone_number
     MessageContentRcsOpenUrlAction:
-      x-twilio-version: 1
       title: MessageContentRcsOpenUrlAction
       description: An RCS action of type Open Url.
       type: object
@@ -9762,7 +9395,6 @@ components:
       required:
         - url
     MessageContentRcsSuggestedAction:
-      x-twilio-version: 1
       title: MessageContentRcsSuggestedAction
       description: An RCS action suggestion.
       type: object
@@ -9809,7 +9441,6 @@ components:
       required:
         - action
     MessageContentRcsSuggestedReply:
-      x-twilio-version: 1
       title: MessageContentRcsSuggestedReply
       type: object
       description: An RCS reply suggestion.
@@ -9832,7 +9463,6 @@ components:
       required:
         - reply
     MessageContentRcsSuggestions:
-      x-twilio-version: 1
       title: MessageContentRcsSuggestions
       description: A list of RCS suggestions to display.
       type: array
@@ -9841,7 +9471,6 @@ components:
           - $ref: '#/components/schemas/MessageContentRcsSuggestedAction'
           - $ref: '#/components/schemas/MessageContentRcsSuggestedReply'
     MessageContentRcsContentInfo:
-      x-twilio-version: 1
       title: MessageContentRcsContentInfo
       description: An RCS Content Info.
       type: object
@@ -9855,7 +9484,6 @@ components:
       required:
         - file_url
     MessageContentRcsMedia:
-      x-twilio-version: 1
       title: MessageContentRcsMedia
       description: An RCS media.
       type: object
@@ -9872,7 +9500,6 @@ components:
       required:
         - content_info
     MessageContentRcsCardContent:
-      x-twilio-version: 1
       title: MessageContentRcsStandaloneCardContent
       description: The content of the standalone card.
       type: object
@@ -9894,7 +9521,6 @@ components:
       minProperties: 1
       additionalProperties: false
     MessageContentRcsCarouselCard:
-      x-twilio-version: 1
       title: MessageContentRcsCarouselCard
       description: An RCS carousel card.
       type: object
@@ -9908,7 +9534,6 @@ components:
       required:
         - card_contents
     MessageContentRcsStandaloneCard:
-      x-twilio-version: 1
       title: MessageContentRcsStandaloneCard
       description: An RCS standalone card.
       type: object
@@ -9918,7 +9543,6 @@ components:
       required:
         - card_content
     MessageContentModuleRcs:
-      x-twilio-version: 1
       title: MessageContentModuleRcs
       description: The RCS content.
       type: object
@@ -9985,7 +9609,6 @@ components:
       required:
         - rcs
     MessageContentWhatsAppText:
-      x-twilio-version: 1
       title: MessageContentWhatsAppText
       description: A WhatsApp Text Message
       type: object
@@ -10017,7 +9640,6 @@ components:
         - type
         - text
     MessageContentWhatsAppImage:
-      x-twilio-version: 1
       title: MessageContentWhatsAppImage
       description: A WhatsApp Image Message.
       type: object
@@ -10050,7 +9672,6 @@ components:
         - type
         - image
     MessageContentWhatsAppHeaderText:
-      x-twilio-version: 1
       title: MessageContentWhatsAppHeaderText
       description: The text header of the Message.
       type: object
@@ -10070,7 +9691,6 @@ components:
         - type
         - text
     MessageContentWhatsAppBody:
-      x-twilio-version: 1
       title: MessageContentWhatsAppBody
       description: The (text) body of the Interactive Message.
       type: object
@@ -10082,7 +9702,6 @@ components:
       required:
         - text
     MessageContentWhatsAppFooter:
-      x-twilio-version: 1
       title: MessageContentWhatsAppFooter
       description: The footer of the Message.
       type: object
@@ -10094,7 +9713,6 @@ components:
       required:
         - text
     MessageContentWhatsAppInteractiveList:
-      x-twilio-version: 1
       title: MessageContentWhatsAppInteractiveList
       description: A WhatsApp Interactive List Message content.
       type: object
@@ -10174,7 +9792,6 @@ components:
         - body
         - action
     MessageContentWhatsAppHeaderImage:
-      x-twilio-version: 1
       title: MessageContentWhatsAppHeaderImage
       description: The text header of the Message.
       type: object
@@ -10200,7 +9817,6 @@ components:
         - type
         - image
     MessageContentWhatsAppHeader:
-      x-twilio-version: 1
       title: MessageContentWhatsAppHeader
       description: The header of the Message content.
       type: object
@@ -10208,7 +9824,6 @@ components:
         - $ref: '#/components/schemas/MessageContentWhatsAppHeaderText'
         - $ref: '#/components/schemas/MessageContentWhatsAppHeaderImage'
     MessageContentWhatsAppInteractiveReplyButtons:
-      x-twilio-version: 1
       title: MessageContentWhatsAppInteractiveReplyButtons
       description: A WhatsApp Interactive Reply Buttons Message content.
       type: object
@@ -10274,7 +9889,6 @@ components:
                         description: Button title text (max 20 characters)
                         maxLength: 20
     MessageContentWhatsAppInteractiveCallToActionUrl:
-      x-twilio-version: 1
       title: MessageContentWhatsAppInteractiveCallToActionUrl
       description: A WhatsApp Interactive Call-To-Action URL Message content.
       type: object
@@ -10326,7 +9940,6 @@ components:
                   type: string
                   description: URL to open when button is clicked
     MessageContentWhatsAppInteractive:
-      x-twilio-version: 1
       title: MessageContentWhatsAppInteractive
       description: A WhatsApp Interactive Message
       type: object
@@ -10349,7 +9962,6 @@ components:
         - type
         - interactive
     MessageContentModuleWhatsApp:
-      x-twilio-version: 1
       title: MessageContentModuleWhatsApp
       description: The WhatsApp Message content.
       type: object
@@ -10368,7 +9980,6 @@ components:
         - whatsapp
     MessageContentChannelModules:
       title: MessageContentChannelModules
-      x-twilio-version: 1
       description: Define content with modules
       type: object
       properties:
@@ -10397,7 +10008,6 @@ components:
     MessageAddressSender:
       title: MessageAddressSender
       description: A messaging address and channel
-      x-twilio-version: 1
       type: object
       properties:
         address:
@@ -10412,7 +10022,6 @@ components:
       title: MessageAgentChannelControl
       description: Define controls to `filter` and `prioritize` Agents based on their `channel`.
       type: object
-      x-twilio-version: 1
       properties:
         filter_in:
           title: MessageAgentChannelControlFilterIn
@@ -10449,7 +10058,6 @@ components:
     MessageAgentPoolIdSender:
       title: MessageAgentPoolIdSender
       description: A reference to an `AgentPool` and optional channel controls.
-      x-twilio-version: 1
       type: object
       properties:
         agent_pool_id:
@@ -10459,7 +10067,6 @@ components:
       required:
         - agent_pool_id
     MessageContentTextWithMediaResolved:
-      x-twilio-version: 1
       title: MessageContentTextWithMediaResolved
       type: object
       properties:
@@ -10476,7 +10083,6 @@ components:
       additionalProperties: false
       minProperties: 1
     MessageContentResolved:
-      x-twilio-version: 1
       title: MessageContentResolved
       description: The resolved content of the Message.
       type: object
@@ -10490,7 +10096,6 @@ components:
       required:
         - content
     TwilioErrorNullable:
-      x-twilio-version: 1
       title: TwilioErrorNullable
       type:
         - object
@@ -10518,7 +10123,6 @@ components:
         info_url: https://www.twilio.com/docs/api/errors/21614
         context: $.from[0].address
     MessageAttempt:
-      x-twilio-version: 1
       title: MessageAttempt
       description: The Message Attempt resource represents a single attempt to send a Message to a Recipient. A Message will have one or more Attempts depending on the processing and delivery outcome.
       type: object
@@ -10558,12 +10162,10 @@ components:
       title: Message
       description: A Message is the atomic unit of communication that may be used across all available channels.
       type: object
-      x-twilio-version: 1
       allOf:
         - $ref: '#/components/schemas/MessageBase'
         - $ref: '#/components/schemas/MessageContentResolved'
         - title: MessageAttempts
-          x-twilio-version: 1
           type: object
           description: The list of attempts Twilio executed to process the Message.
           properties:
@@ -10576,7 +10178,6 @@ components:
           required:
             - attempts
     MessageOperationStats:
-      x-twilio-version: 1
       title: MessageOperationStats
       type: object
       example:
@@ -10672,7 +10273,6 @@ components:
         - undelivered
         - canceled
     MessageOperation:
-      x-twilio-version: 1
       title: MessageOperation
       type: object
       description: |-
@@ -10698,7 +10298,6 @@ components:
         - created_at
         - updated_at
     PushNotificationAppName:
-      x-twilio-version: preview
       title: PushNotificationAppName
       description: The name of the Push Notification `App`.
       type: string
@@ -10706,14 +10305,12 @@ components:
       minLength: 1
       maxLength: 64
     DeviceRegistrationId:
-      x-twilio-version: preview
       title: DeviceRegistrationId
       description: A reference to a Device Registration.
       type: string
       pattern: ^comms_device_registration_[a-hjkmnpqrstv-z0-9]{26,34}$
       example: comms_device_registration_01h9krwprkeee8fzqspvwy6nq8
     PushNotificationProvider:
-      x-twilio-version: preview
       title: PushNotificationProvider
       description: Push notification service provider.
       type: string
@@ -10721,7 +10318,6 @@ components:
         - apn
         - fcm
     Device:
-      x-twilio-version: preview
       title: Device
       type: object
       description: A device is a physical device or a browser that can receive push notifications. A device is uniquely identified by its app-specific unique token and the push provider identifier.
@@ -10735,7 +10331,6 @@ components:
         - token
         - provider
     DeviceRegistration:
-      x-twilio-version: preview
       title: DeviceRegistration
       type: object
       description: A registration is a collection of a contact's devices registered under a single app. It is uniquely identified by the combination of the contact's id and the app name. A device is a physical device or a browser that can receive push notifications. A device is uniquely identified by its app-specific unique token and the push provider identifier.
@@ -10768,14 +10363,12 @@ components:
         - related
         - tags
     CredentialId:
-      x-twilio-version: preview
       title: CredentialId
       description: A reference to Credential.
       type: string
       pattern: ^comms_credential_[a-hjkmnpqrstv-z0-9]{26,34}
       example: comms_credential_01h9krwprkeee8fzqspvwy6nq8
     PushNotificationCredentialSender:
-      x-twilio-version: preview
       title: PushNotificationCredentialSender
       description: |-
         For each supported provider, a `Credential.Id` can be provided.
@@ -10790,7 +10383,6 @@ components:
           $ref: '#/components/schemas/CredentialId'
       additionalProperties: false
     PushNotificationPriority:
-      x-twilio-version: preview
       title: PushNotificationPriority
       description: The priority of the Push Notification. A value of "low" reduces the client app battery consumption. A value of "high" sends the notification immediately and can wake up a sleeping device.
       type: string
@@ -10799,14 +10391,12 @@ components:
         - low
       default: high
     PushNotificationSound:
-      x-twilio-version: preview
       title: PushNotificationSound
       type:
         - string
         - 'null'
       description: The name of the sound to be played for the push notification.
     PushNotificationStatus:
-      x-twilio-version: preview
       title: PushNotificationStatus
       description: |-
         The status of a `Push Notification` resource. The status can be one of the following:
@@ -10827,7 +10417,6 @@ components:
         - failed
         - canceled
     PushNotificationBase:
-      x-twilio-version: preview
       title: PushNotificationBase
       type: object
       description: A push notification is a short, ephemeral message sent to an Android device, iOS device or web browser session.
@@ -10896,7 +10485,6 @@ components:
         - updated_at
         - deleted_at
     PushNotificationMetadata:
-      x-twilio-version: preview
       title: PushNotificationMetadata
       type: object
       description: The PushNotificationMetadata provides information about the PushNotification. Does not include the Content.
@@ -10905,7 +10493,6 @@ components:
     AgentPoolIdSender:
       title: AgentPoolIdSender
       description: A reference to an AgentPool.
-      x-twilio-version: 1
       type: object
       properties:
         agent_pool_id:
@@ -10913,7 +10500,6 @@ components:
       required:
         - agent_pool_id
     PushNotificationDirectRecipient:
-      x-twilio-version: preview
       title: PushNotificationDirectRecipient
       description: A push notification token and provider
       type: object
@@ -10927,7 +10513,6 @@ components:
         - token
         - provider
     PushNotificationClickAction:
-      x-twilio-version: preview
       title: PushNotificationClickAction
       description: The activity to launch or URL to open upon clicking the push notification
       type: object
@@ -10940,7 +10525,6 @@ components:
           type: string
           description: The activity to launch for the push notification.
     PushNotificationContentApnPassthrough:
-      x-twilio-version: preview
       title: PushNotificationContentApnPassthrough
       description: APNs-specific passthrough properties for push notifications.
       type: object
@@ -10952,7 +10536,6 @@ components:
           additionalProperties: true
       additionalProperties: true
     PushNotificationContentFcmPassthrough:
-      x-twilio-version: preview
       title: PushNotificationContentFcmPassthrough
       description: FCM-specific passthrough properties for push notifications.
       type: object
@@ -10965,7 +10548,6 @@ components:
       required:
         - message
     PushNotificationContentPassthrough:
-      x-twilio-version: preview
       title: PushNotificationContentPassthrough
       description: Provider-specific passthrough properties for push notifications. Use this object to supply advanced options for APNs, FCM, or other providers.
       type: object
@@ -10976,7 +10558,6 @@ components:
           $ref: '#/components/schemas/PushNotificationContentFcmPassthrough'
       additionalProperties: false
     PushNotificationContentBody:
-      x-twilio-version: preview
       title: PushNotificationContentBody
       type: object
       description: Push Notification content with body.
@@ -11008,7 +10589,6 @@ components:
       required:
         - body
     PushNotificationContentBodyWithImages:
-      x-twilio-version: preview
       type: object
       title: PushNotificationContentBodyWithImages
       description: A push notification content object with both body and images.
@@ -11041,7 +10621,6 @@ components:
         - body
         - images
     PushNotificationContentImages:
-      x-twilio-version: preview
       title: PushNotificationContentImages
       type: object
       description: Push Notification content with images.
@@ -11063,7 +10642,6 @@ components:
       required:
         - images
     PushNotificationContentTemplate:
-      x-twilio-version: preview
       title: PushNotificationContentTemplate
       description: A reference to a stored Content template  that can be used to generate content for a Push Notification.
       type: object
@@ -11075,7 +10653,6 @@ components:
       required:
         - content_id
     PushNotificationContentBodyResolved:
-      x-twilio-version: preview
       title: PushNotificationContentBodyResolved
       type: object
       description: A resolved push notification content object with body.
@@ -11095,7 +10672,6 @@ components:
         - title
         - body
     PushNotificationContentBodyWithImagesResolved:
-      x-twilio-version: preview
       title: PushNotificationContentBodyWithImagesResolved
       type: object
       description: A resolved push notification content object with both body and images.
@@ -11118,7 +10694,6 @@ components:
         - body
         - images
     PushNotificationContentImagesResolved:
-      x-twilio-version: preview
       title: PushNotificationContentImagesResolved
       type: object
       description: A resolved push notification content object with images.
@@ -11140,7 +10715,6 @@ components:
         - title
         - images
     PushNotificationContentResolved:
-      x-twilio-version: preview
       title: PushNotificationContentResolved
       description: The resolved content of the Push Notification.
       type: object
@@ -11153,7 +10727,6 @@ components:
       required:
         - content
     PushNotification:
-      x-twilio-version: preview
       title: PushNotification
       type: object
       description: A push notification is a short, ephemeral message sent to an Android device, iOS device or web browser session.
@@ -11161,7 +10734,6 @@ components:
         - $ref: '#/components/schemas/PushNotificationBase'
         - $ref: '#/components/schemas/PushNotificationContentResolved'
     PushNotificationOperationStats:
-      x-twilio-version: preview
       title: PushNotificationOperationStats
       type: object
       example:
@@ -11229,7 +10801,6 @@ components:
         - failed
         - canceled
     PushNotificationOperation:
-      x-twilio-version: preview
       title: PushNotificationOperation
       type: object
       description: |-
@@ -11255,7 +10826,6 @@ components:
         - created_at
         - updated_at
     PushCredentialType:
-      x-twilio-version: preview
       title: PushCredentialType
       description: The credential types available for PushNotifications.
       type: string
@@ -11264,7 +10834,6 @@ components:
         - apn_sandbox
         - fcm
     AccountPushCredentialFlag:
-      x-twilio-version: preview
       title: AccountPushCredentialFlag
       description: |-
         Use this Credential as the default for the Push Notification `App` for the
@@ -11274,7 +10843,6 @@ components:
       type: boolean
       default: false
     PushNotificationCredential:
-      x-twilio-version: preview
       title: PushNotificationCredential
       type: object
       description: Credential properties are specific to the channel type and provided by the vendor that supports it.
@@ -11320,7 +10888,6 @@ components:
         - updated_at
         - deleted_at
     ApnCertificatePushCredential:
-      x-twilio-version: preview
       title: ApnCertificatePushCredential
       description: Certificate-based credentials are used to authenticate with the APN service before sending a Notification.  It can be acquired from the Apple Developer Portal. Note that certificates have an expiration date and need to be renewed before they expire. Alternatively, you can use APN Signing Key credentials.
       type: object
@@ -11337,7 +10904,6 @@ components:
         - private_key
         - certificate
     ApnSigningKeyPushCredential:
-      x-twilio-version: preview
       title: ApnSigningKeyPushCredential
       description: APN Signing Key credentials are alternative to APN Certificate credentials.  COMMS API uses this signing key to create a short-lived JSON Web Token (JWT) that is used to authenticate with the APN service before sending a Notification. Signing Key can be acquired from the Apple Developer Portal.
       type: object
@@ -11353,7 +10919,6 @@ components:
         - key_id
         - signing_key
     FcmPushCredential:
-      x-twilio-version: preview
       title: FcmPushCredential
       description: FCM credentials are used to authenticate with the Firebase Cloud Messaging service before sending a Notification. COMMS API uses this private key to authenticate with the FCM service before sending a Notification.
       type: object
@@ -11366,7 +10931,6 @@ components:
         - private_key
       additionalProperties: false
     PushCredentialContent:
-      x-twilio-version: preview
       title: PushCredentialContent
       description: Credential properties are specific to the channel type and provided by the vendor that supports it.
       oneOf:
@@ -11374,7 +10938,6 @@ components:
         - $ref: '#/components/schemas/ApnSigningKeyPushCredential'
         - $ref: '#/components/schemas/FcmPushCredential'
     PushNotificationAppDefaultCredential:
-      x-twilio-version: preview
       title: PushNotificationAppDefaultCredential
       type: object
       description: The default Credential for a `credential_type` (provider) for a Push Notification `App`
@@ -11395,7 +10958,6 @@ components:
         - created_at
         - updated_at
     PushNotificationApp:
-      x-twilio-version: preview
       title: PushNotificationApp
       description: ''
       type: object
@@ -11443,7 +11005,6 @@ components:
         - updated_at
         - deleted_at
     AgentCommunicationChannel:
-      x-twilio-version: 1
       description: |-
         The medium which a unit of communication is transmitted through.
         These are differentiated by a mix of transmission protocol, network controller/owner, endpoint and address model,
@@ -11460,7 +11021,6 @@ components:
       title: AgentChannelControl
       description: Define controls to filter and prioritize Agents based on their `channel`.
       type: object
-      x-twilio-version: 1
       properties:
         filter_in:
           title: AgentChannelControlFilterIn
@@ -11496,7 +11056,6 @@ components:
               - channel
               - priority
     CommunicationAgentPoolIdSender:
-      x-twilio-version: preview
       title: CommunicationAgentPoolIdSender
       description: |-
         Allows sending across multiple channels using the Agents in the specified Agent Pool.
@@ -11511,7 +11070,6 @@ components:
       required:
         - agent_pool_id
     CommunicationRecipient:
-      x-twilio-version: 1
       title: CommunicationRecipient
       type: object
       properties:
@@ -11524,14 +11082,12 @@ components:
         - address
         - channel
     CommunicationId:
-      x-twilio-version: preview
       title: CommunicationId
       description: A reference to a `Message`, `Email`, or `PushNotification`.
       type: string
       pattern: ^(?:comms_message_[0-7][a-hjkmnpqrstv-z0-9]{25,34}|comms_email_[0-7][a-hjkmnpqrstv-z0-9]{25,34}comms_push_notification_[0-7][a-hjkmnpqrstv-z0-9]{25,34})$
       example: comms_message_01h9krwprkeee8fzqspvwy6nq8
     CommunicationOperationStats:
-      x-twilio-version: preview
       title: CommunicationOperationStats
       type: object
       example:
@@ -11638,7 +11194,6 @@ components:
         - undelivered
         - canceled
     CommunicationOperation:
-      x-twilio-version: preview
       title: CommunicationOperation
       type: object
       description: |-
@@ -11669,13 +11224,11 @@ components:
         The status of an Agent.
         If an Agent is `activated`, it is available to send and receive communications.
         If an Agent is `deactivated`, it is not available to send or receive communications.
-      x-twilio-version: 1
       type: string
       enum:
         - activated
         - deactivated
     Agent:
-      x-twilio-version: 1
       title: Agent
       description: |-
         an Agent is a sending and receiving communication identity associated with a Twilio application.
@@ -11723,7 +11276,6 @@ components:
         - created_at
     AgentPool:
       title: AgentPool
-      x-twilio-version: 1
       description: |-
         An AgentPool is a set of sending (and receiving) identities associated with a Twilio application.
         It can contain one or more Agents for use in multi-channel use-cases or to achieve pooling functionalities.
@@ -11751,7 +11303,6 @@ components:
         - updated_at
     AgentPoolOperation:
       title: AgentPoolOperation
-      x-twilio-version: 1
       type: object
       description: |-
         An AgentPool Operation represents the aggregate work to be completed when creating and modifying AgentPools by adding or removing Agents.
@@ -11795,14 +11346,12 @@ components:
         - created_at
         - updated_at
     DomainName:
-      x-twilio-version: preview
       title: DomainName
       description: A fully qualified domain name (FQDN) that you have registered with your DNS provider.
       type: string
       format: hostname
       example: example.com
     DomainCapabilityLinks:
-      x-twilio-version: preview
       title: DomainCapabilityLinks
       description: The Domain capability for wrapping links in communication content with branded and shortened links (where applicable) and with click tracking support.
       type: object
@@ -11821,7 +11370,6 @@ components:
       required:
         - type
     DomainCapabilityLinksResolved:
-      x-twilio-version: preview
       title: DomainCapabilityLinksResolved
       description: The Domain capability for wrapping links in communication content with branded and shortened links (where applicable) and with click tracking support.
       type: object
@@ -11876,7 +11424,6 @@ components:
         - certificate
         - fallback_url
     DomainDNSRecord:
-      x-twilio-version: preview
       title: DomainDNSRecord
       type: object
       description: A DomainDNSRecord is used to configure the DNS records for a domain with your DNS provider.
@@ -11929,7 +11476,6 @@ components:
         - last_verify_attempt_at
         - updated_at
     Domain:
-      x-twilio-version: preview
       title: Domain
       type: object
       description: A Domain can be used to send Email and to wrap links contained in your communications when using click tracking. It references a domain name that you control and contains the unique values needed to be configured as DNS records with your DNS provider so that you can use your domain with Twilio.
@@ -12002,7 +11548,6 @@ components:
       description: A reference to a Link.
       title: LinkId
       type: string
-      x-twilio-version: preview
       pattern: ^comms_link_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       minLength: 37
       maxLength: 46
@@ -12011,7 +11556,6 @@ components:
       title: Link
       type: object
       description: A Link is a short URL that can be used to redirect to a long URL.
-      x-twilio-version: preview
       properties:
         id:
           $ref: '#/components/schemas/LinkId'
@@ -12052,14 +11596,14 @@ components:
         - expires_at
   responses:
     Http400Response:
-      x-twilio-version: 1
       description: This error indicates that the request content was malformed or ambiguous.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/TwilioErrors'
           examples:
-            Example - resource not found:
+            ResourceNotFound:
+              summary: Resource not found
               value:
                 errors:
                   - code: 20404
@@ -12067,14 +11611,14 @@ components:
                     info_url: https://www.twilio.com/docs/api/errors/20404
                     context: 'null'
     Http429Response:
-      x-twilio-version: 1
       description: This error indicates that you have sent too many requests to the API. You should retry according to the `Retry-After` response header.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/TwilioErrors'
           examples:
-            Example 1:
+            TooManyRequests:
+              summary: Too Many Requests
               value:
                 errors:
                   - code: 20429
@@ -12087,14 +11631,14 @@ components:
             type: string
           description: The amount of time in seconds that the customer should wait before issuing a new request towards the API.
     Http500Response:
-      x-twilio-version: 1
       description: This error indicates that the Twilio API is experiencing server-side issues. The request should not be retried.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/TwilioErrors'
           examples:
-            Example 1:
+            InternalServerError:
+              summary: Internal Server Error
               value:
                 errors:
                   - code: 20500
@@ -12102,14 +11646,14 @@ components:
                     info_url: https://www.twilio.com/docs/api/errors/20500
                     context: 'null'
     Http503Response:
-      x-twilio-version: 1
       description: This error indicates that the Twilio API is temporarily unavailable.  You should retry according to the `Retry-After` response header.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/TwilioErrors'
           examples:
-            Example 1:
+            ServiceUnavailable:
+              summary: Service Unavailable
               value:
                 errors:
                   - code: 20503
@@ -12122,7 +11666,6 @@ components:
             type: string
           description: The amount of time in seconds that the customer should wait before issuing a new request towards the API.
     Http202ResponseWithOperation:
-      x-twilio-version: 1
       description: The request was accepted and an Operation was created to track its progress. The response headers contain the Id and link to the Operation resource.
       headers:
         Operation-Location:
@@ -12130,14 +11673,14 @@ components:
         Operation-Id:
           $ref: '#/components/headers/OperationId'
     Http404Response:
-      x-twilio-version: 1
       description: This error indicates that the requested resource was not found.
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/TwilioErrors'
           examples:
-            Example 1:
+            ResourceNotFound:
+              summary: 404 Response
               value:
                 errors:
                   - code: 20404
@@ -12145,7 +11688,6 @@ components:
                     info_url: https://www.twilio.com/docs/api/errors/20404
                     context: 'null'
     Http202ResponseWithResource:
-      x-twilio-version: 1
       description: The request was accepted and a resource identifier is available to check the result. The response headers contain the identifier and link to the resource.
       headers:
         Resource-Location:
@@ -12154,13 +11696,11 @@ components:
           $ref: '#/components/headers/ResourceId'
   headers:
     OperationLocation:
-      x-twilio-version: 1
       schema:
         type: string
         format: uri
       description: The location (uri) of the Operation resource identified by `Operation-Id`.
     OperationId:
-      x-twilio-version: 1
       schema:
         $ref: '#/components/schemas/OperationId'
       description: |-
@@ -12168,13 +11708,11 @@ components:
         Issue a GET request to the resource list location, using the Operation Id as a filter
         to retrieve a list of the created resources and an aggregate status.
     ResourceLocation:
-      x-twilio-version: 1
       schema:
         type: string
         format: uri
       description: The location (uri) of the resource identified by `Resource-Id`.
     ResourceId:
-      x-twilio-version: 1
       schema:
         type: string
       description: |-
