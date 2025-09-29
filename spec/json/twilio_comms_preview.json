@@ -57,14 +57,6 @@
       "description": "🚧 *Use `Communications` to send and receive communications across all channels of all communication types.\nReach each and every customer with personalized content, on the right channel, at the optimal time, at scale.\nJust send it!*"
     },
     {
-      "name": "Sessions",
-      "description": "🚧 Use `Sessions` directly with primitives, such as `Messages`, `Emails`, `PushNotifications`, and `Communications`\nto support two-way communication with your customers and maintain a\nlogical view of the communication*\n\nUse `Rosters` to view the Contacts and Agents in a Session.\n\nFor example, a Session could be a single group conference Call, or a series of Messages back and forth\nbetween a Contact and an Agent."
-    },
-    {
-      "name": "Rosters",
-      "description": "🚧 Use `Sessions` directly with primitives, such as `Messages`, `Emails`, `PushNotifications`, and `Communications`\nto support two-way communication with your customers and maintain a\nlogical view of the communication*\n\nUse `Rosters` to view the Contacts and Agents in a Session.\n\nFor example, a Session could be a single group conference Call, or a series of Messages back and forth\nbetween a Contact and an Agent."
-    },
-    {
       "name": "Agents",
       "description": "*Use `Agents` to build the sending and receiving identities that represent your business and applications.*\n\n- For 'outbound' communications, it is used as the sender of the communication (`from` field).\n\n- For 'inbound' communications to your app (sent by a Contact/end-user), it is used as the recipient (`to` field).\n\n- An Agent represents existing inventory created and setup in other APIs, such as Phone Numbers.\n\n- Use `AgentPools` to organize your `Agents` into logical groups to build multi-channel identities\nwith multiple types of communications addresses (phone numbers, short codes, email addresses)."
     },
@@ -14685,7 +14677,7 @@
         "properties": {
           "title": {
             "type": "string",
-            "description": "The title of the push notification. Defaults to the app name.\n\n  \nThis field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization and `default_variables` for default values."
+            "description": "The title of the push notification. Defaults to the app name.\n\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization and `default_variables` for default values."
           },
           "body": {
             "type": "string",
