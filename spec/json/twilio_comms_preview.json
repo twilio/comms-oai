@@ -25,6 +25,9 @@
   "security": [
     {
       "account_id_auth_token": []
+    },
+    {
+      "api_key_api_key_secret": []
     }
   ],
   "tags": [
@@ -39,6 +42,10 @@
     {
       "name": "Messages",
       "description": "*Use `Messages` to send and receive RCS, SMS and MMS, Group MMS, and WhatsApp messages.*\n\n*Send with precise control over every aspect of your message\n or let Twilio share control and up-level your messaging with data-driven optimizations.*\n\nMessages supports:\n - Sending a Message to a single recipient\n - Sending Messages to many recipients in a single request\n - Sending Group Messages to facilitate communication between multiple people\n - Sending to both stored Contacts and/or directly specified messaging addresses (e.g. phone number)\n - Sending Messages to Contacts with multiple communication addresses: Twilio will choose the best channel.\n - Sending Messages to stored Audiences with per-recipient content personalization\n - Sending Messages with templated content that reference attributes of your stored Contacts\n - Sending Messages with rich content\n - Sending Messages with automatic suppression based on a Contact's preferences\n - Sending Messages with shortened, branded links that support click tracking.\n - Sending Messages scheduled for future delivery.\n - Receiving inbound Messages sent to your Twilio phone numbers.\n - Maintaining history of distinct communication sessions including both inbound and outbound Messages."
+    },
+    {
+      "name": "Emails",
+      "description": "*Use `Emails` to send and receive email with Twilio SendGrid.*\n*Use `Domains` to verify ownership and configure DNS for your domain name for sending `Emails`.*\n*Use `Email Senders` to set up a default address and name to send 'from' and to enable\n email for sending with `Communications`.*\n\nEmails supports:\n - Sending an Email to a single recipient\n - Sending Emails to many recipients in a single request\n - Sending to both stored Contacts and/or directly specified email addresses\n - Sending Emails to stored Audiences with per-recipient content personalization\n - Sending Emails with merged content that reference attributes of your stored Contacts\n - Sending Emails with branded links that support click tracking.\n - Sending Emails scheduled for future delivery.\n - Receiving inbound Email replies and relaying the event to you for handling."
     },
     {
       "name": "PushNotifications",
@@ -100,7 +107,7 @@
                       "properties": {
                         "addresses": {
                           "type": "array",
-                          "description": "The communications addresses of the Contact (phone number, email, push device token).",
+                          "description": "The Contact’s communication addresses, such as phone number, email address, and push device token.",
                           "items": {
                             "$ref": "#/components/schemas/ContactAddress"
                           }
@@ -750,6 +757,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -830,6 +838,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -982,6 +991,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1039,6 +1049,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1062,6 +1073,169 @@
                       "fb-leads-ad-7",
                       "fb-leads-ad-8"
                     ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Contacts/Search": {
+      "post": {
+        "summary": "Search Contacts",
+        "operationId": "SearchContacts",
+        "description": "Search for contacts based on the specified criteria.",
+        "tags": [
+          "Contacts"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page_token",
+            "description": "The token to retrieve the next page of results.",
+            "schema": {
+              "$ref": "#/components/schemas/PageToken"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page_size",
+            "description": "The number of resources to return in a page.",
+            "schema": {
+              "$ref": "#/components/schemas/PageSize"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "title": "SearchContactsResponse",
+                  "type": "object",
+                  "properties": {
+                    "contacts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Contact"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/PaginationMetadata"
+                    }
+                  },
+                  "required": [
+                    "contacts",
+                    "pagination"
+                  ]
+                },
+                "examples": {
+                  "PageOfContactsForTheSearch": {
+                    "summary": "First page of Contacts for the search request",
+                    "value": {
+                      "contacts": [
+                        {
+                          "id": "comms_contact_01h9krwprkeee8fzqspvwy6nq8",
+                          "first_name": "Jane",
+                          "last_name": "Doe",
+                          "display_name": "Jane Doe",
+                          "user_identifier": "3c35422849fea46d37b099ae59fae22c",
+                          "external_identifier": "006E0000004TguX",
+                          "addresses": [
+                            {
+                              "channel": "email",
+                              "address": "jane.doe@example.com"
+                            }
+                          ],
+                          "created_at": "2022-08-24T14:15:22Z",
+                          "updated_at": "2023-09-13T12:00:24Z",
+                          "deleted_at": null
+                        },
+                        {
+                          "id": "comms_contact_01h9krwprkeee8fzqspvwy6nq8",
+                          "first_name": "john",
+                          "last_name": "doe",
+                          "related": [
+                            {
+                              "name": "operation",
+                              "id": "comms_operation_01h9krwprkeee8fzqspvwy6nq8",
+                              "uri": "/Contacts/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8"
+                            }
+                          ],
+                          "display_name": "John Doe",
+                          "user_identifier": "john.doe@example.com",
+                          "external_identifier": "006E0000004TguX",
+                          "addresses": [
+                            {
+                              "channel": "email",
+                              "address": "beetlejuice@example.com"
+                            }
+                          ],
+                          "created_at": "2019-08-24T14:15:22Z",
+                          "updated_at": "2023-08-24T14:15:22Z",
+                          "deleted_at": null
+                        }
+                      ],
+                      "pagination": {
+                        "next": "page_01h9krwprkeee8fzqspvwy6nq9",
+                        "self": "https://comms.twilio.com/v1/Contacts/Search"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Http400Response"
+          },
+          "429": {
+            "$ref": "#/components/responses/Http429Response"
+          },
+          "500": {
+            "$ref": "#/components/responses/Http500Response"
+          },
+          "503": {
+            "$ref": "#/components/responses/Http503Response"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "SearchContactsRequest",
+                "type": "object",
+                "properties": {
+                  "channels": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/CommunicationChannel"
+                    },
+                    "description": "Match contacts with by their communications channel of the Contact (phone number, email, push device token). If more than one channel is specified in the query, the search will return contacts that have all the channels."
+                  },
+                  "address": {
+                    "type": "string",
+                    "description": "Match contacts with the exact address specified."
+                  },
+                  "user_identifier": {
+                    "$ref": "#/components/schemas/UserIdentifier"
+                  },
+                  "first_name": {
+                    "description": "Match contacts by their first name. This field is fuzzy and case insensitive. If you search for \"JohN\", you will get \"John\", \"Johnny\", \"Johnathan\", etc. If you search for \"tan\", you will get \"Johnathan\", \"Stanley\", etc. You must specify at least three characters to begin the search.",
+                    "type": "string",
+                    "minLength": 3
+                  },
+                  "last_name": {
+                    "description": "Match contacts by their last name. This field is fuzzy and case insensitive, so if you search for \"cOn\", you will get \"Conama\", \"Conan\", \"Conrad\", etc. If you search for \"mon\", you will get \"Montoya\", \"Lemon\", etc. You must specify at least three characters to begin the search.",
+                    "type": "string",
+                    "minLength": 3
+                  },
+                  "tags": {
+                    "description": "Match contacts by one or many tags. If more than one tag is specified, the search will return contacts that have all the tags.",
+                    "$ref": "#/components/schemas/Tags"
                   }
                 }
               }
@@ -1203,6 +1377,7 @@
           "Contacts"
         ],
         "requestBody": {
+          "required": true,
           "description": "This operation creates a new Contact Custom Field.",
           "content": {
             "application/json": {
@@ -1562,6 +1737,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1581,7 +1757,7 @@
                     "description": "If true, the Audience will be created with the current Contacts that match the filter.\n*The audience will not be updated as contacts change in the future and the filter is not saved for reference later.*"
                   },
                   "tags": {
-                    "x-twilio-version": 1,
+                    "x-twilio-version": "preview",
                     "$ref": "#/components/schemas/Tags"
                   }
                 },
@@ -1824,6 +2000,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -1838,7 +2015,7 @@
                     "$ref": "#/components/schemas/AudienceFilter"
                   },
                   "tags": {
-                    "x-twilio-version": 1,
+                    "x-twilio-version": "preview",
                     "$ref": "#/components/schemas/TagsNullable"
                   }
                 }
@@ -1937,6 +2114,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -2228,6 +2406,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -2235,7 +2414,7 @@
                 "type": "object",
                 "properties": {
                   "tags": {
-                    "x-twilio-version": 1,
+                    "x-twilio-version": "preview",
                     "$ref": "#/components/schemas/Tags"
                   }
                 },
@@ -2286,6 +2465,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -2441,6 +2621,361 @@
         }
       }
     },
+    "/Emails": {
+      "post": {
+        "summary": "Send Emails",
+        "operationId": "SendEmails",
+        "description": "This operation creates and sends out emails to the specified recipients.",
+        "tags": [
+          "Emails"
+        ],
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/Http202ResponseWithOperation"
+          },
+          "400": {
+            "$ref": "#/components/responses/Http400Response"
+          },
+          "429": {
+            "$ref": "#/components/responses/Http429Response"
+          },
+          "500": {
+            "$ref": "#/components/responses/Http500Response"
+          },
+          "503": {
+            "$ref": "#/components/responses/Http503Response"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "title": "SendEmailsRequest",
+                "type": "object",
+                "description": "A request to send one or more Emails.",
+                "properties": {
+                  "from": {
+                    "title": "SendEmailsRequestFrom",
+                    "description": "The sending identity to associate with the `Email`.\n\n- Use `EmailAddressSender` to directly specify the email address that the Email\n   will appear to come 'from'.",
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/EmailAddressSender"
+                      }
+                    ]
+                  },
+                  "to": {
+                    "title": "SendEmailsRequestTo",
+                    "type": "array",
+                    "description": "A list of recipients to send the email(s) to.",
+                    "items": {
+                      "title": "SendEmailsRecipient",
+                      "oneOf": [
+                        {
+                          "title": "SendEmailsAddressRecipient",
+                          "description": "An email address and associated name that define a recipient.",
+                          "type": "object",
+                          "properties": {
+                            "address": {
+                              "type": "string",
+                              "description": "The email address of the person or entity.",
+                              "format": "email"
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "The name of the person or entity."
+                            },
+                            "variables": {
+                              "$ref": "#/components/schemas/ContentPersonalization"
+                            }
+                          },
+                          "required": [
+                            "address"
+                          ]
+                        },
+                        {
+                          "title": "SendEmailsProfileRecipient",
+                          "type": "object",
+                          "description": "A Twilio `Profile` identified by `Profile.Id`.",
+                          "properties": {
+                            "profile_id": {
+                              "$ref": "#/components/schemas/ProfileId"
+                            },
+                            "variables": {
+                              "$ref": "#/components/schemas/ContentPersonalization"
+                            }
+                          },
+                          "required": [
+                            "profile_id"
+                          ]
+                        },
+                        {
+                          "title": "SendEmailsContactRecipient",
+                          "type": "object",
+                          "description": "A Twilio `Contact` identified by `Contact.Id`.",
+                          "properties": {
+                            "contact_id": {
+                              "$ref": "#/components/schemas/ContactId"
+                            },
+                            "variables": {
+                              "$ref": "#/components/schemas/ContentPersonalization"
+                            }
+                          },
+                          "required": [
+                            "contact_id"
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "content": {
+                    "title": "SendEmailsRequestContent",
+                    "description": "The content of the Email.\n- Use `EmailContent` to supply a `text/html` email body.\n  Optionally provide a `plain/text` body for clients that do not support HTML.\n  If none is specified, Twilio will auto-create one from your HTML email body.\n\n***\n* Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.\n* When using a templated content, use the `variables` field on each recipient to specify the values to substitute.\n* For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.\n            \n* When targeting `Profile` or `Contact` recipients, you may specify `variables` with values that reference stored fields, including custom fields, on the `Profile` or `Contact` -- for example: `${Twilio.Profile.date_last_purchase}` `${Twilio.Contact.first_name}` or `${Twilio.Contact.my_custom_field}`.",
+                    "oneOf": [
+                      {
+                        "$ref": "#/components/schemas/EmailHtmlContent"
+                      }
+                    ]
+                  },
+                  "reply_to": {
+                    "title": "SendEmailsRequestReplyTo",
+                    "description": "A list of recipients to send replies to when the recipient of this email attempts to reply.\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization.",
+                    "type": "array",
+                    "items": {
+                      "title": "SendEmailsRequestReplyToRecipient",
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/EmailAddressRecipient"
+                        },
+                        {
+                          "$ref": "#/components/schemas/ProfileRecipient"
+                        },
+                        {
+                          "$ref": "#/components/schemas/ContactRecipient"
+                        }
+                      ]
+                    }
+                  },
+                  "cc": {
+                    "title": "SendEmailsRequestCC",
+                    "type": "array",
+                    "description": "A list of recipients to carbon-copy ('cc') emails to.\nRecipients will have visibility of each other's addresses.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization.",
+                    "maxItems": 50,
+                    "items": {
+                      "title": "SendEmailsRequestCCRecipient",
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/EmailAddressRecipient"
+                        },
+                        {
+                          "$ref": "#/components/schemas/ProfileRecipient"
+                        },
+                        {
+                          "$ref": "#/components/schemas/ContactRecipient"
+                        }
+                      ]
+                    }
+                  },
+                  "bcc": {
+                    "title": "SendEmailsRequestBCC",
+                    "type": "array",
+                    "description": "A list of recipients to blindly carbon-copy ('cc') emails to.\nRecipients will NOT have visibility of each other's addresses.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization.",
+                    "maxItems": 50,
+                    "items": {
+                      "title": "SendEmailsRequestBCCRecipient",
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/EmailAddressRecipient"
+                        },
+                        {
+                          "$ref": "#/components/schemas/ProfileRecipient"
+                        },
+                        {
+                          "$ref": "#/components/schemas/ContactRecipient"
+                        }
+                      ]
+                    }
+                  },
+                  "tags": {
+                    "$ref": "#/components/schemas/Tags"
+                  },
+                  "schedule": {
+                    "$ref": "#/components/schemas/Schedule"
+                  },
+                  "ip_pool_name": {
+                    "type": "string",
+                    "description": "The name of the IP Pool to use for sending Emails.\n\nIf not specified, all dedicated IPs associated with your\naccount will be considered for sending. \n\nIP pools are only available to accounts with dedicated IPs.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization.",
+                    "minLength": 2,
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "from",
+                  "to",
+                  "content"
+                ]
+              },
+              "examples": {
+                "SendFromToDirectEntities": {
+                  "summary": "Send from, to direct entities",
+                  "value": {
+                    "from": {
+                      "address": "support@example.company.io",
+                      "name": "Cool Co Support"
+                    },
+                    "to": [
+                      {
+                        "address": "bob@example.com",
+                        "name": "Bob Smith"
+                      }
+                    ],
+                    "content": {
+                      "subject": "Re: Wedding Cake",
+                      "text": "Hey, the cake is ready.",
+                      "html": "<html><body>Hey, <br/><br/>Cake</b></body></html>",
+                      "attachments": []
+                    }
+                  }
+                },
+                "SendToProfileWithPersonalization": {
+                  "summary": "Send to Contact with Contact-referencing personalization",
+                  "value": {
+                    "from": {
+                      "address": "support@example.company.io",
+                      "name": "Cool Co Support"
+                    },
+                    "to": [
+                      {
+                        "profile_id": "mem_profile_01h9krwprkeee8fzqspvwy6nq8",
+                        "variables": {
+                          "name": "${Twilio.profile.first_name}"
+                        }
+                      }
+                    ],
+                    "content": {
+                      "subject": "Wedding Cake",
+                      "text": "Hey {{ name }}, your cake is ready.",
+                      "html": "<html><body>Hey, {{ name | default: 'there' }}, your cake is ready.<br/><br/></body></html>",
+                      "attachments": []
+                    }
+                  }
+                },
+                "SendAScheduledEmail": {
+                  "summary": "Send a scheduled Email",
+                  "value": {
+                    "from": {
+                      "address": "support@example.company.io",
+                      "name": "Cool Co Support"
+                    },
+                    "to": [
+                      {
+                        "contact_id": "comms_contact_01h9krwprkeee8fzqspvwy6nq8",
+                        "variables": {
+                          "name": "${Twilio.Contact.first_name}",
+                          "is_vip": "${Twilio.Contact.is_vip}"
+                        }
+                      }
+                    ],
+                    "content": {
+                      "subject": "Wedding Cake",
+                      "text": "Hey {{ name }}, your cake will be ready for pickup tomorrow morning. {% if is_vip %} Thanks for your continued business, we've included a special treat for you! {% endif %}",
+                      "html": "<html><body>Hey, {{ name | default: 'there' }}, your cake is ready.<br/><br/> {% if is_vip %} <p>Thanks for your continued business, we've included a special treat for you!</p> {% endif %} </body></html>",
+                      "attachments": []
+                    },
+                    "schedule": {
+                      "send_at": [
+                        "2023-12-15T14:15:22Z"
+                      ]
+                    }
+                  }
+                },
+                "SendWithCustomHeaders": {
+                  "summary": "Send email with custom headers and footer",
+                  "value": {
+                    "from": {
+                      "address": "marketing@example.com",
+                      "name": "Marketing Team"
+                    },
+                    "to": [
+                      {
+                        "address": "customer@example.com",
+                        "name": "Valued Customer"
+                      }
+                    ],
+                    "content": {
+                      "subject": "Special Offer for You",
+                      "html": "<html><body><h1>Exclusive Deal!</h1><p>Check out our latest offers.</p></body></html>",
+                      "text": "Exclusive Deal! Check out our latest offers.",
+                      "headers": {
+                        "X-Campaign-ID": "CAMPAIGN-2025-Q1",
+                        "X-Customer-Segment": "VIP",
+                        "X-Priority": "1"
+                      },
+                      "footer": {
+                        "enabled": true,
+                        "html": "<p style=\"font-size:11px;color:#666;\">Marketing Team, Example Inc. | <a href=\"[unsubscribe]\">Unsubscribe</a> | 123 Main St, San Francisco, CA 94105</p>",
+                        "text": "Marketing Team, Example Inc. | Unsubscribe: [unsubscribe] | 123 Main St, San Francisco, CA 94105"
+                      }
+                    }
+                  }
+                },
+                "SendWithIPPool": {
+                  "summary": "Send email using dedicated IP pool",
+                  "value": {
+                    "from": {
+                      "address": "alerts@example.com",
+                      "name": "Alert System"
+                    },
+                    "to": [
+                      {
+                        "address": "admin@example.com",
+                        "name": "System Administrator"
+                      }
+                    ],
+                    "content": {
+                      "subject": "System Alert - High Priority",
+                      "html": "<html><body><h1>Alert</h1><p>Immediate attention required.</p></body></html>"
+                    },
+                    "ip_pool_name": "transactional_pool"
+                  }
+                },
+                "SendTemplateWithHeadersAndIPPool": {
+                  "summary": "Send template-based email with headers and IP pool",
+                  "value": {
+                    "from": {
+                      "address": "newsletter@example.com",
+                      "name": "Newsletter Team"
+                    },
+                    "to": [
+                      {
+                        "address": "subscriber@example.com",
+                        "name": "John Subscriber",
+                        "variables": {
+                          "first_name": "John"
+                        }
+                      }
+                    ],
+                    "content": {
+                      "subject": "January Newsletter",
+                      "html": "<html><body><h1>Newsletter</h1><p>Greetings {{ first_name | default: 'Subscribers' }}, it's January!</p></body></html>",
+                      "headers": {
+                        "X-Newsletter-Edition": "2025-01",
+                        "X-Subscriber-Tier": "Premium"
+                      }
+                    },
+                    "ip_pool_name": "marketing_pool",
+                    "tags": {
+                      "campaign": "monthly_newsletter",
+                      "edition": "january_2025"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/Messages": {
       "post": {
         "summary": "Send Messages",
@@ -2467,6 +3002,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -3063,7 +3599,7 @@
           {
             "lang": "curl",
             "label": "cURL",
-            "source": "curl --location 'https://comms.twilio.com/preview/Messages' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN \\\n--data '{\n    \"to\": [{\n        \"address\": \"+12065551337\",\n        \"channel\": \"phone\"\n    }],\n    \"content\": {\n        \"text\": \"What day is it?\"\n    }\n}'\n"
+            "source": "curl -X POST 'https://comms.twilio.com/preview/Messages' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"to\": [{\n        \"address\": \"+12065551337\",\n        \"channel\": \"phone\"\n    }],\n    \"content\": {\n        \"text\": \"What day is it?\"\n    }\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN \\\n\n"
           }
         ]
       },
@@ -3094,7 +3630,7 @@
           {
             "in": "query",
             "name": "start_date",
-            "description": "Filter to Messages created after the specified date and time. The date is in RFC3339 format. (e.g., 2025-06-18T12:00:00Z)",
+            "description": "Filter to Messages created after the specified date and time in ISO 8601 format. The date is in RFC3339 format. (e.g., 2025-06-18T12:00:00Z)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3103,7 +3639,7 @@
           {
             "in": "query",
             "name": "end_date",
-            "description": "Filter to Messages created before the specified date and time. The date is in RFC3339 format and must be greater  than start_date if provided. (e.g., 2025-06-18T12:00:00Z)",
+            "description": "Filter to Messages created before the specified date and time in ISO 8601 format. The date is in RFC3339 format and must be greater  than start_date if provided. (e.g., 2025-06-18T12:00:00Z)",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3475,7 +4011,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/Messages' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/Messages/{message_id}": {
@@ -3752,7 +4295,7 @@
           {
             "in": "query",
             "name": "start_date",
-            "description": "Filter to Operations created after the specified date and time.",
+            "description": "Filter to Operations created after the specified date and time in ISO 8601 format.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3761,7 +4304,7 @@
           {
             "in": "query",
             "name": "end_date",
-            "description": "Filter to Operations created before the specified date and time.",
+            "description": "Filter to Operations created before the specified date and time in ISO 8601 format.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -3832,7 +4375,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/Messages/Operations' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/Messages/Operations/{operation_id}": {
@@ -4064,7 +4614,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl --location --location-trusted -X GET 'https://comms.twilio.com/preview/Messages/Seek/{identifier}' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/PushNotifications/DeviceRegistrations": {
@@ -4084,6 +4641,7 @@
                 "type": "object",
                 "properties": {
                   "contact_id": {
+                    "x-twilio-version": "preview",
                     "$ref": "#/components/schemas/ContactId",
                     "description": "The ID of the contact to register the device to, if available."
                   },
@@ -4147,7 +4705,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X POST 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"contact_id\": \"comms_contact_01h9krwprkeee8fzqspvwy6nq8\",\n    \"app_name\": \"limonade_app\",\n    \"token\": \"token\",\n    \"provider\": \"fcm\"\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       },
       "get": {
         "summary": "List Device Registrations",
@@ -4271,7 +4836,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations?contact_id=comms_contact_01h9krwprkeee8fzqspvwy6nq8' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/PushNotifications/DeviceRegistrations/{device_registration_id}": {
@@ -4407,6 +4979,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -4684,7 +5257,14 @@
               }
             }
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X POST 'https://comms.twilio.com/preview/PushNotifications' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"to\": [\n        { \"provider\": \"fcm\", \"token\": \"token\" }\n    ],\n    \"content\": {\n        \"title\": \"Limon Eats\",\n        \"text\": \"Your order is on the way!\"\n    }\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       },
       "get": {
         "summary": "List Push Notifications",
@@ -4820,7 +5400,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/PushNotifications' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/PushNotifications/{push_notification_id}": {
@@ -5046,6 +5633,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -5124,7 +5712,14 @@
               }
             }
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X POST 'https://comms.twilio.com/preview/PushNotifications/Credentials' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"credential_type\": \"apn\",\n    \"app_name\": \"limonade_app\",\n    \"content\": {\n        \"certificate\": \"certificate\",\n        \"private_key\": \"private_key\"\n    },\n    \"is_default\": true\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       },
       "get": {
         "summary": "List Push Credentials",
@@ -5261,7 +5856,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/PushNotifications/Credentials' \\\n  --header 'Content-Type: application/json' \\\n--u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/PushNotifications/Credentials/{credential_id}": {
@@ -5303,6 +5905,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -5327,7 +5930,14 @@
               }
             }
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X PATCH 'https://comms.twilio.com/preview/PushNotifications/Credentials/comms_credential_01h9krwprkeee8fzqspvwy6nq8' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"is_default\": true,\n    \"tags\": {\n        \"environment\": \"production\",\n        \"region\": \"us-east-1\"\n    }\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       },
       "get": {
         "summary": "Fetch a Push Credential",
@@ -5583,7 +6193,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/PushNotifications/Apps' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/PushNotifications/Apps/{app_name}": {
@@ -5625,6 +6242,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -5650,7 +6268,14 @@
               }
             }
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X PATCH 'https://comms.twilio.com/preview/PushNotifications/Apps/limonade_app' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"is_default\": true\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       },
       "get": {
         "summary": "Fetch a Push Notification App",
@@ -5710,7 +6335,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/PushNotifications/Apps/limonade_app' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/Agents": {
@@ -5741,7 +6373,7 @@
           {
             "in": "query",
             "name": "start_date",
-            "description": "Filter to Agents created after the specified date and time.",
+            "description": "Filter to Agents created after the specified date and time in ISO 8601 format.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -5750,7 +6382,7 @@
           {
             "in": "query",
             "name": "end_date",
-            "description": "Filter to Agents created before the specified date and time.",
+            "description": "Filter to Agents created before the specified date and time in ISO 8601 format.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -5856,7 +6488,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/Agents' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/Agents/{agent_id}": {
@@ -5956,6 +6595,7 @@
           "Agents"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -5964,7 +6604,7 @@
                 "properties": {
                   "address": {
                     "type": "string",
-                    "description": "The identifier within a channel address space for an actor (e.g. phone number)"
+                    "description": "The Agent’s communication address within a channel, such as a phone number, email address, or device token."
                   },
                   "channel": {
                     "$ref": "#/components/schemas/AgentCommunicationChannel"
@@ -6083,7 +6723,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X POST 'https://comms.twilio.com/preview/Agents/Search' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"address\": \"+14153902337\",\n    \"channel\": \"sms\"\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/Agents/Resolve": {
@@ -6096,6 +6743,7 @@
           "Agents"
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -6112,7 +6760,7 @@
                       },
                       "recipient_addresses": {
                         "title": "ResolveAgentsFromAgentPoolRequestRecipientAddresses",
-                        "description": "A collection of addresses for a single human used to resolve agents.",
+                        "description": "A collection of addresses for a single human used to resolve Agents.",
                         "type": "array",
                         "minItems": 1,
                         "maxItems": 100,
@@ -6134,7 +6782,7 @@
                     "properties": {
                       "recipient_addresses": {
                         "title": "ResolveAgentsFromAddressesRequestRecipientAddresses",
-                        "description": "A collection of addresses for a single human used to resolve agents.",
+                        "description": "A collection of addresses for a single human used to resolve Agents.",
                         "type": "array",
                         "minItems": 1,
                         "maxItems": 100,
@@ -6245,7 +6893,7 @@
                               },
                               "address": {
                                 "type": "string",
-                                "description": "The identifier within a channel address space for an actor (e.g. phone number)"
+                                "description": "The Agent’s communication address within a channel, such as a phone number, email address, or device token."
                               },
                               "channel": {
                                 "$ref": "#/components/schemas/AgentCommunicationChannel"
@@ -6445,7 +7093,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X POST 'https://comms.twilio.com/preview/Agents/Resolve' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"recipient_addresses\": [\n        { \"address\": \"+14153902337\", \"channel\": \"phone\" },\n        { \"address\": \"davidpletnjov@example.com\", \"channel\": \"email\" }\n    ]\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/AgentPools": {
@@ -6474,6 +7129,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -6549,7 +7205,7 @@
           {
             "in": "query",
             "name": "start_date",
-            "description": "Filter to AgentPools created after the specified date and time.",
+            "description": "Filter to AgentPools created after the specified date and time in ISO 8601 format.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -6558,7 +7214,7 @@
           {
             "in": "query",
             "name": "end_date",
-            "description": "Filter to AgentPools created before the specified date and time.",
+            "description": "Filter to AgentPools created before the specified date and time in ISO 8601 format.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -6567,7 +7223,7 @@
           {
             "in": "query",
             "name": "operation_id",
-            "description": "Filter to AgentPools by operation ID.",
+            "description": "Filter to AgentPools by AgentPool Operation ID.",
             "schema": {
               "$ref": "#/components/schemas/OperationId"
             }
@@ -6624,7 +7280,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/AgentPools' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/AgentPools/{agent_pool_id}": {
@@ -6713,6 +7376,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -6741,7 +7405,14 @@
               }
             }
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X PATCH 'https://comms.twilio.com/preview/AgentPools/comms_agentpool_01h9krwprkeee8fzqspvwy6nq8' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"name\": \"Customer Support Agents - Tier 1\",\n    \"tags\": { \"tier\": \"1\" }\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       },
       "delete": {
         "summary": "Delete an AgentPool",
@@ -6811,6 +7482,7 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -6888,7 +7560,7 @@
           {
             "in": "query",
             "name": "start_date",
-            "description": "Filter to Agents created after the specified date and time.",
+            "description": "Filter to Agents created after the specified date and time in ISO 8601 format.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -6897,7 +7569,7 @@
           {
             "in": "query",
             "name": "end_date",
-            "description": "Filter to Agents created before the specified date and time.",
+            "description": "Filter to Agents created before the specified date and time in ISO 8601 format.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -7011,7 +7683,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/AgentPools/comms_agentpool_01h9krwprkeee8fzqspvwy6nq8/Agents' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/AgentPools/{agent_pool_id}/Agents/{agent_id}": {
@@ -7074,7 +7753,7 @@
           {
             "in": "query",
             "name": "start_date",
-            "description": "Filter to Operations created after the specified date and time.",
+            "description": "Filter to Operations created after the specified date and time in ISO 8601 format.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -7083,7 +7762,7 @@
           {
             "in": "query",
             "name": "end_date",
-            "description": "Filter to Operations created before the specified date and time.",
+            "description": "Filter to Operations created before the specified date and time in ISO 8601 format.",
             "schema": {
               "type": "string",
               "format": "date-time"
@@ -7191,7 +7870,14 @@
           "503": {
             "$ref": "#/components/responses/Http503Response"
           }
-        }
+        },
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl -X GET 'https://comms.twilio.com/preview/AgentPools/Operations' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+          }
+        ]
       }
     },
     "/AgentPools/Operations/{operation_id}": {
@@ -7263,20 +7949,18 @@
     "securitySchemes": {
       "account_id_auth_token": {
         "type": "http",
-        "scheme": "basic"
+        "scheme": "basic",
+        "description": "Basic authentication of the form `Basic <account_id:auth_token>`."
       },
-      "access_token_basic": {
+      "api_key_api_key_secret": {
         "type": "http",
-        "scheme": "basic"
-      },
-      "access_token_bearer": {
-        "type": "http",
-        "scheme": "bearer"
+        "scheme": "basic",
+        "description": "Basic authentication of the form `Basic <api_key:api_key_secret>`."
       }
     },
     "schemas": {
       "OperationId": {
-        "description": "An identifier that correlates resources created in the same (request).\nThis can be used for convenient retrieval of correlated resources and their aggregates.",
+        "description": "An identifier used to group and retrieve resources that were created together in the same request. This can be used for convenient retrieval of correlated resources and their aggregates.",
         "title": "OperationId",
         "type": "string",
         "pattern": "^comms_operation_[0-7][a-hjkmnpqrstv-z0-9]{25,34}",
@@ -7394,7 +8078,7 @@
       "Address": {
         "title": "Address",
         "type": "string",
-        "description": "The identifier that uniquely addresses an actor within a communications channel."
+        "description": "The identifier that uniquely addresses a user within a communications channel."
       },
       "ContactCommunicationChannel": {
         "title": "ContactCommunicationChannel",
@@ -7469,7 +8153,7 @@
       "Tags": {
         "title": "Tags",
         "type": "object",
-        "description": "Custom metadata in the form of key-value pairs.\nMaximum size of a tag key is 128 characters.\nMaximum size of a tag value is 256 characters.\nThere can be a maximum of 10 key-value pairs.",
+        "description": "Custom metadata in the form of key-value pairs.\nMaximum size of a tag key is 128 characters.\nMaximum size of a tag value is 256 characters.\nThere can be a maximum of 10 key-value pairs.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization \nand `default_variables` for default values.",
         "maxProperties": 10,
         "propertyNames": {
           "type": "string",
@@ -7533,7 +8217,7 @@
               },
               "addresses": {
                 "title": "ContactAddresses",
-                "description": "The communications addresses of the Contact (phone number, email, push device token ).",
+                "description": "The Contact’s communication addresses, such as phone number, email address, and push device token.",
                 "type": "array",
                 "items": {
                   "$ref": "#/components/schemas/ContactAddress"
@@ -7647,7 +8331,7 @@
         "type": "object",
         "properties": {
           "errors": {
-            "description": "A list of one (or multiple) Twilio API errors.",
+            "description": "A list of one or more Twilio API errors.",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TwilioError"
@@ -7719,6 +8403,17 @@
             ]
           }
         }
+      },
+      "CommunicationChannel": {
+        "title": "CommunicationChannel",
+        "description": "The medium which a unit of communication is transmitted through.\nThese are differentiated by a mix of transmission protocol, network controller/owner, endpoint and address model,\nas well as the model for content of the atomic unit of communication itself.",
+        "type": "string",
+        "enum": [
+          "email",
+          "phone",
+          "whatsapp",
+          "push"
+        ]
       },
       "OperationStatus": {
         "title": "OperationStatus",
@@ -8090,6 +8785,152 @@
           "deleted_at"
         ]
       },
+      "EmailAddressSender": {
+        "title": "EmailAddressSender",
+        "description": "An email address and associated name",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "The email address of the person or entity.",
+            "format": "email"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the person or entity associated with the email address."
+          }
+        },
+        "required": [
+          "address",
+          "name"
+        ]
+      },
+      "ContentPersonalization": {
+        "title": "ContentPersonalization",
+        "type": "object",
+        "description": "To personalize content for each recipient, supply variables here with values to substitute into any [Liquid](https://shopify.github.io/liquid/) templated content string or pre-stored Content template.",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "ProfileId": {
+        "title": "ProfileId",
+        "description": "A reference to a Profile",
+        "type": "string",
+        "pattern": "^mem_profile_[0-7][a-hjkmnpqrstv-z0-9]{25,34}",
+        "example": "mem_profile_01h9krwprkeee8fzqspvwy6nq8"
+      },
+      "EmailHtmlContent": {
+        "title": "EmailHtmlContent",
+        "type": "object",
+        "properties": {
+          "html": {
+            "type": "string",
+            "description": "The HTML email body (`text/html` MIME).\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization."
+          },
+          "text": {
+            "type": "string",
+            "description": "The plain-text email body (`text/plain` MIME).\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization."
+          },
+          "subject": {
+            "type": "string",
+            "description": "The subject of the email.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization."
+          },
+          "headers": {
+            "title": "EmailHeadersContent",
+            "type": "object",
+            "description": "Custom email headers as key-value pairs.\nYou may not override the following headers: `x-sg-id`, `x-sg-eid`,\n`received`, `dkim-signature`, `Content-Type`, `Content-Transfer-Encoding`,\n`To`, `From`, `Subject`, `Reply-To`, `CC`, `BCC`.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "footer": {
+            "title": "EmailFooter",
+            "type": "object",
+            "description": "Inserts a custom footer at the bottom of the text and HTML bodies of your messages.",
+            "properties": {
+              "enabled": {
+                "type": "boolean",
+                "description": "Indicates if this setting is enabled.",
+                "default": false
+              },
+              "text": {
+                "type": "string",
+                "description": "The plain text content of your footer.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization."
+              },
+              "html": {
+                "type": "string",
+                "description": "The HTML content of your footer.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization."
+              }
+            }
+          }
+        },
+        "required": [
+          "html",
+          "subject"
+        ]
+      },
+      "EmailAddressRecipient": {
+        "title": "EmailAddressRecipient",
+        "description": "An email address and associated name that define a recipient.",
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string",
+            "description": "The email address of the person or entity.",
+            "format": "email"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the person or entity."
+          }
+        },
+        "required": [
+          "address"
+        ]
+      },
+      "ProfileRecipient": {
+        "title": "ProfileRecipient",
+        "description": "A reference to a Profile.",
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "$ref": "#/components/schemas/ProfileId"
+          }
+        },
+        "required": [
+          "profile_id"
+        ]
+      },
+      "ContactRecipient": {
+        "description": "A reference to a Contact.",
+        "title": "ContactRecipient",
+        "type": "object",
+        "properties": {
+          "contact_id": {
+            "$ref": "#/components/schemas/ContactId"
+          }
+        },
+        "required": [
+          "contact_id"
+        ]
+      },
+      "Schedule": {
+        "title": "Schedule",
+        "description": "A schedule defines *when* a communication will be sent to a recipient.",
+        "type": "object",
+        "properties": {
+          "send_at": {
+            "description": "List of expressions for when the communication may be sent.\n\nThe supported expression formats are:\n  - RFC 3339 date-time string. e.g `\"2025-11-11T11:11:00Z\"`\n\nCurrently, you may specify only a single expression.\nIf you specify multiple expressions, only the first will be used.\nSupport for additional scheduling expression formats may be added in the future.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "minProperties": 1,
+        "additionalProperties": false
+      },
       "SessionId": {
         "title": "SessionId",
         "description": "A reference to a Session.",
@@ -8218,21 +9059,15 @@
             "$ref": "#/components/schemas/MessageContactChannel"
           },
           "contact_id": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/ContactId"
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "x-twilio-version": "preview",
+            "$ref": "#/components/schemas/ContactId"
           }
         },
         "required": [
           "address",
-          "channel",
-          "contact_id"
-        ]
+          "channel"
+        ],
+        "additionalProperties": false
       },
       "MessageBase": {
         "title": "MessageBase",
@@ -8333,7 +9168,7 @@
         "properties": {
           "address": {
             "type": "string",
-            "description": "The identifier within a channel address space for an actor (e.g. phone number)"
+            "description": "The Agent’s communication address within a channel, such as a phone number, email address, or device token."
           },
           "channel": {
             "$ref": "#/components/schemas/MessageContactChannel"
@@ -8343,14 +9178,6 @@
           "address",
           "channel"
         ]
-      },
-      "ContentPersonalization": {
-        "title": "ContentPersonalization",
-        "type": "object",
-        "description": "To personalize content for each recipient, supply variables here with values to substitute into any [Liquid](https://shopify.github.io/liquid/) templated content string or pre-stored Content template.",
-        "additionalProperties": {
-          "type": "string"
-        }
       },
       "RecipientVariables": {
         "title": "RecipientVariables",
@@ -8815,7 +9642,7 @@
         "properties": {
           "address": {
             "type": "string",
-            "description": "The identifier within a channel address space for an actor (e.g. phone number)"
+            "description": "The Agent’s communication address within a channel, such as a phone number, email address, or device token."
           },
           "channel": {
             "$ref": "#/components/schemas/MessageAgentChannel"
@@ -8892,22 +9719,6 @@
         "required": [
           "agent_pool_id"
         ]
-      },
-      "Schedule": {
-        "title": "Schedule",
-        "description": "A schedule defines *when* a communication will be sent to a recipient.",
-        "type": "object",
-        "properties": {
-          "send_at": {
-            "description": "List of expressions for when the communication may be sent.\n\nThe supported expression formats are:\n  - RFC 3339 date-time string. e.g `\"2025-11-11T11:11:00Z\"`\n\nCurrently, you may specify only a single expression.\nIf you specify multiple expressions, only the first will be used.\nSupport for additional scheduling expression formats may be added in the future.",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "minProperties": 1,
-        "additionalProperties": false
       },
       "MimeType": {
         "title": "MimeType",
@@ -9165,7 +9976,7 @@
           "failed": 0,
           "canceled": 0
         },
-        "description": "Represents the stats of a sending operation of one or many communications resources (Messages, Emails).\n- `total` is the total number of `Messages` in the `Operation`.\n\n  * To get the status for each individual `Message`, fetch the resource with:\n    `GET /Messages/{message_id}`.\n\n  * For group communications, where there is more than one recipient per communication resource\n    use `Receipts` e.g. `GET /Messages/{message_id}/Receipts`.\n\n- `recipients` is the total number of recipients targeted in an Operation.\n- `attempts` is the total number of sending attempts made by Twilio.\n- `unaddressable` is the number of recipients to which no sending attempts were made because\n  a valid match could not be found between the available addresses for the recipient (`to`)\n  and sender (`from`).\n\n- `scheduled` is the number of `Messages` that are scheduled to be sent by\n  Twilio in the future.\n\n- `queued` is the number of `Messages` that are queued in Twilio for sending.\n- `sent` is the number of `Messages` that have been sent by Twilio.\n- `delivered` is the number of `Messages` that have been successfully\n    delivered to recipients.\n\n- `read` is the number of `Messages` that have been read by recipients.\n- `undelivered` is the number of `Messages` that were successfully sent by Twilio\n  but have not been delivered to the recipient.\n\n- `failed` is the number of `Messages` that failed during processing by Twilio.\n  Get `Errors` with `GET /Messages/Operations/{operation_id}/Errors` fore more detail.\n\n- `canceled` is the number of `Messages` that were canceled via API request.",
+        "description": "Represents the stats of a sending operation of one or many communications resources, such as Messages and Emails.\n- `total` is the total number of `Messages` in the `Operation`.\n\n  * To get the status for each individual `Message`, fetch the resource with:\n    `GET /Messages/{message_id}`.\n\n  * For group communications, where there is more than one recipient per communication resource\n    use `Receipts` e.g. `GET /Messages/{message_id}/Receipts`.\n\n- `recipients` is the total number of recipients targeted in an Operation.\n- `attempts` is the total number of sending attempts made by Twilio.\n- `unaddressable` is the number of recipients to which no sending attempts were made because\n  a valid match could not be found between the available addresses for the recipient (`to`)\n  and sender (`from`).\n\n- `scheduled` is the number of `Messages` that are scheduled to be sent by\n  Twilio in the future.\n\n- `queued` is the number of `Messages` that are queued in Twilio for sending.\n- `sent` is the number of `Messages` that have been sent by Twilio.\n- `delivered` is the number of `Messages` that have been successfully\n    delivered to recipients.\n\n- `read` is the number of `Messages` that have been read by recipients.\n- `undelivered` is the number of `Messages` that were successfully sent by Twilio\n  but have not been delivered to the recipient.\n\n- `failed` is the number of `Messages` that failed during processing by Twilio.\n  Get `Errors` with `GET /Messages/Operations/{operation_id}/Errors` fore more detail.\n\n- `canceled` is the number of `Messages` that were canceled via API request.",
         "properties": {
           "total": {
             "type": "integer",
@@ -9956,11 +10767,11 @@
               "string",
               "null"
             ],
-            "description": "The name associated with the address inventory.\n\nIt may be visible to your communication recipients for some types of communications like `Email`.\n\nTo modify this value refer to the Twilio APIs that govern the type of inventory.\n\nFor an `Agent` with channel `email`, use the `EmailSenders` API to modify this value."
+            "description": "The name associated with the address inventory, such as phone number or email address.  \n\nThis name might be visible to recipients in certain communications, such as Email, and helps identify the sender. \n\n*Note:* To update this value, use the appropriate Twilio API for the inventory type. For example, for Agents with the channel `email`, update `display_name` using the EmailSenders API."
           },
           "address": {
             "type": "string",
-            "description": "The identifier within a channel address space for an actor (e.g. phone number)"
+            "description": "The Agent’s communication address within a channel, such as a phone number, email address, or device token."
           },
           "channel": {
             "$ref": "#/components/schemas/AgentCommunicationChannel"
@@ -9991,23 +10802,12 @@
           "created_at"
         ]
       },
-      "CommunicationChannel": {
-        "title": "CommunicationChannel",
-        "description": "The medium which a unit of communication is transmitted through.\nThese are differentiated by a mix of transmission protocol, network controller/owner, endpoint and address model,\nas well as the model for content of the atomic unit of communication itself.",
-        "type": "string",
-        "enum": [
-          "email",
-          "phone",
-          "whatsapp",
-          "push"
-        ]
-      },
       "CommunicationRecipient": {
         "title": "CommunicationRecipient",
         "type": "object",
         "properties": {
           "address": {
-            "description": "The identifier within a channel address space for an actor (e.g. phone number)",
+            "description": "The Agent’s communication address within a channel, such as a phone number, email address, or device token.",
             "type": "string"
           },
           "channel": {
@@ -10057,26 +10857,6 @@
             }
           }
         }
-      },
-      "EmailAddressSender": {
-        "title": "EmailAddressSender",
-        "description": "An email address and associated name",
-        "type": "object",
-        "properties": {
-          "address": {
-            "type": "string",
-            "description": "The email address of the person or entity.",
-            "format": "email"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the person or entity associated with the email address."
-          }
-        },
-        "required": [
-          "address",
-          "name"
-        ]
       },
       "AgentPool": {
         "title": "AgentPool",
