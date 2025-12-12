@@ -39,12 +39,11 @@ tags:
        - Sending a Message to a single recipient
        - Sending Messages to many recipients in a single request
        - Sending Group Messages to facilitate communication between multiple people
-       - Sending to both stored Contacts and/or directly specified messaging addresses (e.g. phone number)
-       - Sending Messages to Contacts with multiple communication addresses: Twilio will choose the best channel.
+       - Sending to both stored Profiles and/or directly specified messaging addresses (e.g. phone number)
+       - Sending Messages to Profiles with multiple communication addresses: Twilio will choose the best channel.
        - Sending Messages to stored Audiences with per-recipient content personalization
-       - Sending Messages with templated content that reference attributes of your stored Contacts
+       - Sending Messages with templated content that reference attributes of your stored Profiles
        - Sending Messages with rich content
-       - Sending Messages with automatic suppression based on a Contact's preferences
        - Sending Messages with shortened, branded links that support click tracking.
        - Sending Messages scheduled for future delivery.
        - Receiving inbound Messages sent to your Twilio phone numbers.
@@ -59,9 +58,9 @@ tags:
       Emails supports:
        - Sending an Email to a single recipient
        - Sending Emails to many recipients in a single request
-       - Sending to both stored Contacts and/or directly specified email addresses
+       - Sending to both stored Profiles and/or directly specified email addresses
        - Sending Emails to stored Audiences with per-recipient content personalization
-       - Sending Emails with merged content that reference attributes of your stored Contacts
+       - Sending Emails with merged content that reference attributes of your stored Profiles
        - Sending Emails with branded links that support click tracking.
        - Sending Emails scheduled for future delivery.
        - Receiving inbound Email replies and relaying the event to you for handling.
@@ -70,29 +69,29 @@ tags:
       🚧 *Use `PushNotifications` to send push notifications to your mobile apps
       via Firebase Cloud Messaging and Apple Push Notification services
       as well as other push-enabled services.*
-  - name: Agents
+  - name: Senders
     description: |-
-      *Use `Agents` to build the sending and receiving identities that represent your business and applications.*
+      *Use `Senders` to build the sending and receiving identities that represent your business and applications.*
 
       - For 'outbound' communications, it is used as the sender of the communication (`from` field).
 
-      - For 'inbound' communications to your app (sent by a Contact/end-user), it is used as the recipient (`to` field).
+      - For 'inbound' communications to your app (sent by a Profile/end-user), it is used as the recipient (`to` field).
 
-      - An Agent represents existing inventory created and setup in other APIs, such as Phone Numbers.
+      - A Sender represents existing inventory created and setup in other APIs, such as Phone Numbers.
 
-      - Use `AgentPools` to organize your `Agents` into logical groups to build multi-channel identities
+      - Use `SenderPools` to organize your `Senders` into logical groups to build multi-channel identities
       with multiple types of communications addresses (phone numbers, short codes, email addresses).
-  - name: AgentPools
+  - name: SenderPools
     description: |-
-      *Use `Agents` to build the sending and receiving identities that represent your business and applications.*
+      *Use `Senders` to build the sending and receiving identities that represent your business and applications.*
 
       - For 'outbound' communications, it is used as the sender of the communication (`from` field).
 
-      - For 'inbound' communications to your app (sent by a Contact/end-user), it is used as the recipient (`to` field).
+      - For 'inbound' communications to your app (sent by a Profile/end-user), it is used as the recipient (`to` field).
 
-      - An Agent represents existing inventory created and setup in other APIs, such as Phone Numbers.
+      - A Sender represents existing inventory created and setup in other APIs, such as Phone Numbers.
 
-      - Use `AgentPools` to organize your `Agents` into logical groups to build multi-channel identities
+      - Use `SenderPools` to organize your `Senders` into logical groups to build multi-channel identities
       with multiple types of communications addresses (phone numbers, short codes, email addresses).
 paths:
   /Contacts:
@@ -1868,14 +1867,17 @@ paths:
                           - address
                       - title: SendEmailsProfileRecipient
                         type: object
-                        description: A Twilio `Profile` identified by `Profile.Id`.
+                        description: A Twilio `Profile` identified by ID & Memory Service ID.
                         properties:
                           profile_id:
                             $ref: '#/components/schemas/ProfileId'
+                          service_id:
+                            $ref: '#/components/schemas/MemoryServiceId'
                           variables:
                             $ref: '#/components/schemas/ContentPersonalization'
                         required:
                           - profile_id
+                          - service_id
                       - title: SendEmailsContactRecipient
                         type: object
                         description: A Twilio `Contact` identified by `Contact.Id`.
@@ -1886,6 +1888,25 @@ paths:
                             $ref: '#/components/schemas/ContentPersonalization'
                         required:
                           - contact_id
+                      - title: SendEmailsGroupRecipient
+                        type: object
+                        description: |-
+                          A group recipient contains a list of recipients 
+                          and one set of personalization variables for the group.
+                        properties:
+                          group:
+                            title: SendEmailsGroup
+                            description: The group of recipients to send the email to.
+                            type: array
+                            items:
+                              oneOf:
+                                - $ref: '#/components/schemas/EmailAddressRecipient'
+                                - $ref: '#/components/schemas/ProfileRecipient'
+                                - $ref: '#/components/schemas/ContactRecipient'
+                          variables:
+                            $ref: '#/components/schemas/ContentPersonalization'
+                        required:
+                          - group
                 content:
                   title: SendEmailsRequestContent
                   description: |-
@@ -1902,50 +1923,6 @@ paths:
                     * When targeting `Profile` or `Contact` recipients, you may specify `variables` with values that reference stored fields, including custom fields, on the `Profile` or `Contact` -- for example: `${Twilio.Profile.date_last_purchase}` `${Twilio.Contact.first_name}` or `${Twilio.Contact.my_custom_field}`.
                   oneOf:
                     - $ref: '#/components/schemas/EmailHtmlContent'
-                reply_to:
-                  title: SendEmailsRequestReplyTo
-                  description: |-
-                    A list of recipients to send replies to when the recipient of this email attempts to reply.
-                    This field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization.
-                  type: array
-                  items:
-                    title: SendEmailsRequestReplyToRecipient
-                    oneOf:
-                      - $ref: '#/components/schemas/EmailAddressRecipient'
-                      - $ref: '#/components/schemas/ProfileRecipient'
-                      - $ref: '#/components/schemas/ContactRecipient'
-                cc:
-                  title: SendEmailsRequestCC
-                  type: array
-                  description: |-
-                    A list of recipients to carbon-copy ('cc') emails to.
-                    Recipients will have visibility of each other's addresses.
-
-                    This field can be templated with [Liquid](https://shopify.github.io/liquid/).
-                    Specify `variables` with each recipient for personalization.
-                  maxItems: 50
-                  items:
-                    title: SendEmailsRequestCCRecipient
-                    oneOf:
-                      - $ref: '#/components/schemas/EmailAddressRecipient'
-                      - $ref: '#/components/schemas/ProfileRecipient'
-                      - $ref: '#/components/schemas/ContactRecipient'
-                bcc:
-                  title: SendEmailsRequestBCC
-                  type: array
-                  description: |-
-                    A list of recipients to blindly carbon-copy ('cc') emails to.
-                    Recipients will NOT have visibility of each other's addresses.
-
-                    This field can be templated with [Liquid](https://shopify.github.io/liquid/).
-                    Specify `variables` with each recipient for personalization.
-                  maxItems: 50
-                  items:
-                    title: SendEmailsRequestBCCRecipient
-                    oneOf:
-                      - $ref: '#/components/schemas/EmailAddressRecipient'
-                      - $ref: '#/components/schemas/ProfileRecipient'
-                      - $ref: '#/components/schemas/ContactRecipient'
                 tags:
                   $ref: '#/components/schemas/Tags'
                 schedule:
@@ -1983,6 +1960,42 @@ paths:
                     text: Hey, the cake is ready.
                     html: <html><body>Hey, <br/><br/>Cake</b></body></html>
                     attachments: []
+              SendToProfiles:
+                summary: Send to multiple Profiles
+                value:
+                  from:
+                    address: team@example-company.com
+                    name: Example Company Team
+                  to:
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
+                  content:
+                    subject: Wedding Cake
+                    text: Hey you, your cake is ready.
+                    html: <html><body>Hey you, your cake is ready.<br/><br/></body></html>
+                    attachments: []
+              SendFromToDirectEntitiesWithPersonalization:
+                summary: Send from, to direct entities with personalization
+                value:
+                  from:
+                    address: support@example.company.io
+                    name: Cool Co Support
+                  to:
+                    - address: jane.doe@example.com
+                      variables:
+                        first_name: Jane
+                        last_name: Doe
+                    - address: john.doe@example.com
+                      variables:
+                        first_name: John
+                        last_name: Doe
+                  content:
+                    subject: Wedding Cake
+                    text: 'Hey {{ first_name | default: ''there'' }} {{ last_name }}, your cake is ready.'
+                    html: '<html><body>Hey {{ first_name | default: ''there'' }} {{ last_name }}, your cake is ready.<br/><br/></body></html>'
+                    attachments: []
               SendToProfileWithPersonalization:
                 summary: Send to Contact with Contact-referencing personalization
                 value:
@@ -1991,6 +2004,7 @@ paths:
                     name: Cool Co Support
                   to:
                     - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                       variables:
                         name: ${Twilio.profile.first_name}
                   content:
@@ -2072,6 +2086,534 @@ paths:
                   tags:
                     campaign: monthly_newsletter
                     edition: january_2025
+    get:
+      summary: List Emails
+      operationId: ListEmails
+      description: This operation fetches a paginated list of Emails.
+      tags:
+        - Emails
+      parameters:
+        - in: query
+          name: operation_id
+          description: Filter to Emails created in a specific Operation.
+          schema:
+            $ref: '#/components/schemas/OperationId'
+        - in: query
+          name: start_date
+          schema:
+            type: string
+            format: date-time
+          description: Filter Emails created after the specified date and time.
+        - in: query
+          name: end_date
+          schema:
+            type: string
+            format: date-time
+          description: Filter Emails created before the specified date and time.
+        - in: query
+          name: contact
+          description: Filter Emails sent or received by a specific Contact.
+          schema:
+            $ref: '#/components/schemas/ContactId'
+        - in: query
+          name: profile
+          description: Filter Emails sent or received by a specific Profile.
+          schema:
+            $ref: '#/components/schemas/ProfileId'
+        - in: query
+          name: status
+          description: Filter Emails by Delivery Status.
+          schema:
+            $ref: '#/components/schemas/EmailStatus'
+        - in: query
+          name: tags
+          description: |-
+            Match emails by one or many tags. If more than one tag is specified in the query, the search will return emails that have all the tags.
+            For Example:  ``` GET /Emails?tags=age_group:20s;industry:engineering; ```
+          schema:
+            $ref: '#/components/schemas/TagsString'
+        - in: query
+          name: page_token
+          description: The token to retrieve the next page of results.
+          schema:
+            $ref: '#/components/schemas/PageToken'
+        - in: query
+          name: page_size
+          description: The number of resources to return in a page.
+          schema:
+            $ref: '#/components/schemas/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                title: ListEmailsResponse
+                type: object
+                properties:
+                  emails:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmailMetadata'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationMetadata'
+                required:
+                  - emails
+                  - pagination
+              examples:
+                ListOfEmails:
+                  summary: List of Emails
+                  value:
+                    emails:
+                      - id: comms_email_01h9krwprkeee8fzqspvwy6nq8
+                        content:
+                          subject: An Introduction
+                          text: Hello, World!
+                          html: <html><body>Hello, World!</body></html>
+                          attachments: []
+                        from:
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                          address: support@example.com
+                          name: Cool Support
+                        to:
+                          - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                            service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
+                            address: janedoe@example.com
+                            name: Jane Doe
+                        reply_to: []
+                        cc:
+                          - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                            service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
+                            address: jane.doe@example.com
+                            name: Jane Doe
+                        bcc: []
+                        status: opened
+                        related:
+                          - name: operation
+                            id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
+                            uri: /Emails/Operations/01h9krwprkeee8fzqspvwy6nq8
+                          - name: session
+                            id: comms_session_01h9krwprkeee8fzqspvwy6nq8
+                            uri: /Sessions/01h9krwprkeee8fzqspvwy6nq8
+                          - name: sender
+                            id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                            uri: /Senders/01h9krwprkeee8fzqspvwy6nq8
+                        tags: {}
+                        scheduled_for: null
+                        created_at: '2023-08-24T14:15:22Z'
+                        updated_at: '2023-08-24T14:15:22Z'
+                        deleted_at: null
+                      - id: comms_email_01h9krwprkeee8fzqspvwy6nq8
+                        content:
+                          subject: An Introduction
+                          text: Hello, World!
+                          html: <html><body>Hello, World!</body></html>
+                          attachments: []
+                        from:
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                          address: support@example.com
+                          name: Acme Support
+                        to:
+                          - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                            service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
+                            address: janedoe@example.com
+                            name: Jane Doe
+                        reply_to: []
+                        cc: []
+                        bcc: []
+                        status: opened
+                        related:
+                          - name: operation
+                            id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
+                            uri: /Emails/Operations/01h9krwprkeee8fzqspvwy6nq8
+                          - name: session
+                            id: comms_session_01h9krwprkeee8fzqspvwy6nq8
+                            uri: /Sessions/01h9krwprkeee8fzqspvwy6nq8
+                          - name: contact
+                            id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                            uri: /Contacts/01h9krwprkeee8fzqspvwy6nq8
+                          - name: sender
+                            id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                            uri: /Senders/01h9krwprkeee8fzqspvwy6nq8
+                        tags: {}
+                        scheduled_for: null
+                        created_at: '2023-08-24T14:15:22Z'
+                        updated_at: '2023-08-24T14:15:22Z'
+                        deleted_at: null
+                    pagination:
+                      next: null
+                      self: https://comms.twilio.com/v1/Emails
+        '400':
+          $ref: '#/components/responses/Http400Response'
+        '429':
+          $ref: '#/components/responses/Http429Response'
+        '500':
+          $ref: '#/components/responses/Http500Response'
+        '503':
+          $ref: '#/components/responses/Http503Response'
+  /Emails/{email_id}:
+    parameters:
+      - schema:
+          $ref: '#/components/schemas/Identifier'
+        name: email_id
+        in: path
+        required: true
+    get:
+      summary: Fetch an Email
+      operationId: FetchEmail
+      description: This operation fetches a single Email using its ID.
+      tags:
+        - Emails
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+              examples:
+                OutboundEmailGroup:
+                  summary: Outbound email, group
+                  value:
+                    id: comms_email_01h9krwprkeee8fzqspvwy6nq8
+                    content:
+                      subject: An Introduction
+                      text: Hello, World!
+                      html: <html><body>Hello, World!</body></html>
+                      attachments: []
+                    from:
+                      sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                      address: support@example.com
+                      name: Cool Support
+                    to:
+                      - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                        service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
+                        address: janedoe@example.com
+                        name: Jane Doe
+                    reply_to: []
+                    cc:
+                      - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                        service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
+                        address: jane.doe@example.com
+                        name: Jane Doe
+                    bcc: []
+                    status: opened
+                    related:
+                      - name: operation
+                        id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
+                        uri: /Emails/Operations/01h9krwprkeee8fzqspvwy6nq8
+                      - name: session
+                        id: comms_session_01h9krwprkeee8fzqspvwy6nq8
+                        uri: /Sessions/01h9krwprkeee8fzqspvwy6nq8
+                      - name: sender
+                        id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                        uri: /Senders/01h9krwprkeee8fzqspvwy6nq8
+                    tags: {}
+                    scheduled_for: null
+                    created_at: '2023-08-24T14:15:22Z'
+                    updated_at: '2023-08-24T14:15:22Z'
+                    deleted_at: null
+                InboundEmail:
+                  summary: Inbound email
+                  value:
+                    id: comms_email_01h9krwprkeee8fzqspvwy6nq9
+                    content:
+                      subject: Please help with Billing Case 123456789
+                      text: Hello, World!
+                      html: |-
+                        <html>
+                          <body>
+                            <p>Hey, I need help pulling the numbers for case 123456789!
+                            I've attached a CSV of the data I have,
+                            please help me pull invoices for this batch of customers.
+
+                            Thanks, Mary from accounting</p>
+                          </body>
+                        </html>
+                      attachments:
+                        - id: comms_media_01h9krwprkeee8fzqspvwy6nq9
+                          upload_status: uploaded
+                          file_name: customers.csv
+                          file_size: 1024
+                          mime_type: text/csv
+                          tags: {}
+                          content_reference:
+                            temporary_url: https://comms.twilio.com/cdn/media_01h9krwprkeee8fzqspvwy6nq9
+                            expires_at: '2023-11-29T19:05:10Z'
+                          created_at: '2023-11-29T19:00:10Z'
+                          updated_at: '2023-11-29T19:00:10Z'
+                    from:
+                      address: mary.sue@example.com
+                      name: Mary Sue
+                    to:
+                      - address: gary.stu@example.com
+                        name: Gary Stu
+                    reply_to: []
+                    cc:
+                      - address: team-billing@example.com
+                    bcc: []
+                    status: inbound
+                    related:
+                      - name: session
+                        id: comms_session_01h9krwprkeee8fzqspvwy6nq9
+                        uri: /Sessions/01h9krwprkeee8fzqspvwy6nq9
+                    tags: {}
+                    scheduled_for: null
+                    created_at: '2023-11-29T19:00:22Z'
+                    updated_at: '2023-11-29T19:00:22Z'
+                    deleted_at: null
+        '400':
+          $ref: '#/components/responses/Http400Response'
+        '404':
+          $ref: '#/components/responses/Http404Response'
+        '429':
+          $ref: '#/components/responses/Http429Response'
+        '500':
+          $ref: '#/components/responses/Http500Response'
+        '503':
+          $ref: '#/components/responses/Http503Response'
+    delete:
+      summary: Delete an Email
+      operationId: DeleteEmail
+      description: This operation deletes an Email
+      tags:
+        - Emails
+      responses:
+        '202':
+          $ref: '#/components/responses/Http202ResponseWithResource'
+        '400':
+          $ref: '#/components/responses/Http400Response'
+        '404':
+          $ref: '#/components/responses/Http404Response'
+        '429':
+          $ref: '#/components/responses/Http429Response'
+        '500':
+          $ref: '#/components/responses/Http500Response'
+        '503':
+          $ref: '#/components/responses/Http503Response'
+  /Emails/Operations:
+    get:
+      summary: List Email Operations
+      operationId: ListEmailOperations
+      description: This operation fetches a paginated list of Email Operations.
+      tags:
+        - Emails
+      parameters:
+        - in: query
+          name: start_date
+          description: Filter to Operations created after the specified date and time.
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: end_date
+          description: Filter to Operations created before the specified date and time.
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: status
+          description: Filter to Operations with the specified status.
+          schema:
+            $ref: '#/components/schemas/CommunicationOperationStatus'
+        - in: query
+          name: page_token
+          description: The token to retrieve the next page of results.
+          schema:
+            $ref: '#/components/schemas/PageToken'
+        - in: query
+          name: page_size
+          description: The number of resources to return in a page.
+          schema:
+            $ref: '#/components/schemas/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                title: ListEmailOperationsResponse
+                type: object
+                properties:
+                  operations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmailOperation'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationMetadata'
+                required:
+                  - operations
+                  - pagination
+        '400':
+          $ref: '#/components/responses/Http400Response'
+        '429':
+          $ref: '#/components/responses/Http429Response'
+        '500':
+          $ref: '#/components/responses/Http500Response'
+        '503':
+          $ref: '#/components/responses/Http503Response'
+  /Emails/Operations/{operation_id}:
+    parameters:
+      - schema:
+          $ref: '#/components/schemas/Identifier'
+        name: operation_id
+        in: path
+        required: true
+    get:
+      summary: Fetch an Email Operation
+      operationId: FetchEmailOperation
+      description: This operation fetches a single Email Operation using its ID.
+      tags:
+        - Emails
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailOperation'
+              examples:
+                EmailOperationWithSingleEmail:
+                  summary: Fetch an Email Operation - single Email
+                  value:
+                    id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
+                    status: completed
+                    stats:
+                      total: 1
+                      recipients: 1
+                      attempts: 1
+                      unaddressable: 0
+                      queued: 0
+                      sent: 0
+                      scheduled: 0
+                      delivered: 1
+                      opened: 0
+                      undelivered: 0
+                      failed: 0
+                      canceled: 0
+                    created_at: '2024-04-05T06:20:00Z'
+                    updated_at: '2024-04-05T06:20:00Z'
+                EmailOperationWithTwoSeparateEmails:
+                  summary: Fetch an Email Operation - two separate Emails
+                  value:
+                    id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
+                    status: completed
+                    stats:
+                      total: 2
+                      recipients: 2
+                      attempts: 2
+                      unaddressable: 0
+                      queued: 0
+                      sent: 0
+                      scheduled: 0
+                      delivered: 2
+                      opened: 0
+                      undelivered: 0
+                      failed: 0
+                      canceled: 0
+                    created_at: '2024-04-05T06:20:00Z'
+                    updated_at: '2024-04-05T06:20:00Z'
+                EmailOperationWithThreeRecipients:
+                  summary: Fetch an Email Operation - one Email with 3 recipients
+                  value:
+                    id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
+                    status: completed
+                    stats:
+                      total: 1
+                      recipients: 3
+                      attempts: 3
+                      unaddressable: 0
+                      queued: 0
+                      sent: 0
+                      scheduled: 0
+                      delivered: 0
+                      opened: 0
+                      undelivered: 0
+                      failed: 0
+                      canceled: 0
+                    created_at: '2024-04-05T06:20:00Z'
+                    updated_at: '2024-04-05T06:20:00Z'
+        '400':
+          $ref: '#/components/responses/Http400Response'
+        '404':
+          $ref: '#/components/responses/Http404Response'
+        '429':
+          $ref: '#/components/responses/Http429Response'
+        '500':
+          $ref: '#/components/responses/Http500Response'
+        '503':
+          $ref: '#/components/responses/Http503Response'
+  /Emails/Operations/{operation_id}/Errors:
+    parameters:
+      - schema:
+          $ref: '#/components/schemas/OperationId'
+        name: operation_id
+        in: path
+        required: true
+    get:
+      summary: List Email Operation Errors
+      operationId: ListEmailOperationErrors
+      description: This operation retrieves a paginated list of Email Operation Errors.
+      tags:
+        - Emails
+      parameters:
+        - in: query
+          name: code
+          description: Filter to Operations with a specific Twilio error code.
+          schema:
+            type: integer
+        - in: query
+          name: start_date
+          description: Filter to Errors created after the specified date and time.
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: end_date
+          description: Filter to Errors created before the specified date and time.
+          schema:
+            type: string
+            format: date-time
+        - in: query
+          name: page_token
+          description: The token to retrieve the next page of results.
+          schema:
+            $ref: '#/components/schemas/PageToken'
+        - in: query
+          name: page_size
+          description: The number of resources to return in a page.
+          schema:
+            $ref: '#/components/schemas/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationErrorsResponse'
+              examples:
+                NoIPAddressesAvailable:
+                  summary: Async error when the specified ip pool has no available ips.
+                  value:
+                    errors:
+                      - code: 81337
+                        message: No IP addresses available.
+                        info_url: https://www.twilio.com/docs/errors/00000
+                        created_at: '2024-04-05T06:20:00Z'
+                        context: 'null'
+                    pagination:
+                      next: null
+                      self: /v1/Emails/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8/Errors
+        '400':
+          $ref: '#/components/responses/Http400Response'
+        '404':
+          $ref: '#/components/responses/Http404Response'
+        '429':
+          $ref: '#/components/responses/Http429Response'
+        '500':
+          $ref: '#/components/responses/Http500Response'
+        '503':
+          $ref: '#/components/responses/Http503Response'
   /Messages:
     post:
       summary: Send Messages
@@ -2110,10 +2652,7 @@ paths:
                       with multiple addresses, Twilio will select the optimal channel and perform
                       retries across channels (if necessary).
 
-                    - Use `ContactRecipient` to reference a stored `Contact`.
-
-                    - Use `ContactRecipientFinder` to reference a stored `Contact` by a field
-                      other than the `Contact.Id`.
+                    - Use `ProfileRecipient` to reference a stored `Profile`.
 
                     - Use `AudienceRecipient` to send a message to an audience.
 
@@ -2144,6 +2683,16 @@ paths:
                             $ref: '#/components/schemas/ContentPersonalization'
                         required:
                           - addresses
+                      - type: object
+                        title: SendMessagesProfileRecipient
+                        description: A Twilio `Profile` identified by `Profile.Id`.
+                        properties:
+                          profile_id:
+                            $ref: '#/components/schemas/ProfileId'
+                          variables:
+                            $ref: '#/components/schemas/ContentPersonalization'
+                        required:
+                          - profile_id
                       - type: object
                         title: SendMessagesContactRecipient
                         description: A Twilio `Contact` identified by `Contact.Id`.
@@ -2189,16 +2738,10 @@ paths:
                     * For each variable you specify in your template, you should have
                     a matching key in each recipient's `variables` object.
 
-                    * For each variable in your template, you may also specify a default in
-                    `default_variables`.
-
-                    * When targeting an `Audience`, it is *mandatory* to define defaults
-                    in `default_variables` for all variables in the template.
-
-                    * When targeting `Audience` or `Contact` recipients, you may specify `variables`
+                    * When targeting `Audience` or `Profile` recipients, you may specify `variables`
                     with values that reference stored fields, including custom fields,
-                    on the `Contact` -- for example:
-                    `${Twilio.Contact.first_name}` or `${Twilio.Contact.my_custom_field}`.
+                    on the `Profile` -- for example:
+                    `${Twilio.Profile.first_name}` or `${Twilio.Profile.my_custom_field}`.
                   oneOf:
                     - $ref: '#/components/schemas/MessageContentTextWithMedia'
                     - $ref: '#/components/schemas/MessageContentTemplate'
@@ -2208,8 +2751,8 @@ paths:
                   description: The sending identity to associate with the Message(s).
                   oneOf:
                     - $ref: '#/components/schemas/MessageAddressSender'
-                    - $ref: '#/components/schemas/AgentIdSender'
-                    - $ref: '#/components/schemas/MessageAgentPoolIdSender'
+                    - $ref: '#/components/schemas/SenderIdSender'
+                    - $ref: '#/components/schemas/MessageSenderPoolIdSender'
                 schedule:
                   x-twilio-version: 1
                   $ref: '#/components/schemas/Schedule'
@@ -2229,7 +2772,7 @@ paths:
                   content:
                     text: Hello, World!
               SendASimpleSms:
-                summary: Send a simple sms
+                summary: Send a simple sms with explicit from
                 value:
                   from:
                     address: '+14153901002'
@@ -2239,7 +2782,7 @@ paths:
                       channel: phone
                   content:
                     text: Hello, World!
-              SendAMessageToOneRecipientWaRcsMmsSmsThatHasMultipleAddresses:
+              SendAMessageToOneRecipientThatHasMultipleAddresses:
                 summary: Send a Message to one recipient (wa, rcs, mms, sms) that has multiple addresses
                 value:
                   from:
@@ -2253,20 +2796,21 @@ paths:
                           channel: phone
                   content:
                     text: Hello, World!
-              SendOneMessageFromAgentToContact:
-                summary: Send one Message from Agent to Contact
+              SendOneMessageFromSenderToProfile:
+                summary: Send one Message from Sender to Profile
                 value:
                   from:
-                    agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                   to:
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     text: Hello, World!
               SendRcsMessagesToMultipleRecipients:
                 summary: Send rcs Messages to multiple recipients
                 value:
                   from:
-                    address: rbm_abc123_agent
+                    address: rbm_abc123_sender
                     channel: rcs
                   to:
                     - address: '+14153979999'
@@ -2275,38 +2819,44 @@ paths:
                       channel: phone
                   content:
                     text: Hello, World!
-              SendSmsMessagesToMultipleContactRecipients:
-                summary: Send sms Messages to multiple Contact recipients
+              SendSmsMessagesToMultipleProfileRecipients:
+                summary: Send sms Messages to multiple Profile recipients
                 value:
                   from:
                     address: '+14155551002'
                     channel: sms
                   to:
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     text: Hello, World!
-              SendMessagesFromAnAgentToMultipleContactRecipients:
-                summary: Send Messages from an Agent to multiple Contact recipients
+              SendMessagesFromASenderToMultipleProfileRecipients:
+                summary: Send Messages from a Sender to multiple Profile recipients
                 value:
                   from:
-                    agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                   to:
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     text: Hello, World!
-              SendMessagesFromAgentPoolToAMixOfRecipientTypes:
-                summary: Send Messages from Agent Pool to a mix of recipient types
+              SendMessagesFromSenderPoolToAMixOfRecipientTypes:
+                summary: Send Messages from Sender Pool to a mix of recipient types
                 value:
                   from:
-                    agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
+                    sender_pool_id: comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
                     filter_in:
                       - sms
                       - rcs
                   to:
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                     - address: '+17773178001'
                       channel: phone
                   content:
@@ -2315,42 +2865,43 @@ paths:
                 summary: Send multiple Messages with personalization
                 value:
                   from:
-                    agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                   to:
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                       variables:
                         first_name: John
                         last_name: Doe
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                       variables:
                         first_name: Jane
                         last_name: Doe
                   content:
                     text: Hello, {{ first_name }} {{ last_name }}!
-              SendMultipleMessagesWithContactReferencePersonalization:
-                summary: Send multiple Messages with Contact reference personalization
+              SendMultipleMessagesWithProfileReferencePersonalization:
+                summary: Send multiple Messages with Profile reference personalization
                 value:
                   from:
-                    agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                   to:
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                       variables:
-                        first_name: ${Twilio.Contact.first_name}
-                        last_name: ${Twilio.Contact.last_name}
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                        first_name: ${Twilio.Profile.first_name}
+                        last_name: ${Twilio.Profile.last_name}
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                       variables:
-                        first_name: ${Twilio.Contact.first_name}
-                        last_name: ${Twilio.Contact.last_name}
+                        first_name: ${Twilio.Profile.first_name}
+                        last_name: ${Twilio.Profile.last_name}
                   content:
-                    text: Hello, {{ first_name }} {{ last_name }}!
-                    default_variables:
-                      first_name: Valued
-                      last_name: Customer
+                    text: 'Hello, {{ first_name | default: ''Valued'' }} {{ last_name | default: ''Customer'' }}!'
               SendMessagesToAudienceWithPersonalization:
                 summary: Send Messages to Audience with personalization
                 value:
                   from:
-                    agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                   to:
                     - audience_id: comms_audience_01h9krwprkeee8fzqspvwy6nq8
                       variables:
@@ -2363,33 +2914,28 @@ paths:
                         last_name: ${Twilio.Contact.last_name}
                         gender: ${Twilio.Contact.gender}
                   content:
-                    text: Hello, {% unless last_name == '' or gender == 'other' %} {% case gender %} {% when 'male' %} Mr. {{last_name}} ! {% when 'female' %} Ms. {{last_name}} ! {% else %} {{first_name}} ! {% endcase %} {% else %} {{first_name}} ! {% endif %}
-                    default_variables:
-                      first_name: Valued Customer
-                      last_name: ''
-                      gender: other
+                    text: 'Hello, {% unless last_name == '''' or gender == ''other'' %} {% case gender %} {% when ''male'' %} Mr. {{last_name}} ! {% when ''female'' %} Ms. {{last_name}} ! {% else %} {{first_name}} ! {% endcase %} {% else %} {{first_name | default: ''Valued Customer''}} ! {% endif %}'
               SendMessagesConstrainedToWhatsappAndSms:
                 summary: Send Messages, constrained to whatsapp, and sms
                 value:
                   from:
-                    agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
+                    sender_pool_id: comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
                     filter_in:
                       - whatsapp
                       - sms
                   to:
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                       variables:
                         first_name: John
                         last_name: Doe
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                       variables:
                         first_name: Jane
                         last_name: Doe
                   content:
-                    text: Hello, {{ first_name }} {{ last_name }}!
-                    default_variables:
-                      first_name: Valued
-                      last_name: Customer
+                    text: 'Hello, {{ first_name | default: ''Valued'' }} {{ last_name | default: ''Customer'' }}!'
                     media:
                       - url: https://cdn.bikinibottom.com/bikinibottom.jpg
               AddAMessageAndParticipantToAnExistingSession:
@@ -2399,7 +2945,8 @@ paths:
                     address: '+19144178063'
                     channel: sms
                   to:
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                   session_id: comms_session_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     text: Hey, I don't think I can see the entrance.
@@ -2447,16 +2994,18 @@ paths:
                 summary: Send a Message with just recipient and content
                 value:
                   to:
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     text: Look ma, no 'from' ✨!
               FlexibleContentPerChannelControl:
                 summary: Flexible content, per channel control
                 value:
                   from:
-                    agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
+                    sender_pool_id: comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
                   to:
-                    - contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     modules:
                       - rcs:
@@ -2529,6 +3078,11 @@ paths:
             type: string
             format: date-time
         - in: query
+          name: profile
+          description: Filter Messages sent or received by Profile ID.
+          schema:
+            $ref: '#/components/schemas/ProfileId'
+        - in: query
           name: contact
           description: Filter Messages sent or received by Contact ID.
           schema:
@@ -2537,7 +3091,7 @@ paths:
           name: channel
           description: Filter Messages by channel.
           schema:
-            $ref: '#/components/schemas/MessageAgentChannel'
+            $ref: '#/components/schemas/MessageSenderChannel'
         - in: query
           name: status
           description: Filter Messages by Delivery Status.
@@ -2589,12 +3143,13 @@ paths:
                         from:
                           address: '+12065558844'
                           channel: sms
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
-                          agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                          sender_pool_id: comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+14153901002'
                             channel: phone
-                            contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq7
+                            profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq7
+                            service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                         status: sent
                         related:
                           - name: operation
@@ -2609,11 +3164,12 @@ paths:
                         from:
                           address: '+12065558844'
                           channel: whatsapp
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+14153901002'
                             channel: phone
-                            contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq7
+                            profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq7
+                            service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                         status: sent
                         related:
                           - name: operation
@@ -2627,19 +3183,20 @@ paths:
                     pagination:
                       next: null
                       self: https://comms.twilio.com/v1/Messages
-                ListMessagesFilterByContact:
-                  summary: List Messages filtered by Contact
+                ListMessagesFilterByProfile:
+                  summary: List Messages filtered by Profile
                   value:
                     messages:
                       - id: comms_message_01h2xcejqtf2nbrexx3vqjhp41
                         from:
                           address: '+12065558844'
                           channel: sms
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+14153901002'
                             channel: phone
-                            contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq7
+                            profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq7
+                            service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                         related:
                           - name: operation
                             id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
@@ -2654,11 +3211,12 @@ paths:
                         from:
                           address: '+12065558844'
                           channel: sms
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+14153901002'
                             channel: phone
-                            contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                            profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                            service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                         status: delivered
                         related:
                           - name: operation
@@ -2680,11 +3238,12 @@ paths:
                         from:
                           address: '+18126678921'
                           channel: sms
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+19144178063'
                             channel: phone
-                            contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                            profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                            service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                         status: delivered
                         related:
                           - name: operation
@@ -2702,11 +3261,12 @@ paths:
                         from:
                           address: '+18126678921'
                           channel: phone
-                          contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                          profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                          service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+19144178063'
                             channel: sms
-                            agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                            sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         status: inbound
                         related:
                           - name: session
@@ -2720,19 +3280,20 @@ paths:
                     pagination:
                       next: null
                       self: https://comms.twilio.com/v1/Messages
-                ListMessagesFilteredByInboundStatusAndContact:
-                  summary: List only inbound Messages from the same Contact
+                ListMessagesFilteredByInboundStatusAndProfile:
+                  summary: List only inbound Messages from the same Profile
                   value:
                     messages:
                       - id: comms_message_01h9krwprkeee8fzqspvwy6nq5
                         from:
                           address: '+12065558844'
                           channel: phone
-                          contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                          profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                          service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+14155551002'
                             channel: sms
-                            agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                            sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         status: inbound
                         related:
                           - name: session
@@ -2747,11 +3308,12 @@ paths:
                         from:
                           address: '+12065558844'
                           channel: sms
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+14155551003'
                             channel: phone
-                            contact_id: comms_contact_01h9krwprkeee8fzqspvwy6nq7
+                            profile_id: mem_profile_01h9krwprkeee8fzqspvwy6nq7
+                            service_id: mem_service_01h9krwprkeee8fzqspvwy6nq8
                         status: inbound
                         related:
                           - name: session
@@ -2812,7 +3374,7 @@ paths:
                     to:
                       - address: '+14153902337'
                         channel: sms
-                        agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                        sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                     content:
                       text: Hey, I need some help with my new 5G router!
                     status: inbound
@@ -2831,9 +3393,9 @@ paths:
                   value:
                     id: comms_message_2x4y6z8a0b1c2d3e4f5g6h7j8k
                     from:
-                      address: bowlingteam_212_agent
+                      address: bowlingteam_212_sender
                       channel: rcs
-                      agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                      sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                     to:
                       - address: '+14153901002'
                         channel: phone
@@ -2853,8 +3415,8 @@ paths:
                                         open_url_action:
                                           url: https://dude.info?campaign=bmV3IHNoaX
                                     - action:
-                                        text: Talk to an Agent
-                                        postback_data: agent_12038907435
+                                        text: Talk to a Sender
+                                        postback_data: sender_12038907435
                                         dial_action:
                                           phone_number: '+12038907435'
                         - sms:
@@ -2865,9 +3427,9 @@ paths:
                               - url: https://dude.info/media/info.png
                     attempts:
                       - from:
-                          address: bowlingteam_212_agent
+                          address: bowlingteam_212_sender
                           channel: rcs
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+14153901002'
                             channel: phone
@@ -2893,7 +3455,7 @@ paths:
                     from:
                       address: '+12065558844'
                       channel: sms
-                      agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                      sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                     to:
                       - address: '+14153901002'
                         channel: phone
@@ -2904,9 +3466,9 @@ paths:
                         - url: http://content.cool.co/party-thanks.png
                     attempts:
                       - from:
-                          address: bowlingteam_212_agent
+                          address: bowlingteam_212_sender
                           channel: rcs
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+14153901002'
                             channel: phone
@@ -2921,7 +3483,7 @@ paths:
                       - from:
                           address: '+12065558844'
                           channel: sms
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         to:
                           - address: '+14153901002'
                             channel: phone
@@ -3496,8 +4058,8 @@ paths:
                     - Use `PushNotificationAppSender` to specify the name of the `App`
                       to be used for sending the Push Notification(s).
 
-                    - Use `AgentIdSender` or `AgentIdSender` to send the Push Notification(s)
-                      from an `Agent` or `Agent Pool`.
+                    - Use `SenderIdSender` or `SenderIdSender` to send the Push Notification(s)
+                      from a `Sender` or `Sender Pool`.
                   type: object
                   oneOf:
                     - $ref: '#/components/schemas/PushNotificationCredentialSender'
@@ -3526,8 +4088,6 @@ paths:
                     * Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.
                     * When using a templated content, use the `variables` field on each recipient to specify the values to substitute.
                     * For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.
-                    * For each variable in your template, you may also specify a default in `default_variables`.
-                    * When targeting an `Audience`, it is *mandatory* to define defaults in `default_variables` for all variables in the template.
                     * When targeting `Audience` or `Contact` recipients, you may specify `variables` with values that reference stored fields, including custom fields, on the `Contact` -- for example: `${Twilio.Contact.first_name}` or `${Twilio.Contact.my_custom_field}`.
                   oneOf:
                     - $ref: '#/components/schemas/PushNotificationContentText'
@@ -3576,9 +4136,7 @@ paths:
                         name: ${Twilio.Contact.first_name}
                   content:
                     title: 10% off your wishlist item!
-                    text: Hey {{name}}, your wishlist item {{item}} is on sale this weekend only!
-                    default_variables:
-                      name: there
+                    text: 'Hey {{name | default: ''there'' }}, your wishlist item {{item}} is on sale this weekend only!'
                     provider_passthrough:
                       - provider: fcm
                         data:
@@ -3611,10 +4169,7 @@ paths:
                         is_vip: ${Twilio.Contact.is_vip}
                   content:
                     title: Sale on your favorite artist!
-                    text: Hey {{ name }}, your favorite artist's new album is on sale right now! {% if is_vip %} As a premium subscriber, you get an extra 25% off! {% endif %}
-                    default_variables:
-                      name: there
-                      is_vip: 'false'
+                    text: 'Hey {{ name | default: ''there'' }}, your favorite artist''s new album is on sale right now! {% if is_vip %} As a premium subscriber, you get an extra 25% off! {% endif %}'
                   priority: low
                   sound: saxophone
               SendAPushToAContactsMobileAppWhenThereAreMultiple:
@@ -4463,39 +5018,39 @@ paths:
             curl -X GET 'https://comms.twilio.com/preview/PushNotifications/Apps/limonade_app' \
             --header 'Content-Type: application/json' \
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
-  /Agents:
+  /Senders:
     get:
-      summary: List Agents
-      operationId: ListAgents
-      description: This operation fetches a paginated list of Agents.
+      summary: List Senders
+      operationId: ListSenders
+      description: This operation fetches a paginated list of Senders.
       tags:
-        - Agents
+        - Senders
       parameters:
         - in: query
           name: channel
-          description: Filter to Agents that match a specific channel.
+          description: Filter to Senders that match a specific channel.
           schema:
-            $ref: '#/components/schemas/AgentCommunicationChannel'
+            $ref: '#/components/schemas/SenderCommunicationChannel'
         - in: query
           name: status
-          description: Filter to Agents with the specified status.
+          description: Filter to Senders with the specified status.
           schema:
-            $ref: '#/components/schemas/AgentStatus'
+            $ref: '#/components/schemas/SenderStatus'
         - in: query
           name: start_date
-          description: Filter to Agents created after the specified date and time in ISO 8601 format.
+          description: Filter to Senders created after the specified date and time in ISO 8601 format.
           schema:
             type: string
             format: date-time
         - in: query
           name: end_date
-          description: Filter to Agents created before the specified date and time in ISO 8601 format.
+          description: Filter to Senders created before the specified date and time in ISO 8601 format.
           schema:
             type: string
             format: date-time
         - in: query
           name: page_token
-          description: A page token that represents the start agent of a page
+          description: A page token that represents the start sender of a page
           schema:
             type: string
         - in: query
@@ -4508,26 +5063,26 @@ paths:
           content:
             application/json:
               schema:
-                title: ListAgentsResponse
-                description: A list of Agents and pagination metadata.
+                title: ListSendersResponse
+                description: A list of Senders and pagination metadata.
                 type: object
                 properties:
-                  agents:
-                    description: A list of Agents
+                  senders:
+                    description: A list of Senders
                     type: array
                     items:
-                      $ref: '#/components/schemas/Agent'
+                      $ref: '#/components/schemas/Sender'
                   pagination:
                     $ref: '#/components/schemas/PaginationMetadata'
                 required:
-                  - agents
+                  - senders
                   - pagination
               examples:
-                PageOfAgents:
-                  summary: Page of Agents
+                PageOfSenders:
+                  summary: Page of Senders
                   value:
-                    agents:
-                      - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    senders:
+                      - id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         display_name: Cool Support
                         channel: email
                         address: support@example.com
@@ -4535,7 +5090,7 @@ paths:
                         tags: {}
                         created_at: '2022-08-24T14:15:22Z'
                         updated_at: '2023-09-13T12:00:24Z'
-                      - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                      - id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         display_name: Cool Support
                         channel: sms
                         address: '+14153902337'
@@ -4543,17 +5098,17 @@ paths:
                         tags: {}
                         created_at: '2022-08-24T14:15:22Z'
                         updated_at: '2023-09-13T12:00:24Z'
-                      - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                      - id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         display_name: Cool Support
                         channel: rcs
-                        address: coolsupport_x12gb_agent
+                        address: coolsupport_x12gb_sender
                         status: activated
                         tags: {}
                         created_at: '2022-08-24T14:15:22Z'
                         updated_at: '2023-09-13T12:00:24Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Agents
+                      self: https://comms.twilio.com/v1/Senders
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -4565,35 +5120,35 @@ paths:
       x-code-samples:
         - lang: curl
           label: cURL
-          source: |-
-            curl -X GET 'https://comms.twilio.com/preview/Agents' \
+          source: |
+            curl -X GET 'https://comms.twilio.com/preview/Senders' \
             --header 'Content-Type: application/json' \
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
-  /Agents/{agent_id}:
+  /Senders/{sender_id}:
     parameters:
       - schema:
-          $ref: '#/components/schemas/AgentId'
-        name: agent_id
+          $ref: '#/components/schemas/SenderId'
+        name: sender_id
         in: path
         required: true
     get:
-      summary: Fetch an Agent
-      operationId: FetchAgent
-      description: This operation fetches a single Agent using its ID.
+      summary: Fetch a Sender
+      operationId: FetchSender
+      description: This operation fetches a single Sender using its ID.
       tags:
-        - Agents
+        - Senders
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Agent'
+                $ref: '#/components/schemas/Sender'
               examples:
-                MessageAgent:
-                  summary: Message Agent
+                MessageSender:
+                  summary: Message Sender
                   value:
-                    id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                     display_name: Cool Support
                     channel: sms
                     address: '+14153902337'
@@ -4601,10 +5156,10 @@ paths:
                     tags: {}
                     created_at: '2022-08-24T14:15:22Z'
                     updated_at: '2023-09-13T12:00:24Z'
-                PushAgent:
-                  summary: Push Agent
+                PushSender:
+                  summary: Push Sender
                   value:
-                    id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                     display_name: limonade_app
                     channel: push
                     address: limonade_app
@@ -4612,13 +5167,13 @@ paths:
                     tags: {}
                     created_at: '2022-08-24T14:15:22Z'
                     updated_at: '2023-09-13T12:00:24Z'
-                RcsAgent:
-                  summary: RCS Agent
+                RcsSender:
+                  summary: RCS Sender
                   value:
-                    id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                     display_name: Cool Support
                     channel: rcs
-                    address: coolsupport_abc123_agent
+                    address: coolsupport_abc123_sender
                     status: activated
                     tags: {}
                     created_at: '2022-08-24T14:15:22Z'
@@ -4633,31 +5188,31 @@ paths:
           $ref: '#/components/responses/Http500Response'
         '503':
           $ref: '#/components/responses/Http503Response'
-  /Agents/Search:
+  /Senders/Search:
     post:
-      summary: Search Agents
-      description: This operation allows searching on agents on specific filters.
-      operationId: SearchAgents
+      summary: Search Senders
+      description: This operation allows searching on senders on specific filters.
+      operationId: SearchSenders
       tags:
-        - Agents
+        - Senders
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              title: SearchAgentsRequest
+              title: SearchSendersRequest
               type: object
               properties:
                 address:
                   type: string
-                  description: The Agent’s communication address within a channel, such as a phone number, email address, or device token.
+                  description: The Sender’s communication address within a channel, such as a phone number, email address, or device token.
                 channel:
-                  $ref: '#/components/schemas/AgentCommunicationChannel'
+                  $ref: '#/components/schemas/SenderCommunicationChannel'
                 status:
-                  $ref: '#/components/schemas/AgentStatus'
+                  $ref: '#/components/schemas/SenderStatus'
                 page_token:
                   type: string
-                  description: A page token that represents the start agent of a page
+                  description: A page token that represents the start sender of a page
                 page_size:
                   $ref: '#/components/schemas/PageSize'
               required:
@@ -4675,25 +5230,25 @@ paths:
           content:
             application/json:
               schema:
-                title: SearchAgentsResponse
-                description: A list of Agents that match the search criteria.
+                title: SearchSendersResponse
+                description: A list of Senders that match the search criteria.
                 type: object
                 properties:
-                  agents:
+                  senders:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Agent'
+                      $ref: '#/components/schemas/Sender'
                   pagination:
                     $ref: '#/components/schemas/PaginationMetadata'
                 required:
-                  - agents
+                  - senders
                   - pagination
               examples:
-                PageOfAgents:
-                  summary: Page of Agents
+                PageOfSenders:
+                  summary: Page of Senders
                   value:
-                    agents:
-                      - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    senders:
+                      - id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         display_name: Cool Support
                         channel: email
                         address: support@example.com
@@ -4701,7 +5256,7 @@ paths:
                         tags: {}
                         created_at: '2022-08-24T14:15:22Z'
                         updated_at: '2023-09-13T12:00:24Z'
-                      - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                      - id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         display_name: Cool Support
                         channel: sms
                         address: '+15264013448'
@@ -4709,17 +5264,17 @@ paths:
                         tags: {}
                         created_at: '2022-08-24T14:15:22Z'
                         updated_at: '2023-09-13T12:00:24Z'
-                      - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                      - id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         display_name: Cool Support
                         channel: rcs
-                        address: coolsupport_abc123_agent
+                        address: coolsupport_abc123_sender
                         status: deactivated
                         tags: {}
                         created_at: '2022-08-24T14:15:22Z'
                         updated_at: '2023-09-13T12:00:24Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Agents
+                      self: https://comms.twilio.com/v1/Senders
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -4733,54 +5288,54 @@ paths:
       x-code-samples:
         - lang: curl
           label: cURL
-          source: |-
-            curl -X POST 'https://comms.twilio.com/preview/Agents/Search' \
+          source: |
+            curl -X POST 'https://comms.twilio.com/preview/Senders/Search' \
             --header 'Content-Type: application/json' \
             --data '{
                 "address": "+14153902337",
                 "channel": "sms"
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
-  /Agents/Resolve:
+  /Senders/Resolve:
     parameters: []
     post:
-      summary: Resolve Agents
-      description: This operation resolves a list of eligible Agents for sending and receiving communications for the given criteria.
-      operationId: ResolveAgents
+      summary: Resolve Senders
+      description: This operation resolves a list of eligible Senders for sending and receiving communications for the given criteria.
+      operationId: ResolveSenders
       tags:
-        - Agents
+        - Senders
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              title: ResolveAgentsRequest
+              title: ResolveSendersRequest
               type: object
               oneOf:
-                - title: ResolveAgentsFromAgentPoolRequest
+                - title: ResolveSendersFromSenderPoolRequest
                   type: object
                   properties:
-                    agent_pool_id:
-                      $ref: '#/components/schemas/AgentPoolId'
-                      description: The ID of the Agent Pool to use when resolving Agent-Recipient pairs. When an Agent Pool is specified it will constrain the potential results based upon which Agents are members of the pool.
+                    sender_pool_id:
+                      $ref: '#/components/schemas/SenderPoolId'
+                      description: The ID of the Sender Pool to use when resolving Sender-Recipient pairs. When a Sender Pool is specified it will constrain the potential results based upon which Senders are members of the pool.
                     recipient_addresses:
-                      title: ResolveAgentsFromAgentPoolRequestRecipientAddresses
-                      description: A collection of addresses for a single human used to resolve Agents.
+                      title: ResolveSendersFromSenderPoolRequestRecipientAddresses
+                      description: A collection of addresses for a single human used to resolve Senders.
                       type: array
                       minItems: 1
                       maxItems: 100
                       items:
                         $ref: '#/components/schemas/CommunicationRecipient'
                     channels:
-                      $ref: '#/components/schemas/AgentCommunicationChannelControl'
+                      $ref: '#/components/schemas/SenderCommunicationChannelControl'
                   required:
                     - recipient_addresses
-                - title: ResolveAgentsFromAddressesRequest
+                - title: ResolveSendersFromAddressesRequest
                   type: object
                   properties:
                     recipient_addresses:
-                      title: ResolveAgentsFromAddressesRequestRecipientAddresses
-                      description: A collection of addresses for a single human used to resolve Agents.
+                      title: ResolveSendersFromAddressesRequestRecipientAddresses
+                      description: A collection of addresses for a single human used to resolve Senders.
                       type: array
                       minItems: 1
                       maxItems: 100
@@ -4792,7 +5347,7 @@ paths:
                         - $ref: '#/components/schemas/EmailAddressSender'
                         - $ref: '#/components/schemas/PushNotificationCredentialSender'
                     channels:
-                      $ref: '#/components/schemas/AgentCommunicationChannelControl'
+                      $ref: '#/components/schemas/SenderCommunicationChannelControl'
                   required:
                     - recipient_addresses
                     - sender_addresses
@@ -4807,10 +5362,10 @@ paths:
                       channel: whatsapp
                     - address: davidpletnjov@example.com
                       channel: email
-              UsingAnAgentPool:
-                summary: Using an Agent Pool
+              UsingASenderPool:
+                summary: Using a Sender Pool
                 value:
-                  agent_pool_id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
+                  sender_pool_id: comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
                   recipient_addresses:
                     - address: '+14153902337'
                       channel: phone
@@ -4824,25 +5379,25 @@ paths:
           content:
             application/json:
               schema:
-                title: ResolveAgentsResponse
+                title: ResolveSendersResponse
                 type: object
                 properties:
                   results:
-                    title: ResolveAgentsResponseResults
-                    description: An array of compatible Agent-Recipient pairs to communicate `from` and `to`. Limited to the top 10 highest priority results.
+                    title: ResolveSendersResponseResults
+                    description: An array of compatible Sender-Recipient pairs to communicate `from` and `to`. Limited to the top 10 highest priority results.
                     type: array
                     items:
-                      title: ResolveAgentsResponseResult
+                      title: ResolveSendersResponseResult
                       type: object
-                      description: An Agent-Recipient pair to communicate `from` and `to`.
+                      description: A Sender-Recipient pair to communicate `from` and `to`.
                       properties:
                         from:
-                          title: ResolveAgentsResponsePairFrom
+                          title: ResolveSendersResponsePairFrom
                           type: object
-                          description: The Agent that is eligible to communicate with the recipient endpoint in the `to` field.
+                          description: The Sender that is eligible to communicate with the recipient endpoint in the `to` field.
                           properties:
-                            agent_id:
-                              $ref: '#/components/schemas/AgentId'
+                            sender_id:
+                              $ref: '#/components/schemas/SenderId'
                             display_name:
                               type:
                                 - string
@@ -4850,17 +5405,17 @@ paths:
                               description: The name to associate with the address for sending and receiving communications, visible in the from for some types of communications, like email.
                             address:
                               type: string
-                              description: The Agent’s communication address within a channel, such as a phone number, email address, or device token.
+                              description: The Sender’s communication address within a channel, such as a phone number, email address, or device token.
                             channel:
-                              $ref: '#/components/schemas/AgentCommunicationChannel'
+                              $ref: '#/components/schemas/SenderCommunicationChannel'
                           required:
-                            - agent_id
+                            - sender_id
                             - display_name
                             - channel
                         to:
-                          title: ResolveAgentsResponsePairTo
+                          title: ResolveSendersResponsePairTo
                           type: object
-                          description: The recipient endpoint that is reachable by the Agent in the `from` field.
+                          description: The recipient endpoint that is reachable by the Sender in the `from` field.
                           properties:
                             address:
                               description: The identifier within a channel address space for a recipient (e.g. phone number)
@@ -4885,16 +5440,16 @@ paths:
                   value:
                     results:
                       - from:
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           display_name: Cool Support
                           channel: rcs
-                          address: coolsupport_123abc_agent
+                          address: coolsupport_123abc_sender
                         to:
                           address: '+14153902337'
                           channel: phone
                         priority: 0
                       - from:
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           display_name: Cool Support
                           channel: sms
                           address: '+15264013448'
@@ -4907,16 +5462,16 @@ paths:
                   value:
                     results:
                       - from:
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           display_name: Cool Support
                           channel: rcs
-                          address: coolsupport_123abc_agent
+                          address: coolsupport_123abc_sender
                         to:
                           address: '+14153902337'
                           channel: phone
                         priority: 0
                       - from:
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           display_name: Cool VIP Support
                           channel: whatsapp
                           address: '+15264013448'
@@ -4925,7 +5480,7 @@ paths:
                           channel: whatsapp
                         priority: 1
                       - from:
-                          agent_id: comms_agent_01j3bbabcmfff8fzqspvwy6nq7
+                          sender_id: comms_sender_01j3bbabcmfff8fzqspvwy6nq7
                           display_name: Cool Support
                           channel: sms
                           address: '+15264013448'
@@ -4942,7 +5497,7 @@ paths:
                   value:
                     results:
                       - from:
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           display_name: Cool Support
                           channel: email
                           address: support@example.com
@@ -4955,7 +5510,7 @@ paths:
                   value:
                     results:
                       - from:
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           display_name: Cool Support
                           channel: push
                         to:
@@ -4963,7 +5518,7 @@ paths:
                           channel: push
                         priority: 1
                       - from:
-                          agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                          sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           display_name: Cool Support
                           channel: push
                         to:
@@ -4981,8 +5536,8 @@ paths:
       x-code-samples:
         - lang: curl
           label: cURL
-          source: |-
-            curl -X POST 'https://comms.twilio.com/preview/Agents/Resolve' \
+          source: |
+            curl -X POST 'https://comms.twilio.com/preview/Senders/Resolve' \
             --header 'Content-Type: application/json' \
             --data '{
                 "recipient_addresses": [
@@ -4991,13 +5546,13 @@ paths:
                 ]
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
-  /AgentPools:
+  /SenderPools:
     post:
-      summary: Create an AgentPool
-      operationId: CreateAgentPool
-      description: This operation creates an AgentPool
+      summary: Create a SenderPool
+      operationId: CreateSenderPool
+      description: This operation creates a SenderPool
       tags:
-        - AgentPools
+        - SenderPools
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithOperation'
@@ -5014,70 +5569,70 @@ paths:
         content:
           application/json:
             schema:
-              title: CreateAgentPoolRequest
+              title: CreateSenderPoolRequest
               type: object
               properties:
                 name:
                   type: string
-                  description: The friendly name of the AgentPool.
-                agents:
-                  title: CreateAgentPoolRequestAgents
-                  description: The list of Agents to add to the AgentPool.
+                  description: The friendly name of the SenderPool.
+                senders:
+                  title: CreateSenderPoolRequestSenders
+                  description: The list of Senders to add to the SenderPool.
                   type: array
                   items:
-                    title: CreateAgentPoolRequestAgent
-                    description: Agent identified by ID.
+                    title: CreateSenderPoolRequestSender
+                    description: Sender identified by ID.
                     type: object
                     properties:
-                      agent_id:
-                        $ref: '#/components/schemas/AgentId'
+                      sender_id:
+                        $ref: '#/components/schemas/SenderId'
                   minItems: 0
                   maxItems: 10000
                 tags:
                   $ref: '#/components/schemas/Tags'
             examples:
-              CreatingASimpleSmsWhatsappCapableAgentPool:
-                summary: Creating a simple sms & whatsapp capable AgentPool
+              CreatingASimpleSmsWhatsappCapableSenderPool:
+                summary: Creating a simple sms & whatsapp capable SenderPool
                 value:
                   name: Sales Leads - APAC
                   tags:
                     region: APAC
-              CreatingAnAgentPoolWithInitialListOfAgents:
-                summary: Creating an AgentPool with initial list of Agents
+              CreatingASenderPoolWithInitialListOfSenders:
+                summary: Creating a SenderPool with initial list of Senders
                 value:
                   name: Sales Leads - APAC
-                  agents:
-                    - agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
-                    - agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                  senders:
+                    - sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                    - sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                   tags:
                     region: APAC
     get:
-      summary: List AgentPools
-      operationId: ListAgentPools
-      description: This operation fetches a paginated list of AgentPools.
+      summary: List SenderPools
+      operationId: ListSenderPools
+      description: This operation fetches a paginated list of SenderPools.
       tags:
-        - AgentPools
+        - SenderPools
       parameters:
         - in: query
           name: start_date
-          description: Filter to AgentPools created after the specified date and time in ISO 8601 format.
+          description: Filter to SenderPools created after the specified date and time in ISO 8601 format.
           schema:
             type: string
             format: date-time
         - in: query
           name: end_date
-          description: Filter to AgentPools created before the specified date and time in ISO 8601 format.
+          description: Filter to SenderPools created before the specified date and time in ISO 8601 format.
           schema:
             type: string
             format: date-time
         - in: query
           name: operation_id
-          description: Filter to AgentPools by AgentPool Operation ID.
+          description: Filter to SenderPools by SenderPool Operation ID.
           schema:
             $ref: '#/components/schemas/OperationId'
         - in: query
           name: page_token
-          description: A page token that represents the start AgentPool of a page
+          description: A page token that represents the start SenderPool of a page
           schema:
             type: string
         - in: query
@@ -5090,14 +5645,14 @@ paths:
           content:
             application/json:
               schema:
-                title: ListAgentPoolsResponse
+                title: ListSenderPoolsResponse
                 type: object
                 properties:
-                  agent_pools:
-                    description: A list of AgentPools.
+                  sender_pools:
+                    description: A list of SenderPools.
                     type: array
                     items:
-                      $ref: '#/components/schemas/AgentPool'
+                      $ref: '#/components/schemas/SenderPool'
                   pagination:
                     $ref: '#/components/schemas/PaginationMetadata'
         '400':
@@ -5111,35 +5666,35 @@ paths:
       x-code-samples:
         - lang: curl
           label: cURL
-          source: |-
-            curl -X GET 'https://comms.twilio.com/preview/AgentPools' \
+          source: |
+            curl -X GET 'https://comms.twilio.com/preview/SenderPools' \
             --header 'Content-Type: application/json' \
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
-  /AgentPools/{agent_pool_id}:
+  /SenderPools/{sender_pool_id}:
     parameters:
       - schema:
-          $ref: '#/components/schemas/AgentPoolId'
-        name: agent_pool_id
+          $ref: '#/components/schemas/SenderPoolId'
+        name: sender_pool_id
         in: path
         required: true
     get:
-      summary: Fetch an AgentPool
-      operationId: FetchAgentPool
-      description: This operation fetches a single AgentPool using its ID.
+      summary: Fetch a SenderPool
+      operationId: FetchSenderPool
+      description: This operation fetches a single SenderPool using its ID.
       tags:
-        - AgentPools
+        - SenderPools
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AgentPool'
+                $ref: '#/components/schemas/SenderPool'
               examples:
-                SimpleSmsWhatsappCapableAgentPool:
-                  summary: A simple sms & whatsapp capable AgentPool
+                SimpleSmsWhatsappCapableSenderPool:
+                  summary: A simple sms & whatsapp capable SenderPool
                   value:
-                    id: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
+                    id: comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
                     name: Customer Support - NAMER
                     tags: {}
                     created_at: '2023-10-02T11:20:00Z'
@@ -5155,11 +5710,11 @@ paths:
         '503':
           $ref: '#/components/responses/Http503Response'
     patch:
-      summary: Update an AgentPool
-      operationId: UpdateAgentPool
-      description: This operation partially updates an AgentPool
+      summary: Update a SenderPool
+      operationId: UpdateSenderPool
+      description: This operation partially updates a SenderPool
       tags:
-        - AgentPools
+        - SenderPools
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithResource'
@@ -5178,38 +5733,38 @@ paths:
         content:
           application/json:
             schema:
-              title: UpdateAgentPoolRequest
+              title: UpdateSenderPoolRequest
               type: object
               properties:
                 name:
                   type: string
-                  description: The friendly name of the AgentPool
+                  description: The friendly name of the SenderPool
                 tags:
                   $ref: '#/components/schemas/Tags'
             examples:
-              UpdateAgentPoolName:
-                summary: Update AgentPool name
+              UpdateSenderPoolName:
+                summary: Update SenderPool name
                 value:
-                  name: Customer Support Agents - Tier 1
+                  name: Customer Support Senders - Tier 1
                   tags:
                     tier: '1'
       x-code-samples:
         - lang: curl
           label: cURL
-          source: |-
-            curl -X PATCH 'https://comms.twilio.com/preview/AgentPools/comms_agentpool_01h9krwprkeee8fzqspvwy6nq8' \
+          source: |
+            curl -X PATCH 'https://comms.twilio.com/preview/SenderPools/comms_senderpool_01h9krwprkeee8fzqspvwy6nq8' \
             --header 'Content-Type: application/json' \
             --data '{
-                "name": "Customer Support Agents - Tier 1",
+                "name": "Customer Support Senders - Tier 1",
                 "tags": { "tier": "1" }
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
     delete:
-      summary: Delete an AgentPool
-      operationId: DeleteAgentPool
-      description: This operation deletes an AgentPool
+      summary: Delete a SenderPool
+      operationId: DeleteSenderPool
+      description: This operation deletes a SenderPool
       tags:
-        - AgentPools
+        - SenderPools
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithResource'
@@ -5223,19 +5778,19 @@ paths:
           $ref: '#/components/responses/Http500Response'
         '503':
           $ref: '#/components/responses/Http503Response'
-  /AgentPools/{agent_pool_id}/Agents:
+  /SenderPools/{sender_pool_id}/Senders:
     parameters:
       - schema:
-          $ref: '#/components/schemas/AgentPoolId'
-        name: agent_pool_id
+          $ref: '#/components/schemas/SenderPoolId'
+        name: sender_pool_id
         in: path
         required: true
     post:
-      summary: Add Agents to an AgentPool
-      operationId: AddAgentsToAgentPool
-      description: This operation adds Agents to an AgentPool
+      summary: Add Senders to a SenderPool
+      operationId: AddSendersToSenderPool
+      description: This operation adds Senders to a SenderPool
       tags:
-        - AgentPools
+        - SenderPools
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithOperation'
@@ -5254,63 +5809,63 @@ paths:
         content:
           application/json:
             schema:
-              title: AddAgentsToAgentPoolRequest
-              description: List of Agents to add to the AgentPool.
+              title: AddSendersToSenderPoolRequest
+              description: List of Senders to add to the SenderPool.
               type: array
               items:
-                title: AddAgentsToAgentPoolRequestItem
-                description: An Agent identified by ID to add to the AgentPool.
+                title: AddSendersToSenderPoolRequestItem
+                description: A Sender identified by ID to add to the SenderPool.
                 type: object
                 properties:
-                  agent_id:
-                    $ref: '#/components/schemas/AgentId'
+                  sender_id:
+                    $ref: '#/components/schemas/SenderId'
                 required:
-                  - agent_id
+                  - sender_id
               minItems: 1
               maxItems: 10000
             examples:
-              AddAgentToAgentPool:
-                summary: Add Agent to AgentPool
+              AddSenderToSenderPool:
+                summary: Add Sender to SenderPool
                 value:
-                  - agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
-              AddMultipleAgentsToAgentPool:
-                summary: Add multiple Agents to AgentPool
+                  - sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+              AddMultipleSendersToSenderPool:
+                summary: Add multiple Senders to SenderPool
                 value:
-                  - agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
-                  - agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq7
-                  - agent_id: comms_agent_01h9krwprkeee8fzqspvwy6nq6
+                  - sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                  - sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq7
+                  - sender_id: comms_sender_01h9krwprkeee8fzqspvwy6nq6
     get:
-      summary: List Agents in an AgentPool
-      operationId: ListAgentsInAgentPool
-      description: This operation fetches a paginated list of Agents that belong to an AgentPool.
+      summary: List Senders in a SenderPool
+      operationId: ListSendersInSenderPool
+      description: This operation fetches a paginated list of Senders that belong to a SenderPool.
       tags:
-        - AgentPools
+        - SenderPools
       parameters:
         - in: query
           name: channel
-          description: Filter to Agents that match a specific channel.
+          description: Filter to Senders that match a specific channel.
           schema:
-            $ref: '#/components/schemas/AgentCommunicationChannel'
+            $ref: '#/components/schemas/SenderCommunicationChannel'
         - in: query
           name: status
-          description: Filter to Agents with the specified status.
+          description: Filter to Senders with the specified status.
           schema:
-            $ref: '#/components/schemas/AgentStatus'
+            $ref: '#/components/schemas/SenderStatus'
         - in: query
           name: start_date
-          description: Filter to Agents created after the specified date and time in ISO 8601 format.
+          description: Filter to Senders created after the specified date and time in ISO 8601 format.
           schema:
             type: string
             format: date-time
         - in: query
           name: end_date
-          description: Filter to Agents created before the specified date and time in ISO 8601 format.
+          description: Filter to Senders created before the specified date and time in ISO 8601 format.
           schema:
             type: string
             format: date-time
         - in: query
           name: page_token
-          description: A page token that represents the start Agent of a page
+          description: A page token that represents the start Sender of a page
           schema:
             type: string
         - in: query
@@ -5323,22 +5878,22 @@ paths:
           content:
             application/json:
               schema:
-                title: ListAgentsInAgentPoolResponse
+                title: ListSendersInSenderPoolResponse
                 type: object
                 properties:
-                  agents:
-                    description: A list of Agents that belong to the AgentPool.
+                  senders:
+                    description: A list of Senders that belong to the SenderPool.
                     type: array
                     items:
-                      $ref: '#/components/schemas/Agent'
+                      $ref: '#/components/schemas/Sender'
                   pagination:
                     $ref: '#/components/schemas/PaginationMetadata'
               examples:
-                PageOfAgentsThatBelongToAnAgentPool:
-                  summary: Page of Agents that belong to an AgentPool
+                PageOfSendersThatBelongToASenderPool:
+                  summary: Page of Senders that belong to a SenderPool
                   value:
-                    agents:
-                      - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                    senders:
+                      - id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         display_name: Cool Support
                         channel: email
                         address: support@example.com
@@ -5346,7 +5901,7 @@ paths:
                         tags: {}
                         created_at: '2022-08-24T14:15:22Z'
                         updated_at: '2023-09-13T12:00:24Z'
-                      - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                      - id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         display_name: Cool Support
                         channel: sms
                         address: '+14153902337'
@@ -5354,7 +5909,7 @@ paths:
                         tags: {}
                         created_at: '2022-08-24T14:15:22Z'
                         updated_at: '2023-09-13T12:00:24Z'
-                      - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                      - id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         display_name: limonade_app
                         channel: push
                         address: limonade_app
@@ -5362,7 +5917,7 @@ paths:
                         tags: {}
                         created_at: '2022-08-24T14:15:22Z'
                         updated_at: '2023-09-13T12:00:24Z'
-                      - id: comms_agent_01h9krwprkeee8fzqspvwy6nq8
+                      - id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                         display_name: limonade_eats_app
                         channel: push
                         address: limonade_eats_app
@@ -5372,7 +5927,7 @@ paths:
                         updated_at: '2023-09-13T12:00:24Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/AgentPool/01h9krwprkeee8fzqspvwy6nq9/Agents
+                      self: https://comms.twilio.com/v1/SenderPool/01h9krwprkeee8fzqspvwy6nq9/Senders
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -5386,28 +5941,28 @@ paths:
       x-code-samples:
         - lang: curl
           label: cURL
-          source: |-
-            curl -X GET 'https://comms.twilio.com/preview/AgentPools/comms_agentpool_01h9krwprkeee8fzqspvwy6nq8/Agents' \
+          source: |
+            curl -X GET 'https://comms.twilio.com/preview/SenderPools/comms_senderpool_01h9krwprkeee8fzqspvwy6nq8/Senders' \
             --header 'Content-Type: application/json' \
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
-  /AgentPools/{agent_pool_id}/Agents/{agent_id}:
+  /SenderPools/{sender_pool_id}/Senders/{sender_id}:
     parameters:
       - schema:
-          $ref: '#/components/schemas/AgentPoolId'
-        name: agent_pool_id
+          $ref: '#/components/schemas/SenderPoolId'
+        name: sender_pool_id
         in: path
         required: true
       - schema:
-          $ref: '#/components/schemas/AgentId'
-        name: agent_id
+          $ref: '#/components/schemas/SenderId'
+        name: sender_id
         in: path
         required: true
     delete:
-      summary: Remove an Agent from an AgentPool
-      operationId: RemoveAgentFromAgentPool
-      description: This operation removes an Agent from an AgentPool
+      summary: Remove a Sender from a SenderPool
+      operationId: RemoveSenderFromSenderPool
+      description: This operation removes a Sender from a SenderPool
       tags:
-        - AgentPools
+        - SenderPools
       responses:
         '202':
           $ref: '#/components/responses/Http202ResponseWithResource'
@@ -5421,13 +5976,13 @@ paths:
           $ref: '#/components/responses/Http500Response'
         '503':
           $ref: '#/components/responses/Http503Response'
-  /AgentPools/Operations:
+  /SenderPools/Operations:
     get:
-      summary: List Agent Pool Operations
-      operationId: ListAgentPoolOperations
-      description: This operation fetches a paginated list of Agent Pool Operations.
+      summary: List Sender Pool Operations
+      operationId: ListSenderPoolOperations
+      description: This operation fetches a paginated list of Sender Pool Operations.
       tags:
-        - AgentPools
+        - SenderPools
       parameters:
         - in: query
           name: start_date
@@ -5462,22 +6017,22 @@ paths:
           content:
             application/json:
               schema:
-                title: ListAgentPoolOperationsResponse
+                title: ListSenderPoolOperationsResponse
                 type: object
                 properties:
                   operations:
                     type: array
-                    description: A list of AgentPool Operations.
+                    description: A list of SenderPool Operations.
                     items:
-                      $ref: '#/components/schemas/AgentPoolOperation'
+                      $ref: '#/components/schemas/SenderPoolOperation'
                   pagination:
                     $ref: '#/components/schemas/PaginationMetadata'
                 required:
                   - operations
                   - pagination
               examples:
-                ListAgentPoolOperations:
-                  summary: List AgentPool Operations
+                ListSenderPoolOperations:
+                  summary: List SenderPool Operations
                   value:
                     operations:
                       - id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
@@ -5500,7 +6055,7 @@ paths:
                         updated_at: '2024-04-05T06:20:00Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Agents/Operations
+                      self: https://comms.twilio.com/v1/Senders/Operations
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -5512,11 +6067,11 @@ paths:
       x-code-samples:
         - lang: curl
           label: cURL
-          source: |-
-            curl -X GET 'https://comms.twilio.com/preview/AgentPools/Operations' \
+          source: |
+            curl -X GET 'https://comms.twilio.com/preview/SenderPools/Operations' \
             --header 'Content-Type: application/json' \
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
-  /AgentPools/Operations/{operation_id}:
+  /SenderPools/Operations/{operation_id}:
     parameters:
       - schema:
           $ref: '#/components/schemas/OperationId'
@@ -5524,21 +6079,21 @@ paths:
         in: path
         required: true
     get:
-      summary: Fetch an AgentPool Operation
-      operationId: FetchAgentPoolOperation
-      description: This operation fetches a single Agent Pool Operation using its ID.
+      summary: Fetch a SenderPool Operation
+      operationId: FetchSenderPoolOperation
+      description: This operation fetches a single Sender Pool Operation using its ID.
       tags:
-        - AgentPools
+        - SenderPools
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AgentPoolOperation'
+                $ref: '#/components/schemas/SenderPoolOperation'
               examples:
-                FetchAgentPoolOperation:
-                  summary: Fetch Agent Pool Operation
+                FetchSenderPoolOperation:
+                  summary: Fetch Sender Pool Operation
                   value:
                     id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
                     status: completed
@@ -5571,7 +6126,12 @@ components:
       description: Basic authentication of the form `Basic <api_key:api_key_secret>`.
   schemas:
     OperationId:
-      description: An identifier used to group and retrieve resources that were created together in the same request. This can be used for convenient retrieval of correlated resources and their aggregates.
+      description: |-
+        The Operation ID is an identifier that can be used to correlate all of the
+        resources created in a request.
+
+        Issue a GET request to the resource list location, using the Operation ID as a query parameter
+        to retrieve the resources that correlate with the Operation.
       title: OperationId
       type: string
       pattern: ^comms_operation_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
@@ -5757,8 +6317,7 @@ components:
         There can be a maximum of 10 key-value pairs.
 
         This field can be templated with [Liquid](https://shopify.github.io/liquid/).
-        Specify `variables` with each recipient for personalization 
-        and `default_variables` for default values.
+        Specify `variables` with each recipient for personalization.
       maxProperties: 10
       propertyNames:
         type: string
@@ -5784,8 +6343,8 @@ components:
             - contact
             - audience
             - media
-            - agent
-            - agent_pool
+            - sender
+            - sender_pool
             - operation
             - engagement
             - credential
@@ -5917,6 +6476,19 @@ components:
             info_url: https://www.twilio.com/docs/api/errors/21617
             status: 400
             context: $.content.text
+    OperationLocation:
+      type: string
+      format: uri
+      description: The location (uri) of the Operation resource identified by `Operation-Id`.
+    ResourceLocation:
+      type: string
+      format: uri
+      description: The location (uri) of the resource identified by `Resource-Id`.
+    ResourceId:
+      type: string
+      description: |-
+        The Resource ID is an identifier for the resource that was created or updated
+          in response to the request.
     TagsNullable:
       title: TagsNullable
       type:
@@ -6272,6 +6844,225 @@ components:
         - created_at
         - updated_at
         - deleted_at
+    ProfileId:
+      title: ProfileId
+      description: A reference to a Profile
+      type: string
+      pattern: ^mem_profile_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+    EmailStatus:
+      title: EmailStatus
+      description: |-
+        The status of an `Email`. The status can be one of the following:
+        - `scheduled` The `Email` is scheduled to be sent by
+          Twilio in the future.
+
+        - `queued` The `Email` is queued in Twilio for sending.
+        - `sent` The `Email` has been sent by Twilio.
+        - `delivered` The `Email` has been successfully
+            delivered to the recipient.
+
+        - `undelivered` The `Email` was successfully sent by Twilio
+            but has not been delivered to the recipient.
+
+        - `opened` The `Email` has been opened by the recipient.
+        - `failed` The `Email` processing failed inside Twilio.
+           Use `GET /Emails/Operations/{operation_id}/Errors` for more details.
+
+        - `canceled` The `Email` was canceled via API request.
+        - `inbound` The `Email` was received by Twilio from an external source.
+      type: string
+      enum:
+        - scheduled
+        - queued
+        - sent
+        - delivered
+        - undelivered
+        - opened
+        - failed
+        - canceled
+        - inbound
+    EmailId:
+      title: EmailId
+      description: A reference to an Email.
+      type: string
+      pattern: ^comms_email_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: comms_email_01h9krwprkeee8fzqspvwy6nq8
+    EmailAddressRecipient:
+      title: EmailAddressRecipient
+      description: An email address and associated name that define a recipient.
+      type: object
+      properties:
+        address:
+          type: string
+          description: The email address of the person or entity.
+          format: email
+        name:
+          type: string
+          description: The name of the person or entity.
+      required:
+        - address
+      additionalProperties: false
+    MemoryServiceId:
+      title: MemoryServiceId
+      description: A reference to a Memory Service
+      type: string
+      pattern: ^mem_service_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: mem_service_01h9krwprkeee8fzqspvwy6nq8
+    EmailProfile:
+      title: EmailProfile
+      description: An email contact is a person or entity identified by an email address and associated with a Profile ID and Memory Service ID.
+      type: object
+      properties:
+        address:
+          description: The email address of the profile.
+          type: string
+        name:
+          description: The name of the profile (e.g. "Acme Corp")
+          type: string
+        profile_id:
+          $ref: '#/components/schemas/ProfileId'
+        service_id:
+          $ref: '#/components/schemas/MemoryServiceId'
+      required:
+        - address
+        - profile_id
+        - service_id
+    EmailContact:
+      title: EmailContact
+      description: An Email Contact is a person or entity identified by an email address and associated with a Contact ID.
+      type: object
+      properties:
+        address:
+          description: The email address of the Contact.
+          type: string
+        name:
+          description: The name of the Contact (e.g. "John Smith")
+          type: string
+        contact_id:
+          $ref: '#/components/schemas/ContactId'
+      required:
+        - address
+        - contact_id
+    SenderId:
+      description: A reference to a Sender.
+      title: SenderId
+      type: string
+      pattern: ^comms_sender_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+    EmailSenderIdSender:
+      title: EmailSenderIdSender
+      description: A Message Sender is a person or entity whose communication identity is hosted by Twilio.
+      type: object
+      properties:
+        address:
+          description: The email address of the person or entity.
+          type: string
+        name:
+          description: The name of the person or entity associated with the email address.
+          type: string
+        sender_id:
+          $ref: '#/components/schemas/SenderId'
+      required:
+        - address
+        - sender_id
+    EmailBase:
+      title: EmailBase
+      type: object
+      description: The atomic unit of communication for the email channel.
+      properties:
+        id:
+          $ref: '#/components/schemas/EmailId'
+        from:
+          title: EmailFrom
+          oneOf:
+            - $ref: '#/components/schemas/EmailAddressRecipient'
+            - $ref: '#/components/schemas/EmailProfile'
+            - $ref: '#/components/schemas/EmailContact'
+            - $ref: '#/components/schemas/EmailSenderIdSender'
+        to:
+          title: EmailRecipients
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/EmailAddressRecipient'
+              - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailContact'
+              - $ref: '#/components/schemas/EmailSenderIdSender'
+        reply_to:
+          title: EmailReplyToRecipients
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/EmailAddressRecipient'
+              - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailContact'
+              - $ref: '#/components/schemas/EmailSenderIdSender'
+        cc:
+          title: EmailCCRecipients
+          type: array
+          maxItems: 50
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/EmailAddressRecipient'
+              - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailContact'
+              - $ref: '#/components/schemas/EmailSenderIdSender'
+        bcc:
+          title: EmailBCCRecipients
+          type: array
+          maxItems: 50
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/EmailAddressRecipient'
+              - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailContact'
+              - $ref: '#/components/schemas/EmailSenderIdSender'
+        status:
+          $ref: '#/components/schemas/EmailStatus'
+        related:
+          description: A list of resources that are associated with the Email.
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedResource'
+        tags:
+          $ref: '#/components/schemas/Tags'
+        scheduled_for:
+          type:
+            - string
+            - 'null'
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+      required:
+        - id
+        - from
+        - to
+        - reply_to
+        - cc
+        - bcc
+        - status
+        - related
+        - tags
+        - scheduled_for
+        - created_at
+        - updated_at
+        - deleted_at
+    EmailMetadata:
+      title: EmailMetadata
+      type: object
+      description: The EmailMetadata provides information about the Email. Does not include the Content.
+      allOf:
+        - $ref: '#/components/schemas/EmailBase'
     EmailAddressSender:
       title: EmailAddressSender
       description: An email address and associated name
@@ -6293,12 +7084,69 @@ components:
       description: To personalize content for each recipient, supply variables here with values to substitute into any [Liquid](https://shopify.github.io/liquid/) templated content string or pre-stored Content template.
       additionalProperties:
         type: string
-    ProfileId:
-      title: ProfileId
-      description: A reference to a Profile
+    ProfileRecipient:
+      title: ProfileRecipient
+      description: A reference to a Profile & Memory Service.
+      type: object
+      properties:
+        profile_id:
+          $ref: '#/components/schemas/ProfileId'
+        service_id:
+          $ref: '#/components/schemas/MemoryServiceId'
+      required:
+        - profile_id
+        - service_id
+    ContactRecipient:
+      description: A reference to a Contact.
+      title: ContactRecipient
+      type: object
+      properties:
+        contact_id:
+          $ref: '#/components/schemas/ContactId'
+      required:
+        - contact_id
+    EmailAttachmentCid:
+      title: EmailAttachmentCid
       type: string
-      pattern: ^mem_profile_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+      minLength: 1
+      description: |-
+        The Content-ID of the attachment file.
+
+        This is used to reference the attachment inline within the HTML body of the email.
+
+        For example, to reference an image attachment in the HTML body, use:
+        `<img src="cid:your_content_id_here" />`
+    EmailAttachments:
+      title: EmailAttachments
+      description: A list of email attachments.
+      type: array
+      items:
+        oneOf:
+          - title: EmailAttachmentsData
+            type: object
+            description: An email attachment specified by raw data.
+            properties:
+              filename:
+                type: string
+                minLength: 1
+                description: The name of the attachment file.
+              content_type:
+                type: string
+                minLength: 1
+                description: The MIME type of the attachment file.
+              content:
+                type: string
+                format: byte
+                description: |-
+                  The base64-encoded content of the attachment file.
+
+                  Note: Your full request must not exceed 5 MB in size.
+              cid:
+                $ref: '#/components/schemas/EmailAttachmentCid'
+            required:
+              - filename
+              - content_type
+              - content
     EmailHtmlContent:
       title: EmailHtmlContent
       type: object
@@ -6324,6 +7172,8 @@ components:
 
             This field can be templated with [Liquid](https://shopify.github.io/liquid/).
             Specify `variables` with each recipient for personalization.
+        attachments:
+          $ref: '#/components/schemas/EmailAttachments'
         headers:
           title: EmailHeadersContent
           type: object
@@ -6363,38 +7213,6 @@ components:
       required:
         - html
         - subject
-    EmailAddressRecipient:
-      title: EmailAddressRecipient
-      description: An email address and associated name that define a recipient.
-      type: object
-      properties:
-        address:
-          type: string
-          description: The email address of the person or entity.
-          format: email
-        name:
-          type: string
-          description: The name of the person or entity.
-      required:
-        - address
-    ProfileRecipient:
-      title: ProfileRecipient
-      description: A reference to a Profile.
-      type: object
-      properties:
-        profile_id:
-          $ref: '#/components/schemas/ProfileId'
-      required:
-        - profile_id
-    ContactRecipient:
-      description: A reference to a Contact.
-      title: ContactRecipient
-      type: object
-      properties:
-        contact_id:
-          $ref: '#/components/schemas/ContactId'
-      required:
-        - contact_id
     Schedule:
       title: Schedule
       description: A schedule defines *when* a communication will be sent to a recipient.
@@ -6407,6 +7225,8 @@ components:
             The supported expression formats are:
               - RFC 3339 date-time string. e.g `"2025-11-11T11:11:00Z"`
 
+            The maximum time you can schedule a communication is 30 days in the future.
+
             Currently, you may specify only a single expression.
             If you specify multiple expressions, only the first will be used.
             Support for additional scheduling expression formats may be added in the future.
@@ -6415,14 +7235,243 @@ components:
             type: string
       minProperties: 1
       additionalProperties: false
+    Identifier:
+      description: A 128-bit UUIDv7 encoded as a 26-character string using a modified base32 encoding. This schema is used for identifier path params as the type prefix ('<type>_') is redundant in URIs.
+      type: string
+      pattern: ^[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: 01h9krwprkeee8fzqspvwy6nq8
+    MimeType:
+      title: MimeType
+      type: string
+      example: text/plain
+      default: text/plain
+      description: A MIME type (or "media type") identifies the type of data of an object.
+    Media:
+      title: Media
+      type: object
+      description: A document, image or other type of file attached to a message, email or push notification.
+      properties:
+        file_name:
+          type: string
+          description: The name of the media file.
+        file_size:
+          type: number
+          description: The size of the media file in bytes.
+        mime_type:
+          $ref: '#/components/schemas/MimeType'
+        content_reference:
+          title: MediaContentReference
+          type: object
+          description: The reference to the content of the media file.
+          properties:
+            temporary_url:
+              type: string
+              description: A temporary, expiring URL that can be used to access the media file.
+              format: uri
+            expires_at:
+              type: string
+              description: The time at which the temporary URL expires.
+              format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type:
+            - string
+            - 'null'
+          format: date-time
+      required:
+        - file_name
+        - file_size
+        - mime_type
+        - content_reference
+        - updated_at
+        - created_at
+    EmailContentResolved:
+      title: EmailContentResolved
+      description: The resolved content of the Email. If no `plain/text` MIME is provided,  one will be generated from the `text/html` MIME.
+      type: object
+      properties:
+        subject:
+          type: string
+          description: The subject of the email.
+        text:
+          type: string
+          description: |-
+            The plain-text email body (`text/plain` MIME).
+            The string can be parameterized and supplied with `variables` for per-recipient personalization.
+        html:
+          type: string
+          description: |-
+            The HTML email body (`text/html` MIME).
+            The string can be parameterized and supplied with `variables` for per-recipient personalization.
+        attachments:
+          type: array
+          description: An array of objects where you can specify any attachments you want to include.
+          items:
+            $ref: '#/components/schemas/Media'
+      required:
+        - text
+    Email:
+      title: Email
+      type: object
+      description: The atomic unit of communication for the email channel.
+      allOf:
+        - $ref: '#/components/schemas/EmailBase'
+        - title: EmailContent
+          type: object
+          properties:
+            content:
+              $ref: '#/components/schemas/EmailContentResolved'
+          required:
+            - content
+    CommunicationOperationStatus:
+      title: CommunicationOperationStatus
+      type: string
+      description: The status of an Operation.
+      enum:
+        - scheduled
+        - processing
+        - completed
+        - canceled
+    EmailOperationStats:
+      title: EmailOperationStats
+      type: object
+      example:
+        total: 1
+        recipients: 1
+        attempts: 1
+        queued: 0
+        sent: 0
+        scheduled: 0
+        delivered: 0
+        opened: 0
+        undelivered: 0
+        failed: 0
+        canceled: 0
+      description: |-
+        Represents the stats of a sending operation of one or many `Emails`.
+        - `total` is the total number of `Email` resources created in the `Operation`.
+
+          * To get the status for each individual `Email`, fetch the `Email` resource:
+            `GET /Email/{email_id}`.
+
+          * For `Emails` with multiple recipients, use `Receipts` e.g. `GET /Emails/{email_id}/Receipts`.
+
+        - `recipients` is the total number of recipients targeted in an Operation.
+        - `attempts` is the total number of sending attempts made by Twilio.
+        - `scheduled` is the number of `Emails` that are scheduled to be sent by
+          Twilio in the future.
+
+        - `queued` is the number of `Emails` that are queued in Twilio for sending.
+        - `sent` is the number of `Emails` that have been sent by Twilio.
+        - `delivered` is the number of `Emails` that have been successfully
+            delivered to recipients.
+
+        - `opened` is the number of `Emails` that have been opened by unique recipients.
+        - `undelivered` is the number of `Emails` that were successfully sent by Twilio
+          but have not been delivered to the recipient.
+
+        - `failed` is the number of `Emails` that failed during processing by Twilio.
+          Get `Errors` with `GET /Emails/Operations/{operation_id}/Errors` fore more detail.
+
+        - `canceled` is the number of `Emails` that were canceled via API request.
+      properties:
+        total:
+          type: integer
+          minimum: 0
+        recipients:
+          type: integer
+          minimum: 0
+        attempts:
+          type: integer
+          minimum: 0
+        queued:
+          type: integer
+          minimum: 0
+        sent:
+          type: integer
+          minimum: 0
+        scheduled:
+          type: integer
+          minimum: 0
+        delivered:
+          type: integer
+          minimum: 0
+        opened:
+          type: integer
+          minimum: 0
+        undelivered:
+          type: integer
+          minimum: 0
+        failed:
+          type: integer
+          minimum: 0
+        canceled:
+          type: integer
+          minimum: 0
+      required:
+        - total
+        - recipients
+        - attempts
+        - queued
+        - sent
+        - scheduled
+        - delivered
+        - opened
+        - failed
+        - undelivered
+        - canceled
+    EmailOperation:
+      title: EmailOperation
+      type: object
+      description: |-
+        An Email Operation represents the aggregate work to be completed for a POST request to the /Emails endpoint.
+        The work maybe be performed asynchronously and the Email Operation resource can be used to track the progress of the work.
+      properties:
+        id:
+          $ref: '#/components/schemas/OperationId'
+        status:
+          $ref: '#/components/schemas/CommunicationOperationStatus'
+        stats:
+          $ref: '#/components/schemas/EmailOperationStats'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - status
+        - stats
+        - created_at
+        - updated_at
+    OperationErrorsResponse:
+      title: OperationErrorsResponse
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/TwilioErrors'
+        - title: OperationErrorsResponseMetadata
+          type: object
+          properties:
+            created_at:
+              description: The date and time the error occurred.
+              type: string
+              format: date-time
+            pagination:
+              $ref: '#/components/schemas/PaginationMetadata'
     SessionId:
       title: SessionId
       description: A reference to a Session.
       type: string
       pattern: ^comms_session_[a-hjkmnpqrstv-z0-9]{26,34}
       example: comms_session_01h9krwprkeee8fzqspvwy6nq8
-    MessageAgentChannel:
-      title: MessageAgentChannel
+    MessageSenderChannel:
+      title: MessageSenderChannel
       description: The channels available for Message entity.
       type: string
       enum:
@@ -6473,54 +7522,81 @@ components:
       type: string
       pattern: ^comms_message_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_message_01h9krwprkeee8fzqspvwy6nq8
-    AgentId:
-      description: A reference to an Agent.
-      title: AgentId
-      type: string
-      pattern: ^comms_agent_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: comms_agent_01h9krwprkeee8fzqspvwy6nq8
-    MessageAgent:
-      title: MessageAgent
-      description: A Message Agent is a person or entity whose communication identity is hosted by Twilio.
+    MessageSender:
+      title: MessageSender
+      description: A Message Sender is a person or entity whose communication identity is hosted by Twilio.
       type: object
       properties:
         address:
-          description: The identifier within a channel address space for an agent (e.g. phone number)
+          description: The identifier within a channel address space for a Sender (e.g. phone number)
           type: string
         channel:
-          $ref: '#/components/schemas/MessageAgentChannel'
-        agent_id:
-          $ref: '#/components/schemas/AgentId'
+          $ref: '#/components/schemas/MessageSenderChannel'
+        sender_id:
+          $ref: '#/components/schemas/SenderId'
       required:
         - address
         - channel
-        - agent_id
+        - sender_id
       additionalProperties: false
-    AgentPoolId:
-      description: A reference to an AgentPool.
-      title: AgentPoolId
+    SenderPoolId:
+      description: A reference to a SenderPool.
+      title: SenderPoolId
       type: string
-      pattern: ^comms_agentpool_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: comms_agentpool_01h9krwprkeee8fzqspvwy6nq8
-    MessageAgentAndPool:
-      title: MessageAgentAndPool
-      description: A Message Agent is a person or entity whose communication identity is hosted by Twilio. The `agent_pool_id` field indicates the pool for which the `Agent` was resolved from.
+      pattern: ^comms_senderpool_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
+    MessageSenderAndPool:
+      title: MessageSenderAndPool
+      description: A Message Sender is a person or entity whose communication identity is hosted by Twilio. The `sender_pool_id` field indicates the pool for which the `Sender` was resolved from.
       type: object
       properties:
         address:
-          description: The identifier within a channel address space for an Agent (e.g. phone number)
+          description: The identifier within a channel address space for a Sender (e.g. phone number)
           type: string
         channel:
-          $ref: '#/components/schemas/MessageAgentChannel'
-        agent_id:
-          $ref: '#/components/schemas/AgentId'
-        agent_pool_id:
-          $ref: '#/components/schemas/AgentPoolId'
+          $ref: '#/components/schemas/MessageSenderChannel'
+        sender_id:
+          $ref: '#/components/schemas/SenderId'
+        sender_pool_id:
+          $ref: '#/components/schemas/SenderPoolId'
       required:
         - address
         - channel
-        - agent_id
-        - agent_pool_id
+        - sender_id
+        - sender_pool_id
+    MessageProfileChannel:
+      title: MessageProfileChannel
+      description: |-
+        The channels available for specifying a Message Profile.
+
+        - `phone`: Includes SMS, MMS, and RCS, pair it with a phone number in the `address` field.
+
+        - `whatsapp`: WhatsApp channel, pair it with a WhatsApp number in the `address` field.
+      type: string
+      enum:
+        - phone
+        - whatsapp
+      example: phone
+    MessageProfile:
+      title: MessageProfile
+      description: A Message Profile is a person or entity that is not hosted by Twilio.
+      type: object
+      properties:
+        address:
+          description: The identifier within a channel address space for a Profile (e.g. phone number)
+          type: string
+        channel:
+          $ref: '#/components/schemas/MessageProfileChannel'
+        profile_id:
+          $ref: '#/components/schemas/ProfileId'
+        service_id:
+          $ref: '#/components/schemas/MemoryServiceId'
+      required:
+        - address
+        - channel
+        - profile_id
+        - service_id
+      additionalProperties: false
     MessageContactChannel:
       title: MessageContactChannel
       description: |-
@@ -6558,11 +7634,12 @@ components:
         id:
           $ref: '#/components/schemas/MessageId'
         from:
-          title: MessageSender
+          title: MessageFrom
           description: The sender of the Message.
           oneOf:
-            - $ref: '#/components/schemas/MessageAgent'
-            - $ref: '#/components/schemas/MessageAgentAndPool'
+            - $ref: '#/components/schemas/MessageSender'
+            - $ref: '#/components/schemas/MessageSenderAndPool'
+            - $ref: '#/components/schemas/MessageProfile'
             - $ref: '#/components/schemas/MessageContact'
         to:
           title: MessageRecipients
@@ -6574,7 +7651,8 @@ components:
           type: array
           items:
             oneOf:
-              - $ref: '#/components/schemas/MessageAgent'
+              - $ref: '#/components/schemas/MessageSender'
+              - $ref: '#/components/schemas/MessageProfile'
               - $ref: '#/components/schemas/MessageContact'
         status:
           $ref: '#/components/schemas/MessageStatus'
@@ -6625,7 +7703,7 @@ components:
       properties:
         address:
           type: string
-          description: The Agent’s communication address within a channel, such as a phone number, email address, or device token.
+          description: The Sender’s communication address within a channel, such as a phone number, email address, or device token.
         channel:
           $ref: '#/components/schemas/MessageContactChannel'
       required:
@@ -6649,8 +7727,7 @@ components:
             The publicly accessible URL of the media file to copy.
 
             This field can be templated with [Liquid](https://shopify.github.io/liquid/).
-            Specify `variables` with each recipient for personalization 
-            and `default_variables` for default values.
+            Specify `variables` with each recipient for personalization.
       required:
         - url
     ContentMediaInput:
@@ -6661,19 +7738,9 @@ components:
 
         Use `MediaUrl` to supply links to media files with templated URLs, using [Liquid](https://shopify.github.io/liquid/).
 
-        Specify `variables` with each recipient for personalization 
-        and `default_variables` for default values.
+        Specify `variables` with each recipient for personalization.
       items:
         $ref: '#/components/schemas/MediaUrl'
-    DefaultVariables:
-      title: DefaultVariables
-      type: object
-      description: |-
-        These are default values that can be declared for use with templated content fields including `text` and `title`.
-        When a template variable value is defined using a ${Twilio.Contact} reference, a default value must be defined here as well.
-        When sending templated content 'to' an `Audience`, it is mandatory to define a default value for each variable used in the template.
-      additionalProperties:
-        type: string
     MessageContentTextWithMedia:
       title: MessageContentTextWithMedia
       description: The text and media content of a `Message`.
@@ -6685,7 +7752,7 @@ components:
           description: |-
             A simple content string (formerly called 'body').
 
-            This field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization  and `default_variables` for default values.
+            This field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization.
         media:
           description: |-
             A list of Media (images, etc.) to include in the message.
@@ -6694,11 +7761,8 @@ components:
 
             Use `MediaUrl` to supply links to media files with templated URLs, using [Liquid](https://shopify.github.io/liquid/).
 
-            Specify `variables` with each recipient for personalization
-            and `default_variables` for default values.
+            Specify `variables` with each recipient for personalization.
           $ref: '#/components/schemas/ContentMediaInput'
-        default_variables:
-          $ref: '#/components/schemas/DefaultVariables'
       additionalProperties: false
       minProperties: 1
     ContentId:
@@ -6727,7 +7791,7 @@ components:
           description: |-
             A simple content string (formerly called 'body').
 
-            This field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization  and `default_variables` for default values.
+            This field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization.
         media:
           description: |-
             A list of Media (images, etc.) to include in the message.
@@ -6736,8 +7800,7 @@ components:
 
             Use `MediaUrl` to supply links to media files with templated URLs, using [Liquid](https://shopify.github.io/liquid/).
 
-            Specify `variables` with each recipient for personalization
-            and `default_variables` for default values.
+            Specify `variables` with each recipient for personalization.
           $ref: '#/components/schemas/ContentMediaInput'
       additionalProperties: false
       minProperties: 1
@@ -6922,7 +7985,7 @@ components:
         rcs:
           title: MessageContentRcs
           description: |-
-            The RCS content, follows the RCS Business Messaging `AgentContentMessage` format.
+            The RCS content, follows the RCS Business Messaging `SenderContentMessage` format.
             For more information, see [RCS Business Messaging](https://developers.google.com/business-communications/rcs-business-messaging)
           type: object
           oneOf:
@@ -6994,8 +8057,6 @@ components:
               - $ref: '#/components/schemas/MessageContentModuleRcs'
           minItems: 1
           maxItems: 3
-        default_variables:
-          $ref: '#/components/schemas/DefaultVariables'
       required:
         - modules
     MessageAddressSender:
@@ -7005,50 +8066,50 @@ components:
       properties:
         address:
           type: string
-          description: The Agent’s communication address within a channel, such as a phone number, email address, or device token.
+          description: The Sender’s communication address within a channel, such as a phone number, email address, or device token.
         channel:
-          $ref: '#/components/schemas/MessageAgentChannel'
+          $ref: '#/components/schemas/MessageSenderChannel'
       required:
         - address
         - channel
-    AgentIdSender:
-      title: AgentIdSender
-      description: A reference to an Agent.
+    SenderIdSender:
+      title: SenderIdSender
+      description: A reference to a Sender.
       type: object
       properties:
-        agent_id:
-          $ref: '#/components/schemas/AgentId'
+        sender_id:
+          $ref: '#/components/schemas/SenderId'
       required:
-        - agent_id
-    MessageAgentChannelControl:
-      title: MessageAgentChannelControl
-      description: Define controls to `filter` and `prioritize` Agents based on their `channel`.
+        - sender_id
+    MessageSenderChannelControl:
+      title: MessageSenderChannelControl
+      description: Define controls to `filter` and `prioritize` Senders based on their `channel`.
       type: object
       properties:
         filter_in:
-          title: MessageAgentChannelControlFilterIn
+          title: MessageSenderChannelControlFilterIn
           description: |-
-            A list of eligible channels to constrain `Agent` resolution to;
+            A list of eligible channels to constrain `Sender` resolution to;
             leave undefined to send across all available channels.
 
-            Warning: If there is no viable path from any `Agent` to a recipient resulting from
+            Warning: If there is no viable path from any `Sender` to a recipient resulting from
             this filter, no `Message` will be sent to the recipient(s)!
           type: array
           items:
-            $ref: '#/components/schemas/MessageAgentChannel'
+            $ref: '#/components/schemas/MessageSenderChannel'
           uniqueItems: true
         priority:
-          title: MessageAgentChannelControlPriority
+          title: MessageSenderChannelControlPriority
           description: |-
             A list of channels and their priority for use. 
             Lowest numeric value is highest priority.
           type: array
           items:
-            title: MessageAgentChannelControlPriorityItem
+            title: MessageSenderChannelControlPriorityItem
             description: A channel and its priority.
             properties:
               channel:
-                $ref: '#/components/schemas/MessageAgentChannel'
+                $ref: '#/components/schemas/MessageSenderChannel'
               priority:
                 type: integer
                 description: |-
@@ -7057,67 +8118,17 @@ components:
             required:
               - channel
               - priority
-    MessageAgentPoolIdSender:
-      title: MessageAgentPoolIdSender
-      description: A reference to an `AgentPool` and optional channel controls.
+    MessageSenderPoolIdSender:
+      title: MessageSenderPoolIdSender
+      description: A reference to a `SenderPool` and optional channel controls.
       type: object
       properties:
-        agent_pool_id:
-          $ref: '#/components/schemas/AgentPoolId'
+        sender_pool_id:
+          $ref: '#/components/schemas/SenderPoolId'
         channels:
-          $ref: '#/components/schemas/MessageAgentChannelControl'
+          $ref: '#/components/schemas/MessageSenderChannelControl'
       required:
-        - agent_pool_id
-    MimeType:
-      title: MimeType
-      type: string
-      example: text/plain
-      default: text/plain
-      description: A MIME type (or "media type") identifies the type of data of an object.
-    Media:
-      title: Media
-      type: object
-      description: A document, image or other type of file attached to a message, email or push notification.
-      properties:
-        file_name:
-          type: string
-          description: The name of the media file.
-        file_size:
-          type: number
-          description: The size of the media file in bytes.
-        mime_type:
-          $ref: '#/components/schemas/MimeType'
-        content_reference:
-          title: MediaContentReference
-          type: object
-          description: The reference to the content of the media file.
-          properties:
-            temporary_url:
-              type: string
-              description: A temporary, expiring URL that can be used to access the media file.
-              format: uri
-            expires_at:
-              type: string
-              description: The time at which the temporary URL expires.
-              format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-        deleted_at:
-          type:
-            - string
-            - 'null'
-          format: date-time
-      required:
-        - file_name
-        - file_size
-        - mime_type
-        - content_reference
-        - updated_at
-        - created_at
+        - sender_pool_id
     MessageContentTextWithMediaResolved:
       title: MessageContentTextWithMediaResolved
       type: object
@@ -7182,13 +8193,15 @@ components:
         from:
           title: MessageAttemptSender
           description: The sender of the Message Attempt.
-          $ref: '#/components/schemas/MessageAgent'
+          $ref: '#/components/schemas/MessageSender'
         to:
           title: MessageAttemptRecipients
           description: The recipients of the Message Attempt. This array will contain a single recipient element, except for GMMS use case, where there are multiple recipients.
           type: array
           items:
-            $ref: '#/components/schemas/MessageContact'
+            oneOf:
+              - $ref: '#/components/schemas/MessageProfile'
+              - $ref: '#/components/schemas/MessageContact'
         status:
           $ref: '#/components/schemas/MessageStatus'
           description: The status of the Message Attempt. The status of the Message is the status of the last attempt.
@@ -7229,15 +8242,6 @@ components:
                 $ref: '#/components/schemas/MessageAttempt'
           required:
             - attempts
-    CommunicationOperationStatus:
-      title: CommunicationOperationStatus
-      type: string
-      description: The status of an Operation.
-      enum:
-        - scheduled
-        - processing
-        - completed
-        - canceled
     MessageOperationStats:
       title: MessageOperationStats
       type: object
@@ -7625,19 +8629,16 @@ components:
             The title of the push notification. Defaults to the app name.
 
               
-            This field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization and `default_variables` for default values.
+            This field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization.
         text:
           type: string
           description: |-
             A simple string or templated content.
 
             This field can be templated with [Liquid](https://shopify.github.io/liquid/).
-            Specify `variables` with each recipient for personalization 
-            and `default_variables` for default values.
+            Specify `variables` with each recipient for personalization.
         provider_passthrough:
           $ref: '#/components/schemas/PushNotificationContentPassthroughArray'
-        default_variables:
-          $ref: '#/components/schemas/DefaultVariables'
       required:
         - text
     PushNotificationContentTextResolved:
@@ -7895,12 +8896,12 @@ components:
         - default_credentials
         - created_at
         - updated_at
-    AgentCommunicationChannel:
+    SenderCommunicationChannel:
       description: |-
         The medium which a unit of communication is transmitted through.
         These are differentiated by a mix of transmission protocol, network controller/owner, endpoint and address model,
         as well as the model for content of the atomic unit of communication itself.
-      title: AgentCommunicationChannel
+      title: SenderCommunicationChannel
       type: string
       enum:
         - sms
@@ -7908,26 +8909,26 @@ components:
         - email
         - whatsapp
         - push
-    AgentStatus:
-      title: AgentStatus
+    SenderStatus:
+      title: SenderStatus
       description: |-
-        The status of an Agent.
-        If an Agent is `activated`, it is available to send and receive communications.
-        If an Agent is `deactivated`, it is not available to send or receive communications.
+        The status of a Sender.
+        If a Sender is `activated`, it is available to send and receive communications.
+        If a Sender is `deactivated`, it is not available to send or receive communications.
       type: string
       enum:
         - activated
         - deactivated
-    Agent:
-      title: Agent
+    Sender:
+      title: Sender
       description: |-
-        an Agent is a sending and receiving communication identity associated with a Twilio application.
+        A Sender is a sending and receiving communication identity associated with a Twilio application.
         For 'outbound' communications, it is used as the sender of the communication in the 'from' field.
         For 'inbound' communications (sent by a Contact/end-user), it is used as the recipient and populated in the 'to' field.
-        An Agent represents existing inventory created and setup in other Twilio APIs, such as Phone Numbers.
+        A Sender represents existing inventory created and setup in other Twilio APIs, such as Phone Numbers.
       properties:
         id:
-          $ref: '#/components/schemas/AgentId'
+          $ref: '#/components/schemas/SenderId'
         display_name:
           type:
             - string
@@ -7937,14 +8938,14 @@ components:
 
             This name might be visible to recipients in certain communications, such as Email, and helps identify the sender. 
 
-            *Note:* To update this value, use the appropriate Twilio API for the inventory type. For example, for Agents with the channel `email`, update `display_name` using the EmailSenders API.
+            *Note:* To update this value, use the appropriate Twilio API for the inventory type. For example, for Senders with the channel `email`, update `display_name` using the EmailSenders API.
         address:
           type: string
-          description: The Agent’s communication address within a channel, such as a phone number, email address, or device token.
+          description: The Sender’s communication address within a channel, such as a phone number, email address, or device token.
         channel:
-          $ref: '#/components/schemas/AgentCommunicationChannel'
+          $ref: '#/components/schemas/SenderCommunicationChannel'
         status:
-          $ref: '#/components/schemas/AgentStatus'
+          $ref: '#/components/schemas/SenderStatus'
         tags:
           $ref: '#/components/schemas/Tags'
         updated_at:
@@ -7967,43 +8968,43 @@ components:
       type: object
       properties:
         address:
-          description: The Agent’s communication address within a channel, such as a phone number, email address, or device token.
+          description: The Sender’s communication address within a channel, such as a phone number, email address, or device token.
           type: string
         channel:
           $ref: '#/components/schemas/CommunicationChannel'
       required:
         - address
         - channel
-    AgentCommunicationChannelControl:
-      title: AgentChannelControl
-      description: Define controls to filter and prioritize Agents based on their `channel`.
+    SenderCommunicationChannelControl:
+      title: SenderChannelControl
+      description: Define controls to filter and prioritize Senders based on their `channel`.
       type: object
       properties:
         filter_in:
-          title: AgentChannelControlFilterIn
+          title: SenderChannelControlFilterIn
           description: |-
-            A list of eligible channels to constrain `Agent` resolution to;
+            A list of eligible channels to constrain `Sender` resolution to;
             leave undefined to send across all available channels.
 
-            Warning: If there is no viable path from any `Agent` to a recipient resulting from
+            Warning: If there is no viable path from any `Sender` to a recipient resulting from
             this filter, no communication will be sent to the recipient(s)!
           type: array
           items:
-            $ref: '#/components/schemas/AgentCommunicationChannel'
+            $ref: '#/components/schemas/SenderCommunicationChannel'
           uniqueItems: true
         priority:
-          title: AgentChannelControlPriority
+          title: SenderChannelControlPriority
           description: |-
             A list of channels and their priority for use. 
             Lowest numeric value is highest priority.
           type: array
           items:
-            title: AgentChannelControlPriorityItem
+            title: SenderChannelControlPriorityItem
             description: A channel and its priority.
             type: object
             properties:
               channel:
-                $ref: '#/components/schemas/AgentCommunicationChannel'
+                $ref: '#/components/schemas/SenderCommunicationChannel'
               priority:
                 type: integer
                 description: |-
@@ -8012,17 +9013,17 @@ components:
             required:
               - channel
               - priority
-    AgentPool:
-      title: AgentPool
+    SenderPool:
+      title: SenderPool
       description: |-
-        An AgentPool is a set of sending (and receiving) identities associated with a Twilio application.
-        It can contain one or more Agents for use in multi-channel use-cases or to achieve pooling functionalities.
+        A SenderPool is a set of sending (and receiving) identities associated with a Twilio application.
+        It can contain one or more Senders for use in multi-channel use-cases or to achieve pooling functionalities.
         For 'outbound' communications, it is used as the sender of the communication in the 'from' field.
         For 'inbound' communications sent by a Contact, it is used as the recipient, and populated in the 'to' field.
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/AgentPoolId'
+          $ref: '#/components/schemas/SenderPoolId'
         name:
           type: string
         tags:
@@ -8039,19 +9040,19 @@ components:
         - tags
         - created_at
         - updated_at
-    AgentPoolOperation:
-      title: AgentPoolOperation
+    SenderPoolOperation:
+      title: SenderPoolOperation
       type: object
       description: |-
-        An AgentPool Operation represents the aggregate work to be completed when creating and modifying AgentPools by adding or removing Agents.
-        The work maybe be performed asynchronously and the Agent Pool Operation resource can be used to track the progress of the work.
+        A SenderPool Operation represents the aggregate work to be completed when creating and modifying SenderPools by adding or removing Senders.
+        The work maybe be performed asynchronously and the Sender Pool Operation resource can be used to track the progress of the work.
       properties:
         id:
           $ref: '#/components/schemas/OperationId'
         status:
           $ref: '#/components/schemas/OperationStatus'
         stats:
-          title: AgentPoolOperationStats
+          title: SenderPoolOperationStats
           type: object
           properties:
             total:
@@ -8155,12 +9156,28 @@ components:
             type: string
           description: The amount of time in seconds that the customer should wait before issuing a new request towards the API.
     Http202ResponseWithOperation:
-      description: The request was accepted and an Operation was created to track its progress. The response headers contain the ID and link to the Operation resource.
+      description: The request was accepted and an Operation was created to track its progress. The response body contains the ID and link to the Operation resource.
       headers:
-        Operation-Location:
-          $ref: '#/components/headers/OperationLocation'
-        Operation-Id:
-          $ref: '#/components/headers/OperationId'
+        Location:
+          schema:
+            $ref: '#/components/schemas/OperationLocation'
+          description: |-
+            The location (uri) of the Operation resource. 
+            Issue a GET request to this URI to retrieve the status of the Operation.
+      content:
+        application/json:
+          schema:
+            title: Http202ResponseWithOperationBody
+            description: Response body for HTTP 202 response with Operation data.
+            type: object
+            properties:
+              operation_id:
+                $ref: '#/components/schemas/OperationId'
+              operation_location:
+                $ref: '#/components/schemas/OperationLocation'
+            required:
+              - operation_id
+              - operation_location
     Http404Response:
       description: This error indicates that the requested resource was not found.
       content:
@@ -8177,35 +9194,23 @@ components:
                     info_url: https://www.twilio.com/docs/api/errors/20404
                     context: 'null'
     Http202ResponseWithResource:
-      description: The request was accepted and a resource identifier is available to check the result. The response headers contain the identifier and link to the resource.
+      description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
       headers:
-        Resource-Location:
-          $ref: '#/components/headers/ResourceLocation'
-        Resource-Id:
-          $ref: '#/components/headers/ResourceId'
-  headers:
-    OperationLocation:
-      schema:
-        type: string
-        format: uri
-      description: The location (uri) of the Operation resource identified by `Operation-Id`.
-    OperationId:
-      schema:
-        $ref: '#/components/schemas/OperationId'
-      description: |-
-        The Operation ID is an identifier that can be used to correlate all of the resources created in a request.
-        Issue a GET request to the resource list location, using the Operation ID as a filter
-        to retrieve a list of the created resources and an aggregate status.
-    ResourceLocation:
-      schema:
-        type: string
-        format: uri
-      description: The location (uri) of the resource identified by `Resource-Id`.
-    ResourceId:
-      schema:
-        type: string
-      description: |-
-        The Resource ID is an identifier for the resource that was created or updated
-          in response to the request.
-
-        Use the `Resource-Location` header to retrieve the resource.
+        Location:
+          schema:
+            $ref: '#/components/schemas/ResourceLocation'
+          description: The location (uri) of the resource identified by `Resource-Id`.
+      content:
+        application/json:
+          schema:
+            title: Http202ResponseWithResourceBody
+            description: Response body for HTTP 202 response with Resource data.
+            type: object
+            properties:
+              resource_id:
+                $ref: '#/components/schemas/ResourceId'
+              resource_location:
+                $ref: '#/components/schemas/ResourceLocation'
+            required:
+              - resource_id
+              - resource_location
