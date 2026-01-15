@@ -51,19 +51,15 @@ tags:
   - name: Emails
     description: |-
       *Use `Emails` to send and receive email with Twilio SendGrid.*
-      *Use `Domains` to verify ownership and configure DNS for your domain name for sending `Emails`.*
-      *Use `Email Senders` to set up a default address and name to send 'from' and to enable
-       email for sending with `Communications`.*
 
       Emails supports:
        - Sending an Email to a single recipient
        - Sending Emails to many recipients in a single request
-       - Sending to both stored Profiles and/or directly specified email addresses
-       - Sending Emails to stored Audiences with per-recipient content personalization
+       - Sending to both stored Profiles and directly specified email addresses
        - Sending Emails with merged content that reference attributes of your stored Profiles
-       - Sending Emails with branded links that support click tracking.
-       - Sending Emails scheduled for future delivery.
-       - Receiving inbound Email replies and relaying the event to you for handling.
+       - Sending Emails with branded links that support click tracking
+       - Sending Emails scheduled for future delivery
+       - Receiving inbound Email replies and relaying the event to you for handling
   - name: PushNotifications
     description: |-
       🚧 *Use `PushNotifications` to send push notifications to your mobile apps
@@ -1878,16 +1874,6 @@ paths:
                         required:
                           - profileId
                           - memoryStoreId
-                      - title: SendEmailsContactRecipient
-                        type: object
-                        description: A Twilio `Contact` identified by `Contact.Id`.
-                        properties:
-                          contactId:
-                            $ref: '#/components/schemas/ContactId'
-                          variables:
-                            $ref: '#/components/schemas/ContentPersonalization'
-                        required:
-                          - contactId
                       - title: SendEmailsGroupRecipient
                         type: object
                         description: |-
@@ -1902,7 +1888,6 @@ paths:
                               oneOf:
                                 - $ref: '#/components/schemas/EmailAddressRecipient'
                                 - $ref: '#/components/schemas/ProfileRecipient'
-                                - $ref: '#/components/schemas/ContactRecipient'
                           variables:
                             $ref: '#/components/schemas/ContentPersonalization'
                         required:
@@ -1920,7 +1905,7 @@ paths:
                     * When using a templated content, use the `variables` field on each recipient to specify the values to substitute.
                     * For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.
                                 
-                    * When targeting `Profile` or `Contact` recipients, you may specify `variables` with values that reference stored fields, including custom fields, on the `Profile` or `Contact` -- for example: `${Twilio.Profile.dateLastPurchase}` `${Twilio.Contact.firstName}` or `${Twilio.Contact.myCustomField}`.
+                    * When targeting `Profile` recipients, you may specify `variables` with values that reference stored fields, on the `Profile` -- for example: `${Twilio.Profile.dateLastPurchase}` `${Twilio.Profile.firstName}` or `${Twilio.Profile.myCustomField}`.
                   oneOf:
                     - $ref: '#/components/schemas/EmailHtmlContent'
                 tags:
@@ -1997,7 +1982,7 @@ paths:
                     html: '<html><body>Hey {{ firstName | default: ''there'' }} {{ lastName }}, your cake is ready.<br/><br/></body></html>'
                     attachments: []
               SendToProfileWithPersonalization:
-                summary: Send to Contact with Contact-referencing personalization
+                summary: Send to Profile with Profile-referencing personalization
                 value:
                   from:
                     address: support@example.company.io
@@ -2019,14 +2004,12 @@ paths:
                     address: support@example.company.io
                     name: Cool Co Support
                   to:
-                    - contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                      variables:
-                        name: ${Twilio.Contact.firstName}
-                        isVip: ${Twilio.Contact.isVip}
+                    - name: John Dough
+                      address: john.dough@examplemail.com
                   content:
                     subject: Wedding Cake
-                    text: Hey {{ name }}, your cake will be ready for pickup tomorrow morning. {% if isVip %} Thanks for your continued business, we've included a special treat for you! {% endif %}
-                    html: '<html><body>Hey, {{ name | default: ''there'' }}, your cake is ready.<br/><br/> {% if isVip %} <p>Thanks for your continued business, we''ve included a special treat for you!</p> {% endif %} </body></html>'
+                    text: Hi Mr. Dough, your cake will be ready for pickup tomorrow morning. Thanks for your continued business, we've included a special treat for you!
+                    html: <html><body>Hi Mr. Dough, your cake is ready.<br/><br/> <p>Thanks for your continued business, we've included a special treat for you!</p> </body></html>
                     attachments: []
                   schedule:
                     sendAt:
@@ -2110,11 +2093,6 @@ paths:
             type: string
             format: date-time
           description: Filter Emails created before the specified date and time.
-        - in: query
-          name: contact
-          description: Filter Emails sent or received by a specific Contact.
-          schema:
-            $ref: '#/components/schemas/ContactId'
         - in: query
           name: profile
           description: Filter Emails sent or received by a specific Profile.
@@ -2229,9 +2207,6 @@ paths:
                           - name: SESSION
                             id: comms_session_01h9krwprkeee8fzqspvwy6nq8
                             uri: https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq8
-                          - name: CONTACT
-                            id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
                           - name: SENDER
                             id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                             uri: https://comms.twilio.com/v1/Senders/comms_sender_01h9krwprkeee8fzqspvwy6nq8
@@ -2658,10 +2633,6 @@ paths:
                   x-twilio-version: 1
                   description: Filter Emails sent or received by Profile ID.
                   $ref: '#/components/schemas/ProfileId'
-                contact:
-                  x-twilio-version: preview
-                  description: Filter Emails sent or received by Contact ID.
-                  $ref: '#/components/schemas/ContactId'
                 address:
                   description: Filter Emails sent or received from an address.
                   type: string
@@ -7473,11 +7444,11 @@ components:
       example: mem_store_00000000000000000000000000
     EmailProfile:
       title: EmailProfile
-      description: An email contact is a person or entity identified by an email address and associated with a Profile ID and Memory Store ID.
+      description: An email Profile is a person or entity identified by an email address and associated with a Profile ID and Memory Store ID.
       type: object
       properties:
         address:
-          description: The email address of the profile.
+          description: The email address of the Profile.
           type: string
         name:
           description: The name of the profile (e.g. "Acme Corp")
@@ -7490,22 +7461,6 @@ components:
         - address
         - profileId
         - memoryStoreId
-    EmailContact:
-      title: EmailContact
-      description: An Email Contact is a person or entity identified by an email address and associated with a Contact ID.
-      type: object
-      properties:
-        address:
-          description: The email address of the Contact.
-          type: string
-        name:
-          description: The name of the Contact (e.g. "John Smith")
-          type: string
-        contactId:
-          $ref: '#/components/schemas/ContactId'
-      required:
-        - address
-        - contactId
     SenderId:
       description: A reference to a Sender.
       title: SenderId
@@ -7540,7 +7495,6 @@ components:
           oneOf:
             - $ref: '#/components/schemas/EmailAddressRecipient'
             - $ref: '#/components/schemas/EmailProfile'
-            - $ref: '#/components/schemas/EmailContact'
             - $ref: '#/components/schemas/EmailSenderIdSender'
         to:
           title: EmailRecipients
@@ -7549,7 +7503,6 @@ components:
             oneOf:
               - $ref: '#/components/schemas/EmailAddressRecipient'
               - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailContact'
               - $ref: '#/components/schemas/EmailSenderIdSender'
         replyTo:
           title: EmailReplyToRecipients
@@ -7558,7 +7511,6 @@ components:
             oneOf:
               - $ref: '#/components/schemas/EmailAddressRecipient'
               - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailContact'
               - $ref: '#/components/schemas/EmailSenderIdSender'
         cc:
           title: EmailCCRecipients
@@ -7568,7 +7520,6 @@ components:
             oneOf:
               - $ref: '#/components/schemas/EmailAddressRecipient'
               - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailContact'
               - $ref: '#/components/schemas/EmailSenderIdSender'
         bcc:
           title: EmailBCCRecipients
@@ -7578,7 +7529,6 @@ components:
             oneOf:
               - $ref: '#/components/schemas/EmailAddressRecipient'
               - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailContact'
               - $ref: '#/components/schemas/EmailSenderIdSender'
         status:
           $ref: '#/components/schemas/EmailStatus'
@@ -7658,15 +7608,6 @@ components:
       required:
         - profileId
         - memoryStoreId
-    ContactRecipient:
-      description: A reference to a Contact.
-      title: ContactRecipient
-      type: object
-      properties:
-        contactId:
-          $ref: '#/components/schemas/ContactId'
-      required:
-        - contactId
     EmailAttachmentCid:
       title: EmailAttachmentCid
       type: string
