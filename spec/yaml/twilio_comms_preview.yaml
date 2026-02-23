@@ -22,12 +22,6 @@ tags:
     description: |-
       *Use `Contacts` to build and maintain a reliable directory of customers
       with validated communications addresses and identity profiles.*
-  - name: Audiences
-    description: |-
-      *Build up `Audiences` to broadcast communications to larger audiences*.
-
-       - Leverage them with `Messages`, `Emails`, `PushNotifications`
-          and `Communications`.
   - name: Messages
     description: |-
       *Use `Messages` to send and receive RCS, SMS and MMS, Group MMS, and WhatsApp messages.*
@@ -62,9 +56,8 @@ tags:
        - Receiving inbound Email replies and relaying the event to you for handling
   - name: PushNotifications
     description: |-
-      🚧 *Use `PushNotifications` to send push notifications to your mobile apps
-      via Firebase Cloud Messaging and Apple Push Notification services
-      as well as other push-enabled services.*
+      *Use `PushNotifications` to send push notifications to your mobile apps
+      via Firebase Cloud Messaging and Apple Push Notification services.*
   - name: Senders
     description: |-
       *Use `Senders` to build the sending and receiving identities that represent your business and applications.*
@@ -99,7 +92,24 @@ paths:
         - Contacts
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithOperation'
+          description: The request was accepted and an Operation was created to track its progress. The response body contains the ID and link to the Operation resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/OperationLocation'
+              description: |-
+                The location (uri) of the Operation resource.
+                Issue a GET request to this URI to retrieve the status of the Operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithOperationBody'
+              examples:
+                CreateContactsAccepted:
+                  summary: Create Contacts request accepted
+                  value:
+                    operationId: comms_operation_01h9krwprkeee8fzqspvwy6nq8
+                    operationLocation: https://comms.twilio.com/v1/Contacts/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -322,7 +332,7 @@ paths:
                             value: true
                     pagination:
                       next: page_01h9krwprkeee8fzqspvwy6nq9
-                      self: https://comms.twilio.com/v1/Contacts
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -389,7 +399,22 @@ paths:
         - Contacts
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                UpdateContactAccepted:
+                  summary: Update Contact request accepted
+                  value:
+                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -470,7 +495,22 @@ paths:
         - Contacts
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                DeleteContactAccepted:
+                  summary: Delete Contact request accepted
+                  value:
+                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -538,7 +578,22 @@ paths:
         - Contacts
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                AddContactAddressesAccepted:
+                  summary: Add Addresses to Contact request accepted
+                  value:
+                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -589,7 +644,22 @@ paths:
         - Contacts
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                DeleteContactAddressesAccepted:
+                  summary: Delete Addresses from Contact request accepted
+                  value:
+                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -687,7 +757,22 @@ paths:
         - Contacts
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                AddContactTagsAccepted:
+                  summary: Add Tags to Contact request accepted
+                  value:
+                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -725,7 +810,22 @@ paths:
         - Contacts
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                DeleteContactTagsAccepted:
+                  summary: Delete Tags from Contact request accepted
+                  value:
+                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -827,7 +927,7 @@ paths:
                         deletedAt: null
                     pagination:
                       next: page_01h9krwprkeee8fzqspvwy6nq9
-                      self: https://comms.twilio.com/v1/Contacts/Search
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -994,7 +1094,22 @@ paths:
                     - pickle ball
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                CreateContactCustomFieldAccepted:
+                  summary: Create Contact Custom Field request accepted
+                  value:
+                    resourceId: comms_customfield_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/Contacts/Fields/comms_customfield_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -1124,7 +1239,22 @@ paths:
         - Contacts
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                UpdateContactCustomFieldAccepted:
+                  summary: Update Contact Custom Field request accepted
+                  value:
+                    resourceId: comms_customfield_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/Contacts/Fields/comms_customfield_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -1163,636 +1293,22 @@ paths:
         - Contacts
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Audiences:
-    post:
-      summary: Create an Audience
-      operationId: CreateAudience
-      description: |-
-        This operation creates an Audience. There are three different types of audiences.
-        - **Static Audience** - This is the standard type of audience. It is created with a name,
-          optionally some tags and then Contacts are manually added or removed from it.
-
-        - **Dynamic Audience** - This is an audience whose Contact list is made up based upon a filter.
-          The filter is required and the results of the filter are the audience. It is not possible to
-          manually add/remove contacts to this audience. When you go to list the contacts on this
-          audience they are a close-to-real-time representation of the results of the filter. This means
-          that if the audience has a filter where  `favoriteColor = 'purple'` and that field is set
-          on a new contact it should appear in the audience as soon as possible. The filter for this
-          audience is saved on the audience and can be viewed from the API.
-
-          Filters can contain the standard fields: `createdAt`, `updatedAt`, `addresses.channel`, `location.city`,
-          `location.state`, `location.countryCode`. Filters can also check for the presence of tags by key
-          `Contact.tags = 'NAMER'`, and they can use custom fields that are marked as `isFilterable = true`.
-
-
-        - **Snapshot Audience** - This behaves like the default audience after it has been created, but
-          it allows for a powerful way to pre-populate the audience with contacts upon creation.
-          This is done by providing a filter when creating the audience and setting the snapshot field
-          to true. The contacts that match the filter will be added to the list, but if a contact matches
-          later to the filter it will need to be added manually. Contacts can be added and removed manually
-          to the list after they have been created. The filter for this audience is not saved on the audience
-          as it is a one time operation.
-
-          Filters can contain the standard fields: `createdAt`, `updatedAt`, `addresses.channel`, `location.city`,
-          `location.state`, `location.countryCode`. Filters can also check for the presence of tags by key
-          `Contact.tags = 'NAMER'`, and they can use custom fields that are marked as `isFilterable = true`.
-      tags:
-        - Audiences
-      responses:
-        '202':
-          $ref: '#/components/responses/Http202ResponseWithOperation'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: CreateAudienceRequest
-              type: object
-              description: This operation creates Audiences.
-              properties:
-                name:
-                  type: string
-                  description: A name for the Audience.
-                filter:
-                  $ref: '#/components/schemas/AudienceFilter'
-                snapshot:
-                  type: boolean
-                  description: |-
-                    If true, the Audience will be created with the current Contacts that match the filter.
-                    *The audience will not be updated as contacts change in the future and the filter is not saved for reference later.*
-                tags:
-                  x-twilio-version: preview
-                  $ref: '#/components/schemas/Tags'
-              required:
-                - name
-            examples:
-              CreateAudience:
-                summary: Create Audience
-                value:
-                  name: FB Lead Ads - New Sign Ups
-                  tags:
-                    campaign: fb-leads-ad-7
-    get:
-      summary: List Audiences
-      operationId: ListAudiences
-      description: This operation fetches a paginated list of Audiences.
-      tags:
-        - Audiences
-      parameters:
-        - in: query
-          name: operationId
-          description: Filter to Audiences by operation ID.
-          schema:
-            $ref: '#/components/schemas/OperationId'
-        - in: query
-          name: pageToken
-          description: The token to retrieve the next page of results.
-          schema:
-            $ref: '#/components/schemas/PageToken'
-        - in: query
-          name: pageSize
-          description: The number of resources to return in a page.
-          schema:
-            $ref: '#/components/schemas/PageSize'
-        - in: query
-          name: tags
-          description: |-
-            Match audiences by one or many tags. If more than one tag is specified in the query, the search will return audiences that have all the tags.
-            For example: ``` GET /Audiences?tags=ageGroup:20s;industry:engineering; ```
-          schema:
-            $ref: '#/components/schemas/TagsString'
-      responses:
-        '200':
-          description: OK
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
           content:
             application/json:
               schema:
-                title: ListAudiencesResponse
-                type: object
-                properties:
-                  audiences:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Audience'
-                  pagination:
-                    $ref: '#/components/schemas/PaginationMetadata'
-                required:
-                  - audiences
-                  - pagination
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
               examples:
-                ListAudiences:
-                  summary: List Audiences
+                DeleteContactCustomFieldAccepted:
+                  summary: Delete Contact Custom Field request accepted
                   value:
-                    audiences:
-                      - id: comms_audience_01h9krwprkeee8fzqspvwy6nq8
-                        name: Repeat Buyers
-                        totalContacts: 1337
-                        tags:
-                          countryCode: US
-                        createdAt: '2023-08-24T14:15:22Z'
-                        updatedAt: '2023-08-24T14:15:22Z'
-                        deletedAt: null
-                      - id: comms_audience_01h9krwprkeee8fzqspvwy6nq9
-                        name: Technology & Finance Contacts
-                        totalContacts: 78
-                        filter: Contact.location.countryCode == 'US' AND Contact.customFields.industry IN('Technology', 'Finance')
-                        tags: {}
-                        createdAt: '2023-08-24T14:15:22Z'
-                        updatedAt: '2023-08-24T14:15:22Z'
-                        deletedAt: null
-                    pagination:
-                      next: null
-                      self: https://comms.twilio.com/v1/Audiences
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Audiences/{audienceId}:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/AudienceId'
-        name: audienceId
-        in: path
-        required: true
-    get:
-      summary: Fetch an Audience
-      operationId: FetchSingleAudience
-      description: This operation fetches a single Audience using its ID.
-      tags:
-        - Audiences
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Audience'
-              examples:
-                StaticAudience:
-                  summary: Static Audience
-                  value:
-                    id: comms_audience_01h9krwprkeee8fzqspvwy6nq8
-                    name: Repeat Buyers
-                    totalContacts: 1337
-                    tags:
-                      countryCode: US
-                    createdAt: '2023-08-24T14:15:22Z'
-                    updatedAt: '2023-08-24T14:15:22Z'
-                    deletedAt: null
-                DynamicAudience:
-                  summary: Dynamic Audience
-                  value:
-                    id: comms_audience_01h9krwprkeee8fzqspvwy6nq9
-                    name: Technology & Finance Contacts
-                    totalContacts: 78
-                    filter: Contact.location.countryCode == 'US' AND Contact.customFields.industry IN('Technology', 'Finance')
-                    tags: {}
-                    createdAt: '2023-08-24T14:15:22Z'
-                    updatedAt: '2023-08-24T14:15:22Z'
-                    deletedAt: null
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-    patch:
-      summary: Update an Audience
-      operationId: UpdateAudience
-      description: This operation partially updates an Audience
-      tags:
-        - Audiences
-      responses:
-        '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: UpdateAudienceRequest
-              type: object
-              nullable: true
-              properties:
-                name:
-                  type: string
-                filter:
-                  $ref: '#/components/schemas/AudienceFilter'
-                tags:
-                  x-twilio-version: preview
-                  $ref: '#/components/schemas/TagsNullable'
-            examples:
-              UpdateAudienceSName:
-                summary: Update Audience's name
-                value:
-                  name: New Name
-              UpdateAudienceSTags:
-                summary: Update Audience's tags
-                value:
-                  tags:
-                    groupSize: X-Large
-              ChangeAnAudienceSFilter:
-                summary: Change an Audience's filter
-                value:
-                  filter: Contact.location.countryCode == 'US' AND Contact.customFields.industry IN('Technology', 'Telecom')
-    delete:
-      summary: Delete an Audience
-      operationId: DeleteAudience
-      description: This operation deletes an Audience using its ID.
-      tags:
-        - Audiences
-      responses:
-        '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Audiences/{audienceId}/Contacts:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/AudienceId'
-        name: audienceId
-        in: path
-        required: true
-    post:
-      summary: Add Contacts to an Audience
-      operationId: AddContactsToAudience
-      description: This operation adds list of Contacts to an Audience
-      tags:
-        - Audiences
-      responses:
-        '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: AddContactsToAudienceRequest
-              type: object
-              properties:
-                contactIds:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/ContactId'
-            examples:
-              AddContactsToAudience:
-                summary: Add Contacts to Audience
-                value:
-                  contactIds:
-                    - comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    - comms_contact_01h9krwprkeee8fzqspvwy6nq9
-    get:
-      summary: List Contacts in an Audience
-      operationId: ListContactsInAudience
-      description: This operation fetches a paginated list of Contacts that belong to an Audience.
-      tags:
-        - Audiences
-      parameters:
-        - in: query
-          name: pageToken
-          description: The token to retrieve the next page of results.
-          schema:
-            $ref: '#/components/schemas/PageToken'
-        - in: query
-          name: pageSize
-          description: The number of resources to return in a page.
-          schema:
-            $ref: '#/components/schemas/PageSize'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                title: ListContactsInAudienceResponse
-                type: object
-                properties:
-                  contacts:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Contact'
-                  pagination:
-                    $ref: '#/components/schemas/PaginationMetadata'
-              examples:
-                PageOfContactsThatBelongToAnAudience:
-                  summary: Page of Contacts that belong to an Audience
-                  value:
-                    contacts:
-                      - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                        firstName: Jane
-                        lastName: Doe
-                        displayName: Jane Doe
-                        addresses:
-                          - channel: EMAIL
-                            address: jane.doe@example.com
-                        audiences:
-                          - audienceId: comms_audience_01h9krwprkeee8fzqspvwy6nq9
-                        createdAt: '2019-08-24T14:15:22Z'
-                        updatedAt: '2019-08-24T14:15:22Z'
-                        deletedAt: null
-                      - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                        firstName: John
-                        lastName: Doe
-                        displayName: John Doe
-                        addresses:
-                          - channel: EMAIL
-                            address: john.doe@example.com
-                        audiences:
-                          - audienceId: comms_audience_01h9krwprkeee8fzqspvwy6nq9
-                        createdAt: '2019-08-24T14:15:22Z'
-                        updatedAt: '2019-08-24T14:15:22Z'
-                        deletedAt: null
-                    pagination:
-                      next: null
-                      self: https://comms.twilio.com/v1/Audiences/comms_audience_01h9krwprkeee8fzqspvwy6nq9/Contacts
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Audiences/{audienceId}/Contacts/{contactId}:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/AudienceId'
-        name: audienceId
-        in: path
-        required: true
-      - schema:
-          $ref: '#/components/schemas/ContactId'
-        name: contactId
-        in: path
-        required: true
-    delete:
-      summary: Remove a Contact from an Audience
-      operationId: RemoveContactFromAudience
-      description: This operation removes a Contact from an Audience
-      tags:
-        - Audiences
-      responses:
-        '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Audiences/{audienceId}/Tags:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/AudienceId'
-        name: audienceId
-        in: path
-        required: true
-    get:
-      summary: List of Audience Tags
-      operationId: ListAudienceTags
-      description: This operation fetches list of audience tags
-      tags:
-        - Audiences
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                title: ListAudienceTagsResponse
-                type: object
-                properties:
-                  tags:
-                    type: object
-                    $ref: '#/components/schemas/Tags'
-                required:
-                  - tags
-              examples:
-                ListOfAudienceTags:
-                  summary: List of audience tags
-                  value:
-                    tags:
-                      campaign1: fb-leads-ad-7
-                      campaign2: fb-leads-ad-8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-    post:
-      summary: Add Tags to an Audience
-      operationId: AddAudienceTags
-      description: This operation adds tags to an Audience
-      tags:
-        - Audiences
-      responses:
-        '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: AddAudienceTagsRequest
-              type: object
-              properties:
-                tags:
-                  x-twilio-version: preview
-                  $ref: '#/components/schemas/Tags'
-              required:
-                - tags
-            examples:
-              AddTagsToTheAudience:
-                summary: Add Tags to an Audience
-                value:
-                  tags:
-                    campaign1: fb-leads-ad-7
-                    campaign2: fb-leads-ad-8
-    delete:
-      summary: Delete Tags from an Audience
-      operationId: DeleteAudienceTags
-      description: This operation deletes Tags from an Audience
-      tags:
-        - Audiences
-      responses:
-        '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: DeleteAudienceTagsRequest
-              type: object
-              properties:
-                tags:
-                  type: array
-                  description: The list of tag keys to be deleted from an Audience
-                  items:
-                    type: string
-            examples:
-              DeleteAudienceTags:
-                summary: Delete Audience tags
-                value:
-                  tags:
-                    - fb-leads-ad-7
-                    - fb-leads-ad-8
-  /Audiences/Operations:
-    get:
-      summary: List Audience Operations
-      operationId: ListAudienceOperations
-      description: This operation fetches a paginated list of Audience Operations.
-      tags:
-        - Audiences
-      parameters:
-        - in: query
-          name: status
-          description: Filter to Operations with the specified status.
-          schema:
-            $ref: '#/components/schemas/OperationStatus'
-        - in: query
-          name: pageToken
-          description: The token to retrieve the next page of results.
-          schema:
-            $ref: '#/components/schemas/PageToken'
-        - in: query
-          name: pageSize
-          description: The number of resources to return in a page.
-          schema:
-            $ref: '#/components/schemas/PageSize'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                title: ListAudienceOperationsResponse
-                type: object
-                properties:
-                  operations:
-                    type: array
-                    description: A list of Audience Operations.
-                    items:
-                      $ref: '#/components/schemas/ContactOperation'
-                  pagination:
-                    $ref: '#/components/schemas/PaginationMetadata'
-                required:
-                  - operations
-                  - pagination
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Audiences/Operations/{operationId}:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/OperationId'
-        name: operationId
-        in: path
-        required: true
-    get:
-      summary: Fetch an Audience Operation
-      operationId: FetchAudienceOperation
-      description: This operation fetches a single Audience Operation using its ID.
-      tags:
-        - Audiences
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ContactOperation'
+                    resourceId: comms_customfield_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/Contacts/Fields/comms_customfield_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -1812,7 +1328,24 @@ paths:
         - Emails
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithOperation'
+          description: The request was accepted and an Operation was created to track its progress. The response body contains the ID and link to the Operation resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/OperationLocation'
+              description: |-
+                The location (uri) of the Operation resource.
+                Issue a GET request to this URI to retrieve the status of the Operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithOperationBody'
+              examples:
+                SendEmailsAccepted:
+                  summary: Send Emails request accepted
+                  value:
+                    operationId: comms_operation_01h9krwprkeee8fzqspvwy6nq8
+                    operationLocation: https://comms.twilio.com/v1/Emails/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -1874,6 +1407,16 @@ paths:
                         required:
                           - profileId
                           - memoryStoreId
+                      - title: SendEmailsAudienceRecipient
+                        type: object
+                        description: A Twilio `Audience` identified by `Audience.Id`.
+                        properties:
+                          audienceId:
+                            $ref: '#/components/schemas/AudienceId'
+                          variables:
+                            $ref: '#/components/schemas/ContentPersonalization'
+                        required:
+                          - audienceId
                       - title: SendEmailsGroupRecipient
                         type: object
                         description: |-
@@ -1960,6 +1503,22 @@ paths:
                     subject: Wedding Cake
                     text: Hey you, your cake is ready.
                     html: <html><body>Hey you, your cake is ready.<br/><br/></body></html>
+                    attachments: []
+              SendToAudience:
+                summary: Send to an Audience with personalization
+                value:
+                  from:
+                    address: marketing@example-company.com
+                    name: Example Company Marketing
+                  to:
+                    - audienceId: aud_audience_01h9krwprkeee8fzqspvwy6nq8
+                      variables:
+                        firstName: ${Twilio.Contact.firstName}
+                        lastName: ${Twilio.Contact.lastName}
+                  content:
+                    subject: Special Offer Just for You!
+                    text: 'Hi {{ firstName | default: ''Valued Customer'' }}, check out our latest deals.'
+                    html: '<html><body>Hi {{ firstName | default: ''Valued Customer'' }}, check out our latest deals.<br/><br/></body></html>'
                     attachments: []
               SendFromToDirectEntitiesWithPersonalization:
                 summary: Send from, to direct entities with personalization
@@ -2217,7 +1776,7 @@ paths:
                         deletedAt: null
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Emails
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -2355,7 +1914,22 @@ paths:
         - Emails
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                DeleteEmailAccepted:
+                  summary: Delete Email request accepted
+                  value:
+                    resourceId: comms_email_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/Emails/comms_email_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -2578,7 +2152,7 @@ paths:
                         context: 'null'
                     pagination:
                       next: null
-                      self: /v1/Emails/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8/Errors
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -2727,7 +2301,7 @@ paths:
                         deletedAt: null
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Emails
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -2745,7 +2319,24 @@ paths:
         - Messages
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithOperation'
+          description: The request was accepted and an Operation was created to track its progress. The response body contains the ID and link to the Operation resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/OperationLocation'
+              description: |-
+                The location (uri) of the Operation resource.
+                Issue a GET request to this URI to retrieve the status of the Operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithOperationBody'
+              examples:
+                SendMessagesAccepted:
+                  summary: Send Messages request accepted
+                  value:
+                    operationId: comms_operation_01h9krwprkeee8fzqspvwy6nq8
+                    operationLocation: https://comms.twilio.com/v1/Messages/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -3092,12 +2683,12 @@ paths:
                   from:
                     senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                   to:
-                    - audienceId: comms_audience_01h9krwprkeee8fzqspvwy6nq8
+                    - audienceId: aud_audience_01h9krwprkeee8fzqspvwy6nq8
                       variables:
                         firstName: ${Twilio.Contact.firstName}
                         lastName: ${Twilio.Contact.lastName}
                         gender: ${Twilio.Contact.gender}
-                    - audienceId: comms_audience_01h9krwprkeee8fzqspvwy6nq8
+                    - audienceId: aud_audience_01h9krwprkeee8fzqspvwy6nq8
                       variables:
                         firstName: ${Twilio.Contact.firstName}
                         lastName: ${Twilio.Contact.lastName}
@@ -3372,7 +2963,7 @@ paths:
                         deletedAt: null
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Messages
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
                 ListMessagesFilterByProfile:
                   summary: List Messages filtered by Profile
                   value:
@@ -3419,7 +3010,7 @@ paths:
                         deletedAt: null
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Messages
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
                 ListMessagesInSession:
                   summary: List Messages in a Session
                   value:
@@ -3469,7 +3060,7 @@ paths:
                         deletedAt: null
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Messages
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
                 ListMessagesFilteredByInboundStatusAndProfile:
                   summary: List only inbound Messages from the same Profile
                   value:
@@ -3516,7 +3107,7 @@ paths:
                         deletedAt: null
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Messages
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -3879,375 +3470,6 @@ paths:
           $ref: '#/components/responses/Http500Response'
         '503':
           $ref: '#/components/responses/Http503Response'
-  /Messages/Operations/{operationId}/Errors:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/OperationId'
-        name: operationId
-        in: path
-        required: true
-    get:
-      summary: List Message Operation Errors
-      operationId: ListMessageOperationErrors
-      description: This operation retrieves a paginated list of Message Operation Errors.
-      tags:
-        - Messages
-      parameters:
-        - in: query
-          name: code
-          description: Filter to Operations with a specific Twilio error code.
-          schema:
-            type: integer
-        - in: query
-          name: startDate
-          description: Filter to Errors created after the specified date and time in ISO 8601 format.
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: endDate
-          description: Filter to Errors created before the specified date and time in ISO 8601 format.
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: pageToken
-          description: The token to retrieve the next page of results.
-          schema:
-            $ref: '#/components/schemas/PageToken'
-        - in: query
-          name: pageSize
-          description: The number of resources to return in a page.
-          schema:
-            $ref: '#/components/schemas/PageSize'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationErrorsResponse'
-              examples:
-                FreeFormWhatsAppFailure:
-                  summary: free-form whatsapp failure
-                  value:
-                    errors:
-                      - code: 63016
-                        message: |-
-                          Failed to send freeform Message via WhatsApp
-                          because you are outside the allowed window.
-                          If you are using WhatsApp, please use Message Content.
-                        infoUrl: https://www.twilio.com/docs/errors/63016
-                        createdAt: '2024-04-05T06:20:00Z'
-                        context: 'null'
-                    pagination:
-                      next: null
-                      self: /preview/Messages/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8/Errors
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Messages/Operations/{operationId}/Cancel:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/OperationId'
-        name: operationId
-        in: path
-        required: true
-    post:
-      summary: Cancel a Message Operation
-      operationId: CancelMessageOperation
-      description: This operation cancels a Message Operation using its ID.
-      tags:
-        - Messages
-      responses:
-        '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Messages/Search:
-    post:
-      summary: Search Messages
-      operationId: SearchMessages
-      description: Search for messages based on the specified criteria.
-      tags:
-        - Messages
-      parameters:
-        - in: query
-          name: pageToken
-          description: The token to retrieve the next page of results.
-          schema:
-            $ref: '#/components/schemas/PageToken'
-        - in: query
-          name: pageSize
-          description: The number of resources to return in a page.
-          schema:
-            $ref: '#/components/schemas/PageSize'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: SearchMessagesRequest
-              type: object
-              properties:
-                operationId:
-                  description: Filter Messages by Operation ID.
-                  x-twilio-version: 1
-                  $ref: '#/components/schemas/OperationId'
-                sessionId:
-                  x-twilio-version: 1
-                  description: Filter Messages by Session ID.
-                  $ref: '#/components/schemas/SessionId'
-                startDate:
-                  description: Filter to Messages created after the specified date and time.
-                  type: string
-                  format: date-time
-                endDate:
-                  description: Filter to Messages created before the specified date and time.
-                  type: string
-                  format: date-time
-                profile:
-                  description: Filter Messages sent or received by Profile ID.
-                  x-twilio-version: 1
-                  $ref: '#/components/schemas/ProfileId'
-                contact:
-                  description: Filter Messages sent or received by Contact ID.
-                  x-twilio-version: preview
-                  $ref: '#/components/schemas/ContactId'
-                address:
-                  description: Filter Messages sent or received from an address.
-                  type: string
-                channel:
-                  description: Filter Messages by channel.
-                  x-twilio-version: 1
-                  $ref: '#/components/schemas/MessageSenderChannel'
-                status:
-                  description: Filter Messages by Delivery Status.
-                  x-twilio-version: 1
-                  $ref: '#/components/schemas/MessageStatus'
-                tags:
-                  description: Match messages by one or many tags. If more than one tag is specified, the search will return messages that have all the tags.
-                  x-twilio-version: 1
-                  $ref: '#/components/schemas/Tags'
-            examples:
-              SearchForMessagesSentFromASpecificAddress:
-                summary: Search for messages sent to or from a specific address
-                value:
-                  address: '+12065558844'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                title: SearchMessagesResponse
-                type: object
-                properties:
-                  messages:
-                    type: array
-                    description: A list of Messages.
-                    items:
-                      $ref: '#/components/schemas/MessageMetadata'
-                  pagination:
-                    $ref: '#/components/schemas/PaginationMetadata'
-                required:
-                  - messages
-                  - pagination
-              examples:
-                ResponseOutboundMessage11:
-                  summary: Outbound message, 1:1
-                  value:
-                    messages:
-                      - id: comms_message_01h2xcejqtf2nbrexx3vqjhp41
-                        from:
-                          address: '+12065558844'
-                          channel: SMS
-                          senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-                        to:
-                          - address: '+14153901002'
-                            channel: PHONE
-                            profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq7
-                            memoryStoreId: mem_store_00000000000000000000000000
-                        status: QUEUED
-                        related:
-                          - name: OPERATION
-                            id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Messages/Operations/comms_operation_01h2xcejqtf2nbrexx3vqjhp41
-                        tags: {}
-                        scheduledFor: null
-                        createdAt: '2023-08-24T14:15:22Z'
-                        updatedAt: '2023-08-24T14:15:22Z'
-                        deletedAt: null
-                    pagination:
-                      next: null
-                      self: https://comms.twilio.com/v1/Messages
-                ResponseOutboundMessage1N:
-                  summary: Outbound message, 1:n
-                  value:
-                    messages:
-                      - id: comms_message_01h2xcejqtf2nbrexx3vqjhp41
-                        from:
-                          address: '+12065558844'
-                          channel: SMS
-                          senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-                        to:
-                          - address: '+14153901002'
-                            channel: PHONE
-                            profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq7
-                            memoryStoreId: mem_store_00000000000000000000000000
-                        status: SENT
-                        related:
-                          - name: OPERATION
-                            id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Messages/Operations/comms_operation_01h2xcejqtf2nbrexx3vqjhp41
-                        tags: {}
-                        scheduledFor: null
-                        createdAt: '2023-08-24T14:15:22Z'
-                        updatedAt: '2023-08-24T14:15:22Z'
-                        deletedAt: null
-                      - id: comms_message_01h2xcejqtf2nbrexx3vqjhp41
-                        from:
-                          address: '+12065558844'
-                          channel: SMS
-                          senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-                        to:
-                          - address: '+14153901002'
-                            channel: PHONE
-                            profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq8
-                            memoryStoreId: mem_store_00000000000000000000000000
-                        status: DELIVERED
-                        related:
-                          - name: OPERATION
-                            id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Messages/Operations/comms_operation_01h2xcejqtf2nbrexx3vqjhp41
-                        tags: {}
-                        scheduledFor: null
-                        createdAt: '2023-08-24T14:15:22Z'
-                        updatedAt: '2023-08-24T14:15:22Z'
-                        deletedAt: null
-                    pagination:
-                      next: null
-                      self: https://comms.twilio.com/v1/Messages
-                MessagesInASession:
-                  summary: Messages in a Session
-                  value:
-                    messages:
-                      - id: comms_message_01h9krwprkeee8fzqspvwy6nq8
-                        from:
-                          address: '+18126678921'
-                          channel: SMS
-                          senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-                        to:
-                          - address: '+19144178063'
-                            channel: PHONE
-                            profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq8
-                            memoryStoreId: mem_store_00000000000000000000000000
-                        status: DELIVERED
-                        related:
-                          - name: OPERATION
-                            id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Messages/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                          - name: SESSION
-                            id: comms_session_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq8
-                        tags: {}
-                        scheduledFor: null
-                        createdAt: '2023-08-24T14:15:22Z'
-                        updatedAt: '2023-08-24T14:15:22Z'
-                        deletedAt: null
-                      - id: comms_message_01h9krwprkeee8fzqspvwy6nq8
-                        from:
-                          address: '+18126678921'
-                          channel: PHONE
-                          profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq8
-                          memoryStoreId: mem_store_00000000000000000000000000
-                        to:
-                          - address: '+19144178063'
-                            channel: SMS
-                            senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-                        status: INBOUND
-                        related:
-                          - name: SESSION
-                            id: comms_session_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq8
-                        tags: {}
-                        scheduledFor: null
-                        createdAt: '2023-08-24T14:15:22Z'
-                        updatedAt: '2023-08-24T14:15:22Z'
-                        deletedAt: null
-                    pagination:
-                      next: null
-                      self: https://comms.twilio.com/v1/Messages
-                InboundMessagesFromTheSameContact:
-                  summary: Inbound messages from the same contact
-                  value:
-                    messages:
-                      - id: comms_message_01h9krwprkeee8fzqspvwy6nq5
-                        from:
-                          address: '+12065558844'
-                          channel: PHONE
-                          profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq8
-                          memoryStoreId: mem_store_00000000000000000000000000
-                        to:
-                          - address: '+14153901002'
-                            channel: SMS
-                            senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-                        status: INBOUND
-                        related:
-                          - name: SESSION
-                            id: comms_session_01h9krwprkeee8fzqspvwy6nq5
-                            uri: https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq5
-                        tags: {}
-                        scheduledFor: null
-                        createdAt: '2023-08-24T14:15:22Z'
-                        updatedAt: '2023-08-24T14:15:22Z'
-                        deletedAt: null
-                      - id: comms_message_01h9krwprkeee8fzqspvwy6nq6
-                        from:
-                          address: '+12065558844'
-                          channel: SMS
-                          senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-                        to:
-                          - address: '+14153902337'
-                            channel: PHONE
-                            profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq7
-                            memoryStoreId: mem_store_00000000000000000000000000
-                        status: INBOUND
-                        related:
-                          - name: SESSION
-                            id: comms_session_01h9krwprkeee8fzqspvwy6nq6
-                            uri: https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq6
-                        tags: {}
-                        scheduledFor: null
-                        createdAt: '2023-08-24T14:16:59Z'
-                        updatedAt: '2023-08-24T14:16:59Z'
-                        deletedAt: null
-                    pagination:
-                      next: null
-                      self: https://comms.twilio.com/v1/Messages
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
   /Messages/Seek/{identifier}:
     parameters:
       - name: identifier
@@ -4295,11 +3517,11 @@ paths:
       operationId: CreateDeviceRegistration
       description: |-
         This operation registers the push notifications token of the device/browser to the
-        Registration set of a Contact with the corresponding `appName`.
+        Registration set of a User with the corresponding `appName`.
 
-        * If a Contact ID is not provided, a new Contact is created. 
+        * If a User ID is not provided, a new User is created.
 
-        * If a Contact ID is provided and the Contact exists, the device is registered to the Contact.
+        * If a User ID is provided and the User exists, the device is registered to the User.
       tags:
         - PushNotifications
       requestBody:
@@ -4310,10 +3532,10 @@ paths:
               title: DeviceRegistrationRequest
               type: object
               properties:
-                contactId:
-                  x-twilio-version: preview
-                  $ref: '#/components/schemas/ContactId'
-                  description: The ID of the contact to register the device to, if available.
+                userId:
+                  x-twilio-version: 1
+                  $ref: '#/components/schemas/PushNotificationUserId'
+                  description: The ID of the User to register the device to, if available.
                 appName:
                   description: |-
                     The name of the `App` to register the device for.
@@ -4332,22 +3554,37 @@ paths:
                 - token
                 - provider
             examples:
-              ExistingContact:
-                summary: Existing contact
+              ExistingUser:
+                summary: Existing user
                 value:
-                  contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                  userId: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
                   token: dqWD7WEC83K41WHyufTS7:APA91bFcrVaOLqKeJfSiEutJXX2Tr9wN_tYOwYd8rFA6mYUMBFqdz9n6k3v5EpFA_ukXD89hGqG3OarzbVfdjGnLOIAQfwbQcqJkjQWMrhwElrtU1y3JLDPfnjc0eTJLxzhyYvDFopEh
                   appName: limonade_app
                   provider: FCM
-              NewContact:
-                summary: New contact
+              NewUser:
+                summary: New User
                 value:
                   token: dqWD7WEC83K41WHyufTS7:APA91bFcrVaOLqKeJfSiEutJXX2Tr9wN_tYOwYd8rFA6mYUMBFqdz9n6k3v5EpFA_ukXD89hGqG3OarzbVfdjGnLOIAQfwbQcqJkjQWMrhwElrtU1y3JLDPfnjc0eTJLxzhyYvDFopEh
                   appName: limonade_app
                   provider: FCM
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                CreateDeviceRegistrationAccepted:
+                  summary: Register Device for Push Notifications request accepted
+                  value:
+                    resourceId: comms_device_registration_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/PushNotifications/DeviceRegistrations/comms_device_registration_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -4374,30 +3611,30 @@ paths:
       operationId: ListDeviceRegistrations
       description: |-
         This operation fetches a paginated list of Device Registrations
-          with the ID of the `Contact` they belong to and the name of the `App` that they are for.
+          with the ID of the `User` they belong to and the name of the `App` that they are for.
 
-        * A Device Registration contains a list of devices registered for a particular `Contact` under an `App`
+        * A Device Registration contains a list of devices registered for a particular `User` under an `App`
 
-        * The `Device` tokens in the Device Registration are used for delivering Push Notifications to the given `App` on 
-        devices or browsers belonging to a single Contact.
+        * The `Device` tokens in the Device Registration are used for delivering Push Notifications to the given `App` on
+        devices or browsers belonging to a single User.
 
-        * Each Contact will have one Device Registration for each `App`.
+        * Each User will have one Device Registration for each `App`.
 
-        * When sending Push Notifications to a Contact, all of the
+        * When sending Push Notifications to a User, all of the
           devices registered under the Device Registration with the corresponding `appName`
           are targets for the Push Notification.
       tags:
         - PushNotifications
       parameters:
         - in: query
-          name: contactId
+          name: userId
           required: true
-          description: Filter Device Registrations by `Contact.id` to retrieve only registrations for that Contact.
+          description: Filter Device Registrations by `User.id` to retrieve only registrations for that User.
           schema:
-            $ref: '#/components/schemas/ContactId'
+            $ref: '#/components/schemas/PushNotificationUserId'
         - in: query
           name: appName
-          description: Filter Device Registrations by their `appName`.  Must be accompanied by the `contactId` query parameter.
+          description: Filter Device Registrations by their `appName`. Must be accompanied by the `userId` query parameter.
           schema:
             $ref: '#/components/schemas/PushNotificationAppName'
         - in: query
@@ -4436,7 +3673,7 @@ paths:
                     deviceRegistrations:
                       - id: comms_device_registration_qspvwy6nq801h9krwprkeee8fz
                         appName: limonade_app
-                        contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                        userId: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
                         devices:
                           - token: dqWD7WEC83K41WHyufTS7:APA91bFcrVaOLqKeJfSiEutJXX2Tr9wN_tYOwYd8rFA6mYUMBFqdz9n6k3v5EpFA_ukXD89hGqG3OarzbVfdjGnLOIAQfwbQcqJkjQWMrhwElrtU1y3JLDPfnjc0eTJLxzhyYvDFopEh
                             provider: FCM
@@ -4446,12 +3683,12 @@ paths:
                           - id: limonade_app
                             name: PUSH_NOTIFICATION_APP
                             uri: https://comms.twilio.com/v1/PushNotifications/Apps/limonade_app
-                          - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                            name: CONTACT
-                            uri: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                          - id: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
+                            name: PUSH_NOTIFICATION_USER
+                            uri: https://comms.twilio.com/v1/PushNotifications/Users/comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/PushNotifications/DeviceRegistrations
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -4480,14 +3717,14 @@ paths:
       description: |-
         This operation fetches a single Device Registration.
 
-        * A Device Registration contains a list of devices registered for a particular `Contact` under an `App`
+        * A Device Registration contains a list of devices registered for a particular `User` under an `App`
 
-        * The `Device` tokens in the Device Registration are used for delivering Push Notifications to the given `App` on 
-        devices or browsers belonging to a single Contact.
+        * The `Device` tokens in the Device Registration are used for delivering Push Notifications to the given `App` on
+        devices or browsers belonging to a single User.
 
-        * Each Contact will have one Device Registration for each `App`.
+        * Each User will have one Device Registration for each `App`.
 
-        * When sending Push Notifications to a Contact, all of the
+        * When sending Push Notifications to a User, all of the
           devices registered under the Device Registration with the corresponding `appName`
           are targets for the Push Notification.
       tags:
@@ -4505,7 +3742,7 @@ paths:
                   value:
                     id: comms_device_registration_qspvwy6nq801h9krwprkeee8fz
                     appName: limonade_app
-                    contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    userId: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
                     devices:
                       - token: dqWD7WEC83K41WHyufTS7:APA91bFcrVaOLqKeJfSiEutJXX2Tr9wN_tYOwYd8rFA6mYUMBFqdz9n6k3v5EpFA_ukXD89hGqG3OarzbVfdjGnLOIAQfwbQcqJkjQWMrhwElrtU1y3JLDPfnjc0eTJLxzhyYvDFopEh
                         provider: FCM
@@ -4515,9 +3752,9 @@ paths:
                       - id: limonade_app
                         name: PUSH_NOTIFICATION_APP
                         uri: https://comms.twilio.com/v1/PushNotifications/Apps/limonade_app
-                      - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                        name: CONTACT
-                        uri: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                      - id: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
+                        name: PUSH_NOTIFICATION_USER
+                        uri: https://comms.twilio.com/v1/PushNotifications/Users/comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -4534,12 +3771,27 @@ paths:
       description: |-
         This operation deletes a Device Registration.
 
-        Once deleted, the Contact will no longer receive Push Notifications for the specified App until new devices are registered.
+        Once deleted, the User will no longer receive Push Notifications for the specified App until new devices are registered.
       tags:
         - PushNotifications
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                DeleteDeviceRegistrationAccepted:
+                  summary: Delete Device Registration request accepted
+                  value:
+                    resourceId: comms_device_registration_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/PushNotifications/DeviceRegistrations/comms_device_registration_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -4559,7 +3811,24 @@ paths:
         - PushNotifications
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithOperation'
+          description: The request was accepted and an Operation was created to track its progress. The response body contains the ID and link to the Operation resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/OperationLocation'
+              description: |-
+                The location (uri) of the Operation resource.
+                Issue a GET request to this URI to retrieve the status of the Operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithOperationBody'
+              examples:
+                SendPushNotificationsAccepted:
+                  summary: Send Push Notifications request accepted
+                  value:
+                    operationId: comms_operation_01h9krwprkeee8fzqspvwy6nq8
+                    operationLocation: https://comms.twilio.com/v1/PushNotifications/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -4602,25 +3871,18 @@ paths:
                     title: SendPushNotificationsRecipient
                     oneOf:
                       - $ref: '#/components/schemas/SendPushNotificationDirectRecipient'
-                      - $ref: '#/components/schemas/SendPushNotificationsContactRecipient'
+                      - $ref: '#/components/schemas/SendPushNotificationsUserRecipient'
                       - $ref: '#/components/schemas/SendPushNotificationsAudienceRecipient'
                 content:
                   title: SendPushNotificationsContent
                   description: |-
                     The content of the Push Notification.
-                    - Use `PushNotificationContentBody` to construct content with body but no images.
-                    - Use `PushNotificationContentBodyWithImages` to construct content with
-                      body and images.
-
-                    - Use `PushNotificationContentImages` to construct content with images but no body.
-                    - Use `PushNotificationContentTemplate` to reference a stored `Content` template.
                     ***
                     * Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.
                     * When using a templated content, use the `variables` field on each recipient to specify the values to substitute.
                     * For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.
-                    * When targeting `Audience` or `Contact` recipients, you may specify `variables` with values that reference stored fields, including custom fields, on the `Contact` -- for example: `${Twilio.Contact.firstName}` or `${Twilio.Contact.myCustomField}`.
                   oneOf:
-                    - $ref: '#/components/schemas/PushNotificationContentText'
+                    - $ref: '#/components/schemas/PushNotificationContentBody'
                 priority:
                   $ref: '#/components/schemas/PushNotificationPriority'
                 sound:
@@ -4632,7 +3894,6 @@ paths:
                   $ref: '#/components/schemas/Schedule'
                 tags:
                   $ref: '#/components/schemas/Tags'
-                  x-twilio-version: preview
               required:
                 - to
                 - content
@@ -4650,32 +3911,31 @@ paths:
                       provider: APN
                   content:
                     title: Boarding time @ TLL
-                    text: Dear customer, you have 1 hour until boarding time at the Tallinn airport
+                    body: Dear customer, you have 1 hour until boarding time at the Tallinn airport
                   priority: HIGH
                   sound: ring
               SendMultiplePushesToIndirectEntitiesWithPersonalization:
-                summary: Send multiple pushes to indirect entities with personalization
+                summary: Send Push Notifications to multiple Users with personalization
                 value:
                   to:
-                    - contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - userId: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
                       variables:
                         item: Macbook Pro M2 14
-                    - contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - userId: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
                       variables:
                         item: Macbook Air M3
-                    - contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - userId: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
                       variables:
                         item: iPhone 15
-                        name: ${Twilio.Contact.firstName}
+                        name: John
                   content:
                     title: 10% off your wishlist item!
-                    text: 'Hey {{name | default: ''there'' }}, your wishlist item {{item}} is on sale this weekend only!'
+                    body: 'Hey {{name | default: ''there'' }}, your wishlist item {{item}} is on sale this weekend only!'
                     providerPassthrough:
-                      - provider: FCM
-                        data:
-                          message:
-                            data:
-                              analyticsLabel: wishlistItemOnSale
+                      fcm:
+                        message:
+                          data:
+                            analyticsLabel: wishlistItemOnSale
               SendAScheduledPush:
                 summary: Send a scheduled push
                 value:
@@ -4686,35 +3946,32 @@ paths:
                       provider: FCM
                   content:
                     title: Boarding time @ TLL
-                    text: Dear customer, you have 1 hour until boarding time at the Tallinn airport
+                    body: Dear customer, you have 1 hour until boarding time at the Tallinn airport
                   priority: HIGH
                   sound: ring
                   schedule:
                     sendAt:
                       - '2023-08-31T14:15:22Z'
-              SendAPushToAContactWithLucidTemplating:
-                summary: Send a push to a Contact
+              SendAPushToAUser:
+                summary: Send a push to a User
                 value:
                   to:
-                    - contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                      variables:
-                        name: ${Twilio.Contact.name}
-                        isVip: ${Twilio.Contact.isVip}
+                    - userId: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     title: Sale on your favorite artist!
-                    text: 'Hey {{ name | default: ''there'' }}, your favorite artist''s new album is on sale right now! {% if isVip %} As a premium subscriber, you get an extra 25% off! {% endif %}'
+                    body: Hey John Dough, your favorite artist's new album is on sale right now! As a premium subscriber, you get an extra 25% off!
                   priority: LOW
                   sound: saxophone
-              SendAPushToAContactsMobileAppWhenThereAreMultiple:
-                summary: Send a push to a Contact's mobile app when there are multiple
+              SendAPushToAUsersMobileAppWhenThereAreMultiple:
+                summary: Send a push to a User's mobile app when there are multiple
                 value:
                   from:
                     appName: limonade_eats_app
                   to:
-                    - contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                    - userId: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
                   content:
                     title: Your food is here!
-                    text: Hey {{Twilio.Contact.name}}, your food has arrived!
+                    body: Hey John, your food has arrived!
                   priority: HIGH
               SendTextPushWithProviderPassthrough:
                 summary: Real-world example using providerPassthrough for APNs and FCM
@@ -4728,38 +3985,36 @@ paths:
                       token: a544872136bcf3f7c69abc6b142a51a0308c2991bd7c6d25d788a282091ddb36
                   content:
                     title: Your order is out for delivery!
-                    text: Track your courier in real time.
+                    body: Track your courier in real time.
                     providerPassthrough:
-                      - provider: APN
-                        data:
-                          aps:
-                            alert:
-                              title: Your order is out for delivery!
-                              body: Track your courier in real time.
-                            badge: 3
-                            sound: delivery_arrived.wav
-                          deliveryId: '123456789'
-                          deeplink: limoneats://order/123456789
-                      - provider: FCM
-                        data:
-                          message:
+                      apn:
+                        aps:
+                          alert:
+                            title: Your order is out for delivery!
+                            body: Track your courier in real time.
+                          badge: 3
+                          sound: delivery_arrived.wav
+                        deliveryId: '123456789'
+                        deeplink: limoneats://order/123456789
+                      fcm:
+                        message:
+                          notification:
+                            title: Your order is out for delivery!
+                            body: Track your courier in real time.
+                            clickAction: OPEN_ORDER_TRACKING
+                          data:
+                            deliveryId: '123456789'
+                            deeplink: limoneats://order/123456789
+                            analyticsLabel: orderOutForDelivery
+                          android:
+                            priority: HIGH
                             notification:
-                              title: Your order is out for delivery!
-                              body: Track your courier in real time.
-                              clickAction: OPEN_ORDER_TRACKING
-                            data:
-                              deliveryId: '123456789'
-                              deeplink: limoneats://order/123456789
-                              analyticsLabel: orderOutForDelivery
-                            android:
-                              priority: HIGH
-                              notification:
-                                sound: deliveryArrived
-                            webpush:
-                              headers:
-                                Urgency: HIGH
-                              notification:
-                                icon: https://limoneats.com/assets/delivery.png
+                              sound: deliveryArrived
+                          webpush:
+                            headers:
+                              Urgency: HIGH
+                            notification:
+                              icon: https://limoneats.com/assets/delivery.png
       x-code-samples:
         - lang: curl
           label: cURL
@@ -4789,6 +4044,24 @@ paths:
           schema:
             $ref: '#/components/schemas/OperationId'
         - in: query
+          name: status
+          description: Filter Push Notifications by Delivery Status.
+          schema:
+            $ref: '#/components/schemas/PushNotificationStatus'
+        - in: query
+          name: tags
+          description: |-
+            Match Push Notifications by one or many tags. 
+            If more than one tag is specified in the query,
+            the search will return only results that have ALL the matching tags.
+
+            For Example: 
+            ```
+            GET /PushNotifications?tags=ageGroup:20s;industry:engineering;
+            ```
+          schema:
+            $ref: '#/components/schemas/TagsString'
+        - in: query
           name: startDate
           description: Filter to Push Notifications created after the specified date and time.
           schema:
@@ -4801,10 +4074,10 @@ paths:
             type: string
             format: date-time
         - in: query
-          name: contact
-          description: Filter Push Notifications sent to a specific Contact.
+          name: user
+          description: Filter Push Notifications sent to a specific User.
           schema:
-            $ref: '#/components/schemas/ContactId'
+            $ref: '#/components/schemas/PushNotificationUserId'
         - in: query
           name: provider
           description: Filter Push Notifications by provider.
@@ -4856,7 +4129,7 @@ paths:
                         updatedAt: '2025-05-30T17:24:49Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/PushNotifications
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -4904,7 +4177,7 @@ paths:
                       token: etYMhHDxzwEWPRZCYmuDiz:APA91bGCX-LEiWPL2EKGbwPL-6Z3Obp_BBTpNjX8Hv-upBUwWq-fVoooNj9PCY5KX6JxyN1v8t5HngcpEJLB8Nmg3-TFWX21u2Lr3o56jGxE8nCW46bNBBA
                     content:
                       title: Limon Eats
-                      text: Your order is on the way!
+                      body: Your order is on the way!
                     status: SENT
                     priority: HIGH
                     sound: null
@@ -4928,6 +4201,16 @@ paths:
       tags:
         - PushNotifications
       parameters:
+        - in: query
+          name: pageToken
+          description: The token to retrieve the next page of results.
+          schema:
+            $ref: '#/components/schemas/PageToken'
+        - in: query
+          name: pageSize
+          description: The number of resources to return in a page.
+          schema:
+            $ref: '#/components/schemas/PageSize'
         - in: query
           name: startDate
           description: Filter to Operations created after the specified date and time.
@@ -5020,7 +4303,22 @@ paths:
         - PushNotifications
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                CreatePushCredentialAccepted:
+                  summary: Create Push Credential request accepted
+                  value:
+                    resourceId: comms_credential_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/PushNotifications/Credentials/comms_credential_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -5187,7 +4485,7 @@ paths:
                         updatedAt: '2023-08-31T14:15:22Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/PushNotifications/Credentials
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -5218,7 +4516,22 @@ paths:
         - PushNotifications
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                PatchPushCredentialAccepted:
+                  summary: Update Push Credential request accepted
+                  value:
+                    resourceId: comms_credential_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/PushNotifications/Credentials/comms_credential_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -5324,14 +4637,29 @@ paths:
       summary: Delete a Push Credential
       operationId: DeletePushCredential
       description: |-
-        This operation deletes a Push Credential. 
+        This operation deletes a Push Credential.
 
         If all Credentials belonging to an App are deleted, the App and its Device Registrations are deleted as well.
       tags:
         - PushNotifications
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                DeletePushCredentialAccepted:
+                  summary: Delete Push Credential request accepted
+                  value:
+                    resourceId: comms_credential_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/PushNotifications/Credentials/comms_credential_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -5431,7 +4759,7 @@ paths:
                         updatedAt: '2023-08-31T14:15:22Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/PushNotifications/Apps
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -5462,7 +4790,22 @@ paths:
         - PushNotifications
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                PatchPushNotificationAppAccepted:
+                  summary: Update Push Notification App request accepted
+                  value:
+                    resourceId: limonade_app
+                    resourceLocation: https://comms.twilio.com/v1/PushNotifications/Apps/limonade_app
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -5551,6 +4894,144 @@ paths:
             curl -X GET 'https://comms.twilio.com/preview/PushNotifications/Apps/limonade_app' \
             --header 'Content-Type: application/json' \
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
+  /PushNotifications/Users:
+    get:
+      summary: List Users
+      operationId: ListPushNotificationUsers
+      description: This operation fetches a paginated list of Push Notification Users.
+      tags:
+        - PushNotifications
+      parameters:
+        - in: query
+          name: pageToken
+          description: The token to retrieve the next page of results.
+          schema:
+            $ref: '#/components/schemas/PageToken'
+        - in: query
+          name: pageSize
+          description: The number of resources to return in a page.
+          schema:
+            $ref: '#/components/schemas/PageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                title: ListPushNotificationUsersResponse
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PushNotificationUser'
+                  pagination:
+                    $ref: '#/components/schemas/PaginationMetadata'
+                required:
+                  - users
+                  - pagination
+              examples:
+                ListOfUsers:
+                  summary: List of Push Notification Users
+                  value:
+                    users:
+                      - id: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
+                        related: []
+                        createdAt: '2024-01-15T14:15:22Z'
+                        updatedAt: '2024-01-15T14:15:22Z'
+                        deletedAt: null
+                      - id: comms_pushnotificationuser_08fzqspvwy6nq801h9krwprkeee
+                        related: []
+                        createdAt: '2024-01-16T10:00:00Z'
+                        updatedAt: '2024-01-16T10:00:00Z'
+                        deletedAt: null
+                    pagination:
+                      next: null
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
+        '400':
+          $ref: '#/components/responses/Http400Response'
+        '429':
+          $ref: '#/components/responses/Http429Response'
+        '500':
+          $ref: '#/components/responses/Http500Response'
+        '503':
+          $ref: '#/components/responses/Http503Response'
+  /PushNotifications/Users/{userId}:
+    parameters:
+      - schema:
+          $ref: '#/components/schemas/PushNotificationUserId'
+        name: userId
+        in: path
+        required: true
+    get:
+      summary: Fetch a User
+      operationId: FetchPushNotificationUser
+      description: This operation fetches a single Push Notification User using its ID.
+      tags:
+        - PushNotifications
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PushNotificationUser'
+              examples:
+                FetchUser:
+                  summary: Fetch User
+                  value:
+                    id: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
+                    related: []
+                    createdAt: '2024-01-15T14:15:22Z'
+                    updatedAt: '2024-01-15T14:15:22Z'
+                    deletedAt: null
+        '400':
+          $ref: '#/components/responses/Http400Response'
+        '404':
+          $ref: '#/components/responses/Http404Response'
+        '429':
+          $ref: '#/components/responses/Http429Response'
+        '500':
+          $ref: '#/components/responses/Http500Response'
+        '503':
+          $ref: '#/components/responses/Http503Response'
+    delete:
+      summary: Delete a User
+      operationId: DeletePushNotificationUser
+      description: |-
+        This operation deletes a Push Notification User.
+
+        Once deleted, the User will no longer receive Push Notifications until they are re-created.
+      tags:
+        - PushNotifications
+      responses:
+        '202':
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                DeletePushNotificationUserAccepted:
+                  summary: Delete Push Notification User request accepted
+                  value:
+                    resourceId: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/PushNotifications/Users/comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
+        '400':
+          $ref: '#/components/responses/Http400Response'
+        '404':
+          $ref: '#/components/responses/Http404Response'
+        '429':
+          $ref: '#/components/responses/Http429Response'
+        '500':
+          $ref: '#/components/responses/Http500Response'
+        '503':
+          $ref: '#/components/responses/Http503Response'
   /Senders:
     get:
       summary: List Senders
@@ -5641,7 +5122,7 @@ paths:
                         updatedAt: '2023-09-13T12:00:24Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Senders
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -5807,7 +5288,7 @@ paths:
                         updatedAt: '2023-09-13T12:00:24Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Senders
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -6088,7 +5569,24 @@ paths:
         - SenderPools
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithOperation'
+          description: The request was accepted and an Operation was created to track its progress. The response body contains the ID and link to the Operation resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/OperationLocation'
+              description: |-
+                The location (uri) of the Operation resource.
+                Issue a GET request to this URI to retrieve the status of the Operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithOperationBody'
+              examples:
+                CreateSenderPoolAccepted:
+                  summary: Create SenderPool request accepted
+                  value:
+                    operationId: comms_operation_01h9krwprkeee8fzqspvwy6nq8
+                    operationLocation: https://comms.twilio.com/v1/SenderPools/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -6250,7 +5748,22 @@ paths:
         - SenderPools
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                UpdateSenderPoolAccepted:
+                  summary: Update SenderPool request accepted
+                  value:
+                    resourceId: comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/SenderPools/comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -6300,7 +5813,22 @@ paths:
         - SenderPools
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                DeleteSenderPoolAccepted:
+                  summary: Delete SenderPool request accepted
+                  value:
+                    resourceId: comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/SenderPools/comms_senderpool_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -6326,7 +5854,24 @@ paths:
         - SenderPools
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithOperation'
+          description: The request was accepted and an Operation was created to track its progress. The response body contains the ID and link to the Operation resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/OperationLocation'
+              description: |-
+                The location (uri) of the Operation resource.
+                Issue a GET request to this URI to retrieve the status of the Operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithOperationBody'
+              examples:
+                AddSendersToSenderPoolAccepted:
+                  summary: Add Senders to SenderPool request accepted
+                  value:
+                    operationId: comms_operation_01h9krwprkeee8fzqspvwy6nq8
+                    operationLocation: https://comms.twilio.com/v1/SenderPools/comms_senderpool_01h9krwprkeee8fzqspvwy6nq8/Senders/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -6460,7 +6005,7 @@ paths:
                         updatedAt: '2023-09-13T12:00:24Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/SenderPool/01h9krwprkeee8fzqspvwy6nq9/Senders
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -6498,7 +6043,22 @@ paths:
         - SenderPools
       responses:
         '202':
-          $ref: '#/components/responses/Http202ResponseWithResource'
+          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
+          headers:
+            Location:
+              schema:
+                $ref: '#/components/schemas/ResourceLocation'
+              description: The location (uri) of the resource identified by `Resource-Id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
+              examples:
+                RemoveSenderFromSenderPoolAccepted:
+                  summary: Remove Sender from SenderPool request accepted
+                  value:
+                    resourceId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                    resourceLocation: https://comms.twilio.com/v1/SenderPools/comms_senderpool_01h9krwprkeee8fzqspvwy6nq8/Senders/comms_sender_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -6588,7 +6148,7 @@ paths:
                         updatedAt: '2024-04-05T06:20:00Z'
                     pagination:
                       next: null
-                      self: https://comms.twilio.com/v1/Senders/Operations
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -6874,7 +6434,6 @@ components:
             - PUSH_NOTIFICATION
             - SESSION
             - CONTACT
-            - AUDIENCE
             - MEDIA
             - SENDER
             - SENDER_POOL
@@ -6882,6 +6441,8 @@ components:
             - ENGAGEMENT
             - CREDENTIAL
             - PUSH_NOTIFICATION_APP
+            - PUSH_NOTIFICATION_USER
+            - DEVICE_REGISTRATION
         id:
           description: The identifier of the related resource.
           type: string
@@ -6938,20 +6499,24 @@ components:
     PaginationMetadata:
       title: PaginationMetadata
       description: |-
-        Metadata for paginated of results. 
-        This object contains two URLs to navigate through paginated results. 
+        Metadata for paginated results. 
+        This object contains two tokens to navigate through paginated results. 
         - Use `next` to retrieve the 'next' page in the result list.
         - Use `self` to retrieve the same page of the result list again. 
-        - URLs use page tokens and supply the values in the `pageToken` query param.
+        - Supply the token in the `pageToken` query param.
       type: object
       properties:
         next:
-          description: URL to the next page of results using a token.
+          description: |-
+            Token for the next page of results. 
+            Supply the token in the `pageToken` query param.
           type:
             - string
             - 'null'
         self:
-          description: URL to the current page of results using a token.
+          description: |-
+            Token for the current page of results. 
+            Supply the token in the `pageToken` query param.
           type: string
       required:
         - next
@@ -7013,6 +6578,18 @@ components:
       type: string
       format: uri
       description: The location (uri) of the Operation resource identified by `operationId`.
+    Http202ResponseWithOperationBody:
+      title: Http202ResponseWithOperationBody
+      description: Response body for HTTP 202 response with Operation data.
+      type: object
+      properties:
+        operationId:
+          $ref: '#/components/schemas/OperationId'
+        operationLocation:
+          $ref: '#/components/schemas/OperationLocation'
+      required:
+        - operationId
+        - operationLocation
     ResourceLocation:
       type: string
       format: uri
@@ -7022,6 +6599,18 @@ components:
       description: |-
         The Resource ID is an identifier for the resource that was created or updated
           in response to the request.
+    Http202ResponseWithResourceBody:
+      title: Http202ResponseWithResourceBody
+      description: Response body for HTTP 202 response with Resource data.
+      type: object
+      properties:
+        resourceId:
+          $ref: '#/components/schemas/ResourceId'
+        resourceLocation:
+          $ref: '#/components/schemas/ResourceLocation'
+      required:
+        - resourceId
+        - resourceLocation
     TagsNullable:
       title: TagsNullable
       type:
@@ -7086,7 +6675,7 @@ components:
       title: ContactOperation
       type: object
       description: |-
-        A Operation represents the aggregate work to be completed for a POST request to the /Contacts, /Audiences endpoint.
+        A Operation represents the aggregate work to be completed for a POST request to the /Contacts.
         The work maybe be performed asynchronously and the Contact Operation resource can be used to track the progress of the work.
       properties:
         id:
@@ -7318,65 +6907,6 @@ components:
         - type
         - name
         - values
-    AudienceId:
-      title: AudienceId
-      description: A reference to an Audience.
-      type: string
-      pattern: ^comms_audience_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: comms_audience_01h9krwprkeee8fzqspvwy6nq8
-    AudienceFilter:
-      title: AudienceFilter
-      description: |-
-        A set of predicates for Contacts that defines the Audience. For examples:
-          - `Contact.location.countryCode == 'US' AND Contact.customFields.industry IN('Technology', 'Finance')`
-          - `Contact.location.countryCode == 'EE' AND (Contact.customFields.skills IN ='java' OR Contact.customFields.employer = 'Twilio')`
-          - `Contact.addresses.channel == 'WhatsApp' AND Contact.tags IN('marketing', 'shippingNotifications')`
-
-        *Once a filter is set on an audience it can be updated, but it cannot be removed.*
-      type: string
-      example: Contact.location.country_code == 'US' AND Contact.custom_fields.industry IN('Technology', 'Finance')
-    Audience:
-      title: Audience
-      type: object
-      description: 'An Audience represents a group of people or entities to communicate with. '
-      properties:
-        id:
-          $ref: '#/components/schemas/AudienceId'
-        name:
-          description: The name of the Audience.
-          type: string
-        filter:
-          $ref: '#/components/schemas/AudienceFilter'
-        totalContacts:
-          description: The approximate number of Contacts in the Audience.
-          type: integer
-        tags:
-          $ref: '#/components/schemas/Tags'
-        related:
-          title: AudienceRelatedResources
-          description: A list of resources that are associated with the Audience.
-          type: array
-          items:
-            $ref: '#/components/schemas/RelatedResource'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        deletedAt:
-          type:
-            - string
-            - 'null'
-          format: date-time
-      required:
-        - id
-        - name
-        - totalContacts
-        - tags
-        - createdAt
-        - updatedAt
-        - deletedAt
     ProfileId:
       title: ProfileId
       description: A reference to a Profile
@@ -7461,6 +6991,22 @@ components:
         - address
         - profileId
         - memoryStoreId
+    EmailContact:
+      title: EmailContact
+      description: An Email Contact is a person or entity identified by an email address and associated with a Contact ID.
+      type: object
+      properties:
+        address:
+          description: The email address of the Contact.
+          type: string
+        name:
+          description: The name of the Contact (e.g. "John Smith")
+          type: string
+        contactId:
+          $ref: '#/components/schemas/ContactId'
+      required:
+        - address
+        - contactId
     SenderId:
       description: A reference to a Sender.
       title: SenderId
@@ -7495,6 +7041,7 @@ components:
           oneOf:
             - $ref: '#/components/schemas/EmailAddressRecipient'
             - $ref: '#/components/schemas/EmailProfile'
+            - $ref: '#/components/schemas/EmailContact'
             - $ref: '#/components/schemas/EmailSenderIdSender'
         to:
           title: EmailRecipients
@@ -7503,6 +7050,7 @@ components:
             oneOf:
               - $ref: '#/components/schemas/EmailAddressRecipient'
               - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailContact'
               - $ref: '#/components/schemas/EmailSenderIdSender'
         replyTo:
           title: EmailReplyToRecipients
@@ -7511,6 +7059,7 @@ components:
             oneOf:
               - $ref: '#/components/schemas/EmailAddressRecipient'
               - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailContact'
               - $ref: '#/components/schemas/EmailSenderIdSender'
         cc:
           title: EmailCCRecipients
@@ -7520,6 +7069,7 @@ components:
             oneOf:
               - $ref: '#/components/schemas/EmailAddressRecipient'
               - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailContact'
               - $ref: '#/components/schemas/EmailSenderIdSender'
         bcc:
           title: EmailBCCRecipients
@@ -7529,6 +7079,7 @@ components:
             oneOf:
               - $ref: '#/components/schemas/EmailAddressRecipient'
               - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailContact'
               - $ref: '#/components/schemas/EmailSenderIdSender'
         status:
           $ref: '#/components/schemas/EmailStatus'
@@ -7596,6 +7147,12 @@ components:
       description: To personalize content for each recipient, supply variables here with values to substitute into any [Liquid](https://shopify.github.io/liquid/) templated content string or pre-stored Content template.
       additionalProperties:
         type: string
+    AudienceId:
+      title: AudienceId
+      description: A reference to an Audience.
+      type: string
+      pattern: ^aud_audience_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: aud_audience_01h9krwprkeee8fzqspvwy6nq8
     ProfileRecipient:
       title: ProfileRecipient
       description: A reference to a Profile & Memory Store.
@@ -7605,6 +7162,8 @@ components:
           $ref: '#/components/schemas/ProfileId'
         memoryStoreId:
           $ref: '#/components/schemas/MemoryStoreId'
+        variables:
+          $ref: '#/components/schemas/ContentPersonalization'
       required:
         - profileId
         - memoryStoreId
@@ -8338,8 +7897,89 @@ components:
           title: MessageContentRcsOpenUrlActionUrl
           type: string
           description: The url to open when the suggested action is selected.
+        application:
+          title: MessageContentRcsOpenUrlActionApplication
+          type: string
+          description: The application to use when opening the URL.
+          enum:
+            - BROWSER
+            - WEBVIEW
+        webviewViewMode:
+          title: MessageContentRcsOpenUrlActionWebviewViewMode
+          type: string
+          description: |-
+            The view mode for the webview.
+            Required field (and only applicable) when application is `WEBVIEW`.
+          enum:
+            - FULL
+            - HALF
+            - TALL
       required:
         - url
+    MessageContentRcsLatLng:
+      title: MessageContentRcsLatLng
+      description: A geographic coordinate (latitude and longitude).
+      type: object
+      properties:
+        latitude:
+          type: number
+          description: The latitude in degrees. Must be in the range [-90.0, +90.0].
+          minimum: -90
+          maximum: 90
+        longitude:
+          type: number
+          description: The longitude in degrees. Must be in the range [-180.0, +180.0].
+          minimum: -180
+          maximum: 180
+      required:
+        - latitude
+        - longitude
+    MessageContentRcsViewLocationAction:
+      title: MessageContentRcsViewLocationAction
+      description: An RCS action that opens a map to display a location. Either latLong or query should be provided.
+      type: object
+      properties:
+        latLong:
+          $ref: '#/components/schemas/MessageContentRcsLatLng'
+        label:
+          type: string
+          description: The label of the pin dropped at the specified latLong.
+        query:
+          type: string
+          description: A query string for a location search. If specified instead of latLong, the device performs a location search centered on the user's current location. (Android Only)
+      minProperties: 1
+      additionalProperties: false
+    MessageContentRcsCreateCalendarEventAction:
+      title: MessageContentRcsCreateCalendarEventAction
+      description: An RCS action that creates a calendar event on the user's device.
+      type: object
+      properties:
+        startTime:
+          type: string
+          format: date-time
+          description: The start time of the calendar event.
+        endTime:
+          type: string
+          format: date-time
+          description: The end time of the calendar event.
+        title:
+          type: string
+          minLength: 1
+          description: The title of the calendar event.
+        description:
+          type: string
+          minLength: 1
+          description: The description of the calendar event.
+      required:
+        - startTime
+        - endTime
+        - title
+        - description
+    MessageContentRcsShareLocationAction:
+      title: MessageContentRcsShareLocationAction
+      description: An RCS action that opens the device's location chooser, allowing the user to pick a location to send to the agent.
+      type: object
+      additionalProperties: false
     MessageContentRcsSuggestedAction:
       title: MessageContentRcsSuggestedAction
       description: An RCS action suggestion.
@@ -8384,6 +8024,57 @@ components:
                 - text
                 - postbackData
                 - openUrlAction
+            - title: MessageContentRcsSuggestedActionViewLocation
+              type: object
+              description: An action item that when selected by the recipient, opens a map to display a location.
+              properties:
+                text:
+                  title: MessageContentRcsSuggestedActionViewLocationText
+                  description: The text to display for the action item.
+                  type: string
+                  minLength: 1
+                postbackData:
+                  $ref: '#/components/schemas/MessageContentRcsSuggestionPostbackData'
+                viewLocationAction:
+                  $ref: '#/components/schemas/MessageContentRcsViewLocationAction'
+              required:
+                - text
+                - postbackData
+                - viewLocationAction
+            - title: MessageContentRcsSuggestedActionCreateCalendarEvent
+              type: object
+              description: An action item that when selected by the recipient, creates a calendar event on the device.
+              properties:
+                text:
+                  title: MessageContentRcsSuggestedActionCreateCalendarEventText
+                  description: The text to display for the action item.
+                  type: string
+                  minLength: 1
+                postbackData:
+                  $ref: '#/components/schemas/MessageContentRcsSuggestionPostbackData'
+                createCalendarEventAction:
+                  $ref: '#/components/schemas/MessageContentRcsCreateCalendarEventAction'
+              required:
+                - text
+                - postbackData
+                - createCalendarEventAction
+            - title: MessageContentRcsSuggestedActionShareLocation
+              type: object
+              description: An action item that when selected by the recipient, opens the device's location chooser to share a location with the agent.
+              properties:
+                text:
+                  title: MessageContentRcsSuggestedActionShareLocationText
+                  description: The text to display for the action item.
+                  type: string
+                  minLength: 1
+                postbackData:
+                  $ref: '#/components/schemas/MessageContentRcsSuggestionPostbackData'
+                shareLocationAction:
+                  $ref: '#/components/schemas/MessageContentRcsShareLocationAction'
+              required:
+                - text
+                - postbackData
+                - shareLocationAction
       required:
         - action
     MessageContentRcsSuggestedReply:
@@ -8410,8 +8101,9 @@ components:
         - reply
     MessageContentRcsSuggestions:
       title: MessageContentRcsSuggestions
-      description: A list of RCS suggestions to display.
+      description: A list of RCS suggestions to display. Maximum 11 suggestions.
       type: array
+      maxItems: 11
       items:
         oneOf:
           - $ref: '#/components/schemas/MessageContentRcsSuggestedAction'
@@ -8427,6 +8119,10 @@ components:
         thumbnailUrl:
           type: string
           description: The URL of the thumbnail image for the media.
+        forceRefresh:
+          type: boolean
+          default: false
+          description: If set to true, the content is fetched from the URL even if cached content is available. Forces a cache refresh for the media content.
       required:
         - fileUrl
     MessageContentRcsMedia:
@@ -8463,7 +8159,14 @@ components:
         media:
           $ref: '#/components/schemas/MessageContentRcsMedia'
         suggestions:
-          $ref: '#/components/schemas/MessageContentRcsSuggestions'
+          title: MessageContentRcsCardSuggestions
+          description: A list of suggestions for the card. Maximum 4 suggestions per card.
+          type: array
+          maxItems: 4
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/MessageContentRcsSuggestedAction'
+              - $ref: '#/components/schemas/MessageContentRcsSuggestedReply'
       minProperties: 1
       additionalProperties: false
     MessageContentRcsStandaloneCard:
@@ -8471,6 +8174,22 @@ components:
       description: An RCS standalone card.
       type: object
       properties:
+        cardOrientation:
+          title: MessageContentRcsStandaloneCardOrientation
+          description: The orientation of the card. Horizontal cards require media and at least one of title, description, or suggestions.
+          type: string
+          enum:
+            - HORIZONTAL
+            - VERTICAL
+          default: VERTICAL
+        thumbnailImageAlignment:
+          title: MessageContentRcsStandaloneCardThumbnailImageAlignment
+          description: The alignment of the thumbnail image in horizontal cards. Only applicable when cardOrientation is HORIZONTAL.
+          type: string
+          enum:
+            - LEFT
+            - RIGHT
+          default: RIGHT
         cardContent:
           $ref: '#/components/schemas/MessageContentRcsCardContent'
       required:
@@ -8860,6 +8579,12 @@ components:
         - stats
         - createdAt
         - updatedAt
+    PushNotificationUserId:
+      title: PushNotificationUserId
+      description: A reference to a Push Notification User.
+      type: string
+      pattern: ^comms_pushnotificationuser_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8
     PushNotificationAppName:
       title: PushNotificationAppName
       description: The name of the Push Notification `App`.
@@ -8896,15 +8621,15 @@ components:
     DeviceRegistration:
       title: DeviceRegistration
       type: object
-      description: A registration is a collection of a contact's devices registered under a single app. It is uniquely identified by the combination of the contact's id and the app name. A device is a physical device or a browser that can receive push notifications. A device is uniquely identified by its app-specific unique token and the push provider identifier.
+      description: A registration is a collection of a User's devices registered under a single app. It is uniquely identified by the combination of the User's id and the app name. A device is a physical device or a browser that can receive push notifications. A device is uniquely identified by its app-specific unique token and the push provider identifier.
       properties:
         id:
           $ref: '#/components/schemas/DeviceRegistrationId'
         appName:
           type: string
           description: The name of the `App` that the device registrations are for.
-        contactId:
-          $ref: '#/components/schemas/ContactId'
+        userId:
+          $ref: '#/components/schemas/PushNotificationUserId'
         devices:
           type: array
           minItems: 1
@@ -8920,9 +8645,29 @@ components:
       required:
         - id
         - appName
-        - contactId
+        - userId
         - devices
         - related
+    PushNotificationStatus:
+      title: PushNotificationStatus
+      description: |-
+        The status of a `Push Notification` resource. The status can be one of the following:
+        - `scheduled` The `Push Notification`  is scheduled to be sent by
+          Twilio in the future.
+
+        - `queued` The `Push Notification` is queued in Twilio for sending.
+        - `sent` The `Push Notification` resource has been sent by Twilio.
+        - `failed` The `Push Notification` resource processing failed inside Twilio.
+          Use `GET /PushNotifications/Operations/{operationId}/Errors` for more details.
+
+        - `canceled` The communication resource was canceled via API request.
+      type: string
+      enum:
+        - SCHEDULED
+        - QUEUED
+        - SENT
+        - FAILED
+        - CANCELED
     PushNotificationId:
       title: PushNotificationId
       description: A reference to a PushNotification.
@@ -8957,26 +8702,6 @@ components:
         - HIGH
         - LOW
       default: HIGH
-    PushNotificationStatus:
-      title: PushNotificationStatus
-      description: |-
-        The status of a `Push Notification` resource. The status can be one of the following:
-        - `scheduled` The `Push Notification`  is scheduled to be sent by
-          Twilio in the future.
-
-        - `queued` The `Push Notification` is queued in Twilio for sending.
-        - `sent` The `Push Notification` resource has been sent by Twilio.
-        - `failed` The `Push Notification` resource processing failed inside Twilio.
-          Use `GET /PushNotifications/Operations/{operationId}/Errors` for more details.
-
-        - `canceled` The communication resource was canceled via API request.
-      type: string
-      enum:
-        - SCHEDULED
-        - QUEUED
-        - SENT
-        - FAILED
-        - CANCELED
     PushNotificationBase:
       title: PushNotificationBase
       type: object
@@ -8989,19 +8714,31 @@ components:
           $ref: '#/components/schemas/PushNotificationCredentialSender'
         to:
           title: PushNotificationRecipient
-          type: object
-          properties:
-            token:
-              type: string
-              description: Identifies a single device for delivering push notifications via the specified provider.
-            provider:
-              $ref: '#/components/schemas/PushNotificationProvider'
-            contactId:
-              $ref: '#/components/schemas/ContactId'
-              x-twilio-version: preview
-          required:
-            - token
-            - provider
+          description: The recipient of the Push Notification
+          oneOf:
+            - title: PushNotificationTokenRecipient
+              description: A recipient identified by a push token
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: Identifies a single device for delivering push notifications via the specified provider.
+                provider:
+                  $ref: '#/components/schemas/PushNotificationProvider'
+                contactId:
+                  $ref: '#/components/schemas/ContactId'
+                  x-twilio-version: preview
+              required:
+                - token
+                - provider
+            - title: PushNotificationUserRecipient
+              description: A recipient identified by their `userId`
+              properties:
+                userId:
+                  x-twilio-version: 1
+                  $ref: '#/components/schemas/PushNotificationUserId'
+              required:
+                - userId
         appName:
           $ref: '#/components/schemas/PushNotificationAppName'
           x-twilio-version: preview
@@ -9028,9 +8765,11 @@ components:
             - 'null'
           format: date-time
         createdAt:
+          description: The date and time when the Push Notification was created, in ISO 8601 format.
           type: string
           format: date-time
         updatedAt:
+          description: The date and time when the Push Notification was last updated, in ISO 8601 format.
           type: string
           format: date-time
       required:
@@ -9071,16 +8810,16 @@ components:
       required:
         - token
         - provider
-    SendPushNotificationsContactRecipient:
+    SendPushNotificationsUserRecipient:
       type: object
-      title: SendPushNotificationsContactRecipient
+      title: SendPushNotificationsUserRecipient
       properties:
-        contactId:
-          $ref: '#/components/schemas/ContactId'
+        userId:
+          $ref: '#/components/schemas/PushNotificationUserId'
         variables:
           $ref: '#/components/schemas/ContentPersonalization'
       required:
-        - contactId
+        - userId
     SendPushNotificationsAudienceRecipient:
       type: object
       title: SendPushNotificationsAudienceRecipient
@@ -9091,32 +8830,43 @@ components:
           $ref: '#/components/schemas/ContentPersonalization'
       required:
         - audienceId
-    ContentChannelPassthrough:
-      title: ContentChannelPassthrough
+    PushNotificationContentApnPassthrough:
+      title: PushNotificationContentApnPassthrough
+      description: APNs-specific passthrough properties for push notifications.
       type: object
       properties:
-        data:
-          title: ContentChannelPassthroughData
+        aps:
+          title: ApnPassthroughRoot
           type: object
-      description: This represents channel-specific properties passed into the message, email or push notification.
-    PushNotificationContentPassthroughArray:
-      x-twilio-status: deprecated
-      title: PushNotificationContentPassthroughArray
-      type: array
-      description: A list of objects that contain provider-specific properties passed into the push notification(s).
-      items:
-        allOf:
-          - type: object
-            title: PushNotificationContentPassthroughItem
-            properties:
-              provider:
-                $ref: '#/components/schemas/PushNotificationProvider'
-          - $ref: '#/components/schemas/ContentChannelPassthrough'
-    PushNotificationContentText:
-      x-twilio-status: deprecated
-      title: PushNotificationContentText
+          description: The root APNs aps object. Can be extended with any properties.
+          additionalProperties: true
+      additionalProperties: true
+    PushNotificationContentFcmPassthrough:
+      title: PushNotificationContentFcmPassthrough
+      description: FCM-specific passthrough properties for push notifications.
       type: object
-      description: Push Notification content with text.
+      properties:
+        message:
+          title: FcmPassthroughRoot
+          type: object
+          description: The root FCM message object. Can be extended with any properties.
+          additionalProperties: true
+      required:
+        - message
+    PushNotificationContentPassthrough:
+      title: PushNotificationContentPassthrough
+      description: Provider-specific passthrough properties for push notifications. Use this object to supply advanced options for APNs, FCM, or other providers.
+      type: object
+      properties:
+        apn:
+          $ref: '#/components/schemas/PushNotificationContentApnPassthrough'
+        fcm:
+          $ref: '#/components/schemas/PushNotificationContentFcmPassthrough'
+      additionalProperties: false
+    PushNotificationContentBody:
+      title: PushNotificationContentBody
+      type: object
+      description: Push Notification content with body.
       properties:
         title:
           type: string
@@ -9125,7 +8875,7 @@ components:
 
               
             This field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization.
-        text:
+        body:
           type: string
           description: |-
             A simple string or templated content.
@@ -9133,31 +8883,32 @@ components:
             This field can be templated with [Liquid](https://shopify.github.io/liquid/).
             Specify `variables` with each recipient for personalization.
         providerPassthrough:
-          $ref: '#/components/schemas/PushNotificationContentPassthroughArray'
+          $ref: '#/components/schemas/PushNotificationContentPassthrough'
       required:
-        - text
-    PushNotificationContentTextResolved:
-      x-twilio-status: deprecated
-      title: PushNotificationContentTextResolved
+        - body
+    PushNotificationContentBodyResolved:
+      title: PushNotificationContentBodyResolved
       type: object
       description: A resolved push notification content object with body.
       properties:
         title:
           type: string
           description: The title of the push notification. Defaults to the app name.
-        text:
+        body:
           type: string
           description: A simple content string.
       required:
-        - text
+        - body
     PushNotificationContentResolved:
       title: PushNotificationContentResolved
       description: The resolved content of the Push Notification.
       type: object
       properties:
         content:
+          title: PushNotificationContent
+          description: The content of the Push Notification.
           oneOf:
-            - $ref: '#/components/schemas/PushNotificationContentTextResolved'
+            - $ref: '#/components/schemas/PushNotificationContentBodyResolved'
       required:
         - content
     PushNotification:
@@ -9391,6 +9142,39 @@ components:
         - defaultCredentials
         - createdAt
         - updatedAt
+    PushNotificationUser:
+      title: PushNotificationUser
+      type: object
+      description: A User represents an end-user who can receive push notifications. Users can have multiple devices per Device Registration set and multiple Device Registration sets (one per App).
+      properties:
+        id:
+          $ref: '#/components/schemas/PushNotificationUserId'
+        related:
+          title: PushNotificationUserRelatedResources
+          description: A list of resources that are associated with the User.
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedResource'
+        createdAt:
+          type: string
+          format: date-time
+          description: The date and time the User was created.
+        updatedAt:
+          type: string
+          format: date-time
+          description: The date and time the User was last updated.
+        deletedAt:
+          type:
+            - string
+            - 'null'
+          format: date-time
+          description: The date and time the User was deleted, if applicable.
+      required:
+        - id
+        - related
+        - createdAt
+        - updatedAt
+        - deletedAt
     SenderCommunicationChannel:
       description: |-
         The medium which a unit of communication is transmitted through.
@@ -9650,29 +9434,6 @@ components:
           schema:
             type: string
           description: The amount of time in seconds that the customer should wait before issuing a new request towards the API.
-    Http202ResponseWithOperation:
-      description: The request was accepted and an Operation was created to track its progress. The response body contains the ID and link to the Operation resource.
-      headers:
-        Location:
-          schema:
-            $ref: '#/components/schemas/OperationLocation'
-          description: |-
-            The location (uri) of the Operation resource. 
-            Issue a GET request to this URI to retrieve the status of the Operation.
-      content:
-        application/json:
-          schema:
-            title: Http202ResponseWithOperationBody
-            description: Response body for HTTP 202 response with Operation data.
-            type: object
-            properties:
-              operationId:
-                $ref: '#/components/schemas/OperationId'
-              operationLocation:
-                $ref: '#/components/schemas/OperationLocation'
-            required:
-              - operationId
-              - operationLocation
     Http404Response:
       description: This error indicates that the requested resource was not found.
       content:
@@ -9688,24 +9449,3 @@ components:
                     message: The resource was not found.
                     infoUrl: https://www.twilio.com/docs/api/errors/20404
                     context: 'null'
-    Http202ResponseWithResource:
-      description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-      headers:
-        Location:
-          schema:
-            $ref: '#/components/schemas/ResourceLocation'
-          description: The location (uri) of the resource identified by `Resource-Id`.
-      content:
-        application/json:
-          schema:
-            title: Http202ResponseWithResourceBody
-            description: Response body for HTTP 202 response with Resource data.
-            type: object
-            properties:
-              resourceId:
-                $ref: '#/components/schemas/ResourceId'
-              resourceLocation:
-                $ref: '#/components/schemas/ResourceLocation'
-            required:
-              - resourceId
-              - resourceLocation
