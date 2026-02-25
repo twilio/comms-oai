@@ -4135,7 +4135,7 @@
           {
             "lang": "curl",
             "label": "cURL",
-            "source": "curl -X POST 'https://comms.twilio.com/preview/Messages' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"to\": [{\n        \"address\": \"+12065551337\",\n        \"channel\": \"phone\"\n    }],\n    \"content\": {\n        \"text\": \"What day is it?\"\n    }\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN \\\n\n"
+            "source": "curl -X POST 'https://comms.twilio.com/preview/Messages' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"to\": [{\n        \"address\": \"+12065551337\",\n        \"channel\": \"PHONE\"\n    }],\n    \"content\": {\n        \"text\": \"What day is it?\"\n    }\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN \\\n\n"
           }
         ]
       },
@@ -5243,7 +5243,7 @@
           {
             "lang": "curl",
             "label": "cURL",
-            "source": "curl -X POST 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"contact_id\": \"comms_contact_01h9krwprkeee8fzqspvwy6nq8\",\n    \"app_name\": \"limonade_app\",\n    \"token\": \"token\",\n    \"provider\": \"fcm\"\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+            "source": "curl -X POST 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"userId\": \"comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8\",\n    \"appName\": \"limonade_app\",\n    \"token\": \"token\",\n    \"provider\": \"FCM\"\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
           }
         ]
       },
@@ -5374,7 +5374,7 @@
           {
             "lang": "curl",
             "label": "cURL",
-            "source": "curl -X GET 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations?contact_id=comms_contact_01h9krwprkeee8fzqspvwy6nq8' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+            "source": "curl -X GET 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations?userId=comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8' \\\n--header 'Content-Type: application/json' \\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
           }
         ]
       }
@@ -5826,7 +5826,7 @@
           {
             "lang": "curl",
             "label": "cURL",
-            "source": "curl -X POST 'https://comms.twilio.com/preview/PushNotifications' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"to\": [\n        { \"provider\": \"fcm\", \"token\": \"token\" }\n    ],\n    \"content\": {\n        \"title\": \"Limon Eats\",\n        \"text\": \"Your order is on the way!\"\n    }\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+            "source": "curl -X POST 'https://comms.twilio.com/preview/PushNotifications' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"to\": [\n        { \"provider\": \"FCM\", \"token\": \"token\" }\n    ],\n    \"content\": {\n        \"title\": \"Limon Eats\",\n        \"text\": \"Your order is on the way!\"\n    }\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
           }
         ]
       },
@@ -6337,7 +6337,7 @@
           {
             "lang": "curl",
             "label": "cURL",
-            "source": "curl -X POST 'https://comms.twilio.com/preview/PushNotifications/Credentials' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"credential_type\": \"apn\",\n    \"app_name\": \"limonade_app\",\n    \"content\": {\n        \"certificate\": \"certificate\",\n        \"private_key\": \"private_key\"\n    },\n    \"is_default\": true\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+            "source": "curl -X POST 'https://comms.twilio.com/preview/PushNotifications/Credentials' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"credentialType\": \"APN\",\n    \"appName\": \"limonade_app\",\n    \"content\": {\n        \"certificate\": \"certificate\",\n        \"privateKey\": \"private_key\"\n    },\n    \"isDefault\": true\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
           }
         ]
       },
@@ -6579,7 +6579,7 @@
           {
             "lang": "curl",
             "label": "cURL",
-            "source": "curl -X PATCH 'https://comms.twilio.com/preview/PushNotifications/Credentials/comms_credential_01h9krwprkeee8fzqspvwy6nq8' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"is_default\": true,\n    \"tags\": {\n        \"environment\": \"production\",\n        \"region\": \"us-east-1\"\n    }\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+            "source": "curl -X PATCH 'https://comms.twilio.com/preview/PushNotifications/Credentials/comms_credential_01h9krwprkeee8fzqspvwy6nq8' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"isDefault\": true,\n    \"tags\": {\n        \"environment\": \"production\",\n        \"region\": \"us-east-1\"\n    }\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
           }
         ]
       },
@@ -6965,7 +6965,7 @@
           {
             "lang": "curl",
             "label": "cURL",
-            "source": "curl -X PATCH 'https://comms.twilio.com/preview/PushNotifications/Apps/limonade_app' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"is_default\": true\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
+            "source": "curl -X PATCH 'https://comms.twilio.com/preview/PushNotifications/Apps/limonade_app' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"isDefault\": true\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN"
           }
         ]
       },
@@ -7626,7 +7626,7 @@
           {
             "lang": "curl",
             "label": "cURL",
-            "source": "curl -X POST 'https://comms.twilio.com/preview/Senders/Search' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"address\": \"+14153902337\",\n    \"channel\": \"sms\"\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN\n"
+            "source": "curl -X POST 'https://comms.twilio.com/preview/Senders/Search' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"address\": \"+14153902337\",\n    \"channel\": \"SMS\"\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN\n"
           }
         ]
       }
@@ -7996,7 +7996,7 @@
           {
             "lang": "curl",
             "label": "cURL",
-            "source": "curl -X POST 'https://comms.twilio.com/preview/Senders/Resolve' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"recipient_addresses\": [\n        { \"address\": \"+14153902337\", \"channel\": \"phone\" },\n        { \"address\": \"davidpletnjov@example.com\", \"channel\": \"email\" }\n    ]\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN\n"
+            "source": "curl -X POST 'https://comms.twilio.com/preview/Senders/Resolve' \\\n--header 'Content-Type: application/json' \\\n--data '{\n    \"recipientAddresses\": [\n        { \"address\": \"+14153902337\", \"channel\": \"PHONE\" },\n        { \"address\": \"davidpletnjov@example.com\", \"channel\": \"EMAIL\" }\n    ]\n}'\\\n-u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN\n"
           }
         ]
       }
