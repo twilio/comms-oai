@@ -2821,7 +2821,7 @@ paths:
             --data '{
                 "to": [{
                     "address": "+12065551337",
-                    "channel": "phone"
+                    "channel": "PHONE"
                 }],
                 "content": {
                     "text": "What day is it?"
@@ -3600,10 +3600,10 @@ paths:
             curl -X POST 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations' \
             --header 'Content-Type: application/json' \
             --data '{
-                "contact_id": "comms_contact_01h9krwprkeee8fzqspvwy6nq8",
-                "app_name": "limonade_app",
+                "userId": "comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8",
+                "appName": "limonade_app",
                 "token": "token",
-                "provider": "fcm"
+                "provider": "FCM"
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
     get:
@@ -3701,7 +3701,7 @@ paths:
         - lang: curl
           label: cURL
           source: |-
-            curl -X GET 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations?contact_id=comms_contact_01h9krwprkeee8fzqspvwy6nq8' \
+            curl -X GET 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations?userId=comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8' \
             --header 'Content-Type: application/json' \
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
   /PushNotifications/DeviceRegistrations/{deviceRegistrationId}:
@@ -4023,7 +4023,7 @@ paths:
             --header 'Content-Type: application/json' \
             --data '{
                 "to": [
-                    { "provider": "fcm", "token": "token" }
+                    { "provider": "FCM", "token": "token" }
                 ],
                 "content": {
                     "title": "Limon Eats",
@@ -4395,13 +4395,13 @@ paths:
             curl -X POST 'https://comms.twilio.com/preview/PushNotifications/Credentials' \
             --header 'Content-Type: application/json' \
             --data '{
-                "credential_type": "apn",
-                "app_name": "limonade_app",
+                "credentialType": "APN",
+                "appName": "limonade_app",
                 "content": {
                     "certificate": "certificate",
-                    "private_key": "private_key"
+                    "privateKey": "private_key"
                 },
-                "is_default": true
+                "isDefault": true
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
     get:
@@ -4566,7 +4566,7 @@ paths:
             curl -X PATCH 'https://comms.twilio.com/preview/PushNotifications/Credentials/comms_credential_01h9krwprkeee8fzqspvwy6nq8' \
             --header 'Content-Type: application/json' \
             --data '{
-                "is_default": true,
+                "isDefault": true,
                 "tags": {
                     "environment": "production",
                     "region": "us-east-1"
@@ -4844,7 +4844,7 @@ paths:
             curl -X PATCH 'https://comms.twilio.com/preview/PushNotifications/Apps/limonade_app' \
             --header 'Content-Type: application/json' \
             --data '{
-                "is_default": true
+                "isDefault": true
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
     get:
@@ -5307,7 +5307,7 @@ paths:
             --header 'Content-Type: application/json' \
             --data '{
                 "address": "+14153902337",
-                "channel": "sms"
+                "channel": "SMS"
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
   /Senders/Resolve:
@@ -5554,9 +5554,9 @@ paths:
             curl -X POST 'https://comms.twilio.com/preview/Senders/Resolve' \
             --header 'Content-Type: application/json' \
             --data '{
-                "recipient_addresses": [
-                    { "address": "+14153902337", "channel": "phone" },
-                    { "address": "davidpletnjov@example.com", "channel": "email" }
+                "recipientAddresses": [
+                    { "address": "+14153902337", "channel": "PHONE" },
+                    { "address": "davidpletnjov@example.com", "channel": "EMAIL" }
                 ]
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
