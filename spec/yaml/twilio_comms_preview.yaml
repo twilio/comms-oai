@@ -18,42 +18,14 @@ security:
   - accountIdAuthToken: []
   - apiKeyApiKeySecret: []
 tags:
-  - name: Contacts
-    description: |-
-      *Use `Contacts` to build and maintain a reliable directory of customers
-      with validated communications addresses and identity profiles.*
   - name: Messages
     description: |-
-      *Use `Messages` to send and receive RCS, SMS and MMS, Group MMS, and WhatsApp messages.*
+      *Use `Messages` to send and receive RCS, SMS and MMS, and WhatsApp messages.*
 
       *Send with precise control over every aspect of your message
        or let Twilio share control and up-level your messaging with data-driven optimizations.*
-
-      Messages supports:
-       - Sending a Message to a single recipient
-       - Sending Messages to many recipients in a single request
-       - Sending Group Messages to facilitate communication between multiple people
-       - Sending to both stored Profiles and/or directly specified messaging addresses (e.g. phone number)
-       - Sending Messages to Profiles with multiple communication addresses: Twilio will choose the best channel.
-       - Sending Messages to stored Audiences with per-recipient content personalization
-       - Sending Messages with templated content that reference attributes of your stored Profiles
-       - Sending Messages with rich content
-       - Sending Messages with shortened, branded links that support click tracking.
-       - Sending Messages scheduled for future delivery.
-       - Receiving inbound Messages sent to your Twilio phone numbers.
-       - Maintaining history of distinct communication sessions including both inbound and outbound Messages.
   - name: Emails
-    description: |-
-      *Use `Emails` to send and receive email with Twilio SendGrid.*
-
-      Emails supports:
-       - Sending an Email to a single recipient
-       - Sending Emails to many recipients in a single request
-       - Sending to both stored Profiles and directly specified email addresses
-       - Sending Emails with merged content that reference attributes of your stored Profiles
-       - Sending Emails with branded links that support click tracking
-       - Sending Emails scheduled for future delivery
-       - Receiving inbound Email replies and relaying the event to you for handling
+    description: '*Use `Emails` to send and receive email with Twilio SendGrid.*'
   - name: PushNotifications
     description: |-
       *Use `PushNotifications` to send push notifications to your mobile apps
@@ -83,1242 +55,6 @@ tags:
       - Use `SenderPools` to organize your `Senders` into logical groups to build multi-channel identities
       with multiple types of communications addresses (phone numbers, short codes, email addresses).
 paths:
-  /Contacts:
-    post:
-      summary: Create Contacts
-      operationId: CreateContacts
-      description: This operation creates Contacts. A contact must have at least one address or a userIdentifier supplied in order to be created.
-      tags:
-        - Contacts
-      responses:
-        '202':
-          description: The request was accepted and an Operation was created to track its progress. The response body contains the ID and link to the Operation resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/OperationLocation'
-              description: |-
-                The location (uri) of the Operation resource.
-                Issue a GET request to this URI to retrieve the status of the Operation.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithOperationBody'
-              examples:
-                CreateContactsAccepted:
-                  summary: Create Contacts request accepted
-                  value:
-                    operationId: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                    operationLocation: https://comms.twilio.com/v1/Contacts/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: CreateContactsRequest
-              type: object
-              required:
-                - contacts
-              properties:
-                contacts:
-                  title: CreateContactsRequestContacts
-                  type: array
-                  items:
-                    type: object
-                    title: CreateContactsRequestContactsItem
-                    description: Specify the Contact including their communications addresses and descriptors of their identity.
-                    properties:
-                      addresses:
-                        type: array
-                        description: The Contact’s communication addresses, such as phone number, email address, and push device token.
-                        items:
-                          $ref: '#/components/schemas/ContactAddress'
-                      firstName:
-                        type: string
-                        description: The first name of the Contact.
-                      lastName:
-                        type: string
-                        description: The last name of the Contact.
-                      displayName:
-                        type: string
-                        description: |-
-                          The name to associate with the address for sending and receiving communications,
-                          visible for some types of communications like email.
-                      userIdentifier:
-                        $ref: '#/components/schemas/UserIdentifier'
-                      externalIdentifier:
-                        $ref: '#/components/schemas/ExternalIdentifier'
-                      location:
-                        $ref: '#/components/schemas/ContactLocation'
-                      dateOfBirth:
-                        description: Contact's date of birth.
-                        format: YYYY-MM-DD
-                        type: string
-                      tags:
-                        $ref: '#/components/schemas/Tags'
-                      customFields:
-                        $ref: '#/components/schemas/ContactCustomFields'
-                  minItems: 1
-            examples:
-              CreateAContactWithAnEmailAddressPhoneNumberAndCustomFields:
-                summary: Create a Contact with an email address, phone number and custom fields
-                value:
-                  contacts:
-                    - firstName: Ivan
-                      lastName: Lee
-                      displayName: Ivan Lee
-                      userIdentifier: 3c35422849fea46d37b099ae59fae22c
-                      externalIdentifier: 006E0000004TguX
-                      addresses:
-                        - channel: PHONE
-                          address: '+37259000000'
-                        - channel: EMAIL
-                          address: ilee@example.com
-                      customFields:
-                        favoriteColor:
-                          value: purple
-                        favoriteNumber:
-                          value: 42
-                        isFavoriteColorPurple:
-                          value: true
-                        colors:
-                          value:
-                            - purple
-                            - blue
-                            - green
-              CreateAContactWithAnEmailAddressAndPhoneNumber:
-                summary: Create a Contact with an email address and phone number
-                value:
-                  contacts:
-                    - firstName: Don
-                      lastName: Conama
-                      displayName: Don
-                      userIdentifier: '+37259000011'
-                      externalIdentifier: 006E0000004TguX
-                      addresses:
-                        - channel: PHONE
-                          address: '+37259000011'
-                        - channel: EMAIL
-                          address: don.conama@example.com
-                      tags:
-                        shirtSize: X-Large
-              CreateAContactWithAPushDeviceTokenAndSmsAddressForAMobileApp:
-                summary: Create a Contact with a push device token and sms address for a mobile app
-                value:
-                  contacts:
-                    - firstName: David
-                      lastName: Pletnjov
-                      displayName: David Pletnjov
-                      addresses:
-                        - channel: PUSH
-                          address: comms_deviceregistrations_01h9krwprkeee8fzqspvwy6nq8
-                        - channel: PHONE
-                          address: '+37259000022'
-              CreateAContactWithPushDeviceTokensFor2DifferentMobileApps:
-                summary: Create a Contact with push device tokens for 2 different mobile apps
-                value:
-                  contacts:
-                    - firstName: David
-                      lastName: Pletnjov
-                      displayName: David Pletnjov
-                      addresses:
-                        - channel: PUSH
-                          address: comms_deviceregistrations_01h9krwprkeee8fzqspvwy6nq8
-                        - channel: PUSH
-                          address: comms_deviceregistrations_8fzqspvwy6nq801h9krwprkeee
-    get:
-      summary: List Contacts
-      operationId: ListContacts
-      description: This operation fetches a paginated list of Contacts.
-      tags:
-        - Contacts
-      parameters:
-        - in: query
-          name: operationId
-          description: Filter to Contacts by operation ID.
-          schema:
-            $ref: '#/components/schemas/OperationId'
-        - in: query
-          name: contactIds
-          description: List of contact ids for filtering the contacts.
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/ContactId'
-            minItems: 1
-            maxItems: 100
-        - in: query
-          name: pageToken
-          description: The token to retrieve the next page of results.
-          schema:
-            $ref: '#/components/schemas/PageToken'
-        - in: query
-          name: pageSize
-          description: The number of resources to return in a page.
-          schema:
-            $ref: '#/components/schemas/PageSize'
-        - in: query
-          name: tags
-          description: |-
-            Match contacts by one or many tags. If more than one tag is specified in the query, the search will return contacts that have all the tags.
-            For Example:  ``` GET /Contacts?tags=ageGroup:20s;industry:engineering; ```
-          schema:
-            $ref: '#/components/schemas/TagsString'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                title: ListContactsResponse
-                type: object
-                properties:
-                  contacts:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Contact'
-                  pagination:
-                    $ref: '#/components/schemas/PaginationMetadata'
-                required:
-                  - contacts
-                  - pagination
-              examples:
-                FirstPageOfContactsForListReadWithNoFilter:
-                  summary: First page of Contacts for list read with no filter
-                  value:
-                    contacts:
-                      - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                        firstName: Jane
-                        lastName: Doe
-                        displayName: Jane Doe
-                        userIdentifier: 3c35422849fea46d37b099ae59fae22c
-                        externalIdentifier: 006E0000004TguX
-                        addresses:
-                          - channel: EMAIL
-                            address: janedoe@example.com
-                        createdAt: '2022-08-24T14:15:22Z'
-                        updatedAt: '2023-09-13T12:00:24Z'
-                        deletedAt: null
-                      - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                        firstName: Don
-                        lastName: Conama
-                        related:
-                          - name: OPERATION
-                            id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Contacts/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                        displayName: Don Conama
-                        userIdentifier: don.conama@example.com
-                        externalIdentifier: 006E0000004TguX
-                        addresses:
-                          - channel: EMAIL
-                            address: don.conama@example.com
-                        createdAt: '2019-08-24T14:15:22Z'
-                        updatedAt: '2023-08-24T14:15:22Z'
-                        deletedAt: null
-                        customFields:
-                          favoriteColor:
-                            value: purple
-                          favoriteNumber:
-                            value: 42
-                          isFavoriteColorPurple:
-                            value: true
-                    pagination:
-                      next: page_01h9krwprkeee8fzqspvwy6nq9
-                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Contacts/{contactId}:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/ContactId'
-        name: contactId
-        in: path
-        required: true
-    get:
-      summary: Fetch a Contact
-      operationId: FetchSingleContact
-      description: This operation fetches a single contact using its ID.
-      tags:
-        - Contacts
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Contact'
-              examples:
-                FetchContact:
-                  summary: Fetch Contact
-                  value:
-                    id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    firstName: Ivan
-                    lastName: Lee
-                    displayName: Ivan Lee
-                    userIdentifier: 3c35422849fea46d37b099ae59fae22c
-                    externalIdentifier: 006E0000004TguX
-                    addresses:
-                      - channel: PHONE
-                        address: '+37259000000'
-                      - channel: EMAIL
-                        address: ilee@example.com
-                      - channel: PUSH
-                        address: limonade_app
-                    createdAt: '2019-08-24T14:15:22Z'
-                    updatedAt: '2023-10-02T11:20:00Z'
-                    deletedAt: null
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-    patch:
-      summary: Update a Contact
-      operationId: UpdateContact
-      description: This operation partially updates a Contact
-      tags:
-        - Contacts
-      responses:
-        '202':
-          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/ResourceLocation'
-              description: The location (uri) of the resource identified by `Resource-Id`.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
-              examples:
-                UpdateContactAccepted:
-                  summary: Update Contact request accepted
-                  value:
-                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: UpdateContactRequest
-              type: object
-              nullable: true
-              properties:
-                firstName:
-                  description: The first name of the Contact.
-                  type: string
-                lastName:
-                  description: The last name of the Contact.
-                  type: string
-                displayName:
-                  type: string
-                  description: The name associated with the address for sending and receiving communications, visible for some types of communications like email.
-                addresses:
-                  title: UpdateContactAddresses
-                  description: |-
-                    This replaces the `addresses` array. 
-                    Leave `null` to leave addresses unchanged.
-                    Set to empty array to remove all addresses.
-                    To add/remove individual addresses use the Contact Addresses API endpoints.
-                  type: array
-                  nullable: true
-                  items:
-                    $ref: '#/components/schemas/ContactAddress'
-                tags:
-                  $ref: '#/components/schemas/TagsNullable'
-                customFields:
-                  $ref: '#/components/schemas/ContactCustomFieldsNullable'
-            examples:
-              UpdateContactAddresses:
-                summary: Update Contact addresses
-                value:
-                  addresses:
-                    - channel: PHONE
-                      address: '+37259000000'
-                    - channel: EMAIL
-                      address: ipletnjov@example.com
-              UpdateContactTags:
-                summary: Update Contact tags
-                value:
-                  tags:
-                    shirtSize: X-Large
-              UpdateContactCustomFields:
-                summary: Update Contact custom fields
-                value:
-                  customFields:
-                    favoriteColor:
-                      value: purple
-                    favoriteNumber:
-                      value: 42
-                    isFavoriteColorPurple:
-                      value: true
-                    colors:
-                      value:
-                        - purple
-                        - blue
-                        - green
-    delete:
-      summary: Delete a Contact
-      operationId: DeleteContact
-      description: This operation deletes a Contact
-      tags:
-        - Contacts
-      responses:
-        '202':
-          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/ResourceLocation'
-              description: The location (uri) of the resource identified by `Resource-Id`.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
-              examples:
-                DeleteContactAccepted:
-                  summary: Delete Contact request accepted
-                  value:
-                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Contacts/{contactId}/Addresses:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/ContactId'
-        name: contactId
-        in: path
-        required: true
-    get:
-      summary: List of Contact Addresses
-      operationId: ListContactAddresses
-      description: This operation fetches list of contact addresses
-      tags:
-        - Contacts
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                title: ListContactAddressesResponse
-                type: object
-                properties:
-                  addresses:
-                    title: ListContactAddressesResponseAddresses
-                    description: List of the provided `Contact`'s communication addresses
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ContactAddress'
-                required:
-                  - addresses
-              examples:
-                ListOfContactAddresses:
-                  summary: List of contact addresses
-                  value:
-                    addresses:
-                      - channel: EMAIL
-                        address: beetlejuice@example.com
-                      - channel: PHONE
-                        address: '+37259000000'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-    post:
-      summary: Add Addresses to the Contact
-      operationId: AddContactAddresses
-      description: This operation adds addresses to the contact
-      tags:
-        - Contacts
-      responses:
-        '202':
-          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/ResourceLocation'
-              description: The location (uri) of the resource identified by `Resource-Id`.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
-              examples:
-                AddContactAddressesAccepted:
-                  summary: Add Addresses to Contact request accepted
-                  value:
-                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: AddContactAddressesRequest
-              type: object
-              properties:
-                addresses:
-                  title: AddContactAddressesRequestAddresses
-                  description: A list of communication addresses to add to the `Contact`
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/ContactAddress'
-                  minItems: 1
-              required:
-                - addresses
-            examples:
-              AddAddressesToTheContact:
-                summary: Add addresses to the Contact
-                value:
-                  addresses:
-                    - channel: PHONE
-                      address: '+37259000000'
-              AddMultipleAddressesToTheContact:
-                summary: Add multiple addresses to the Contact
-                value:
-                  addresses:
-                    - channel: PHONE
-                      address: '+37259000000'
-                    - channel: PUSH
-                      address: limonade_app
-    delete:
-      summary: Delete Addresses from the Contact
-      operationId: DeleteContactAddresses
-      description: This operation deletes Contact Addresses
-      tags:
-        - Contacts
-      responses:
-        '202':
-          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/ResourceLocation'
-              description: The location (uri) of the resource identified by `Resource-Id`.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
-              examples:
-                DeleteContactAddressesAccepted:
-                  summary: Delete Addresses from Contact request accepted
-                  value:
-                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: DeleteContactAddressesRequest
-              type: object
-              properties:
-                addresses:
-                  title: DeleteContactAddressesRequestAddresses
-                  type: array
-                  items:
-                    title: DeleteContactAddressesRequestAddressItem
-                    type: object
-                    description: A list of communication addresses to remove from the `Contact`
-                    properties:
-                      channel:
-                        $ref: '#/components/schemas/ContactCommunicationChannel'
-                      address:
-                        $ref: '#/components/schemas/Address'
-                  minItems: 1
-              required:
-                - addresses
-            examples:
-              DeleteContactPhoneAddress:
-                summary: Delete Contact phone address
-                value:
-                  addresses:
-                    - channel: PHONE
-                      address: '+37259000000'
-              DeleteAllContactEmailAddresses:
-                summary: Delete all email addresses for Contact
-                value:
-                  addresses:
-                    - channel: EMAIL
-  /Contacts/{contactId}/Tags:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/ContactId'
-        name: contactId
-        in: path
-        required: true
-    get:
-      summary: List of Contact Tags
-      operationId: ListContactTags
-      description: This operation fetches list of contact tags
-      tags:
-        - Contacts
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                title: ListContactTagsResponse
-                type: object
-                properties:
-                  tags:
-                    type: object
-                    $ref: '#/components/schemas/Tags'
-                required:
-                  - tags
-              examples:
-                ListOfContactTags:
-                  summary: List of contact tags
-                  value:
-                    tags:
-                      campaign1: fb-leads-ad-7
-                      campaign2: fb-leads-ad-8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-    post:
-      summary: Add Tags to the Contact
-      operationId: AddContactTags
-      description: This operation adds tags to the contact
-      tags:
-        - Contacts
-      responses:
-        '202':
-          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/ResourceLocation'
-              description: The location (uri) of the resource identified by `Resource-Id`.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
-              examples:
-                AddContactTagsAccepted:
-                  summary: Add Tags to Contact request accepted
-                  value:
-                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: AddContactTagRequest
-              type: object
-              properties:
-                tags:
-                  $ref: '#/components/schemas/Tags'
-              required:
-                - tags
-            examples:
-              AddTagsToTheContact:
-                summary: Add tags to the Contact
-                value:
-                  tags:
-                    campaign1: fb-leads-ad-7
-                    campaign2: fb-leads-ad-8
-    delete:
-      summary: Delete Tags from the Contact
-      operationId: DeleteContactTags
-      description: This operation deletes Contact Tags
-      tags:
-        - Contacts
-      responses:
-        '202':
-          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/ResourceLocation'
-              description: The location (uri) of the resource identified by `Resource-Id`.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
-              examples:
-                DeleteContactTagsAccepted:
-                  summary: Delete Tags from Contact request accepted
-                  value:
-                    resourceId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                    resourceLocation: https://comms.twilio.com/v1/Contacts/comms_contact_01h9krwprkeee8fzqspvwy6nq8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: DeleteContactTagsRequest
-              type: object
-              properties:
-                tags:
-                  type: array
-                  description: The list of tag keys to be deleted from the contact
-                  items:
-                    type: string
-            examples:
-              DeleteContactTags:
-                summary: Delete Contact tags
-                value:
-                  tags:
-                    - fb-leads-ad-7
-                    - fb-leads-ad-8
-  /Contacts/Search:
-    post:
-      summary: Search Contacts
-      operationId: SearchContacts
-      description: Search for contacts based on the specified criteria.
-      tags:
-        - Contacts
-      parameters:
-        - in: query
-          name: pageToken
-          description: The token to retrieve the next page of results.
-          schema:
-            $ref: '#/components/schemas/PageToken'
-        - in: query
-          name: pageSize
-          description: The number of resources to return in a page.
-          schema:
-            $ref: '#/components/schemas/PageSize'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                title: SearchContactsResponse
-                type: object
-                properties:
-                  contacts:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Contact'
-                  pagination:
-                    $ref: '#/components/schemas/PaginationMetadata'
-                required:
-                  - contacts
-                  - pagination
-              examples:
-                PageOfContactsForTheSearch:
-                  summary: First page of Contacts for the search request
-                  value:
-                    contacts:
-                      - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                        firstName: Jane
-                        lastName: Doe
-                        displayName: Jane Doe
-                        userIdentifier: 3c35422849fea46d37b099ae59fae22c
-                        externalIdentifier: 006E0000004TguX
-                        addresses:
-                          - channel: EMAIL
-                            address: jane.doe@example.com
-                        createdAt: '2022-08-24T14:15:22Z'
-                        updatedAt: '2023-09-13T12:00:24Z'
-                        deletedAt: null
-                      - id: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-                        firstName: john
-                        lastName: doe
-                        related:
-                          - name: OPERATION
-                            id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Contacts/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                        displayName: John Doe
-                        userIdentifier: john.doe@example.com
-                        externalIdentifier: 006E0000004TguX
-                        addresses:
-                          - channel: EMAIL
-                            address: beetlejuice@example.com
-                        createdAt: '2019-08-24T14:15:22Z'
-                        updatedAt: '2023-08-24T14:15:22Z'
-                        deletedAt: null
-                    pagination:
-                      next: page_01h9krwprkeee8fzqspvwy6nq9
-                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: SearchContactsRequest
-              type: object
-              properties:
-                channels:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/CommunicationChannel'
-                  description: Match contacts with by their communications channel of the Contact (phone number, email, push device token). If more than one channel is specified in the query, the search will return contacts that have all the channels.
-                address:
-                  type: string
-                  description: Match contacts with the exact address specified.
-                userIdentifier:
-                  $ref: '#/components/schemas/UserIdentifier'
-                firstName:
-                  description: Match contacts by their first name. This field is fuzzy and case insensitive. If you search for "JohN", you will get "John", "Johnny", "Johnathan", etc. If you search for "tan", you will get "Johnathan", "Stanley", etc. You must specify at least three characters to begin the search.
-                  type: string
-                  minLength: 3
-                lastName:
-                  description: Match contacts by their last name. This field is fuzzy and case insensitive, so if you search for "cOn", you will get "Conama", "Conan", "Conrad", etc. If you search for "mon", you will get "Montoya", "Lemon", etc. You must specify at least three characters to begin the search.
-                  type: string
-                  minLength: 3
-                tags:
-                  description: Match contacts by one or many tags. If more than one tag is specified, the search will return contacts that have all the tags.
-                  $ref: '#/components/schemas/Tags'
-  /Contacts/Operations:
-    get:
-      summary: List Contact Operations
-      operationId: ListContactOperations
-      description: This operation fetches a paginated list of Contact Operations.
-      tags:
-        - Contacts
-      parameters:
-        - in: query
-          name: status
-          description: Filter to Operations with the specified status.
-          schema:
-            $ref: '#/components/schemas/OperationStatus'
-        - in: query
-          name: pageToken
-          description: The token to retrieve the next page of results.
-          schema:
-            $ref: '#/components/schemas/PageToken'
-        - in: query
-          name: pageSize
-          description: The number of resources to return in a page.
-          schema:
-            $ref: '#/components/schemas/PageSize'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                title: ListContactOperationsResponse
-                type: object
-                properties:
-                  operations:
-                    type: array
-                    description: A list of Contact Operations.
-                    items:
-                      $ref: '#/components/schemas/ContactOperation'
-                  pagination:
-                    $ref: '#/components/schemas/PaginationMetadata'
-                required:
-                  - operations
-                  - pagination
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Contacts/Operations/{operationId}:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/OperationId'
-        name: operationId
-        in: path
-        required: true
-    get:
-      summary: Fetch a Contact Operation
-      operationId: FetchContactOperation
-      description: This operation fetches a single Contact Operation using its ID.
-      tags:
-        - Contacts
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ContactOperation'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Contacts/Fields:
-    post:
-      summary: Create a New Contact Custom Field
-      operationId: CreateContactCustomField
-      description: Create a new Contact Custom Field.
-      tags:
-        - Contacts
-      requestBody:
-        required: true
-        description: This operation creates a new Contact Custom Field.
-        content:
-          application/json:
-            schema:
-              oneOf:
-                - $ref: '#/components/schemas/ContactFieldString'
-                - $ref: '#/components/schemas/ContactFieldNumber'
-                - $ref: '#/components/schemas/ContactFieldBoolean'
-                - $ref: '#/components/schemas/ContactFieldStringArray'
-                - $ref: '#/components/schemas/ContactFieldEnum'
-            examples:
-              StringCustomField:
-                summary: Create a contact custom field of type string
-                value:
-                  name: favoriteColor
-                  type: STRING
-              BooleanCustomField:
-                summary: Create a contact custom field of type boolean
-                value:
-                  name: isPurpleMyFavoriteColor
-                  type: BOOLEAN
-              NumberCustomField:
-                summary: Create a contact custom field of type number
-                value:
-                  name: favoriteNumber
-                  type: NUMBER
-              EnumCustomField:
-                summary: Create a contact custom field of type enum
-                value:
-                  name: favoriteSport
-                  type: ENUM
-                  values:
-                    - soccer
-                    - football
-                    - baseball
-                    - hockey
-                    - basketball
-                    - pickle ball
-      responses:
-        '202':
-          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/ResourceLocation'
-              description: The location (uri) of the resource identified by `Resource-Id`.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
-              examples:
-                CreateContactCustomFieldAccepted:
-                  summary: Create Contact Custom Field request accepted
-                  value:
-                    resourceId: comms_customfield_01h9krwprkeee8fzqspvwy6nq8
-                    resourceLocation: https://comms.twilio.com/v1/Contacts/Fields/comms_customfield_01h9krwprkeee8fzqspvwy6nq8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-    get:
-      summary: List Contact Fields
-      operationId: ListContactFields
-      description: List all contact fields, both custom and standard.
-      tags:
-        - Contacts
-      responses:
-        '200':
-          description: ''
-          content:
-            application/json:
-              schema:
-                title: ListContactsFieldsResponse
-                type: object
-                properties:
-                  fields:
-                    description: List of standard contact fields, these fields are always present.
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ContactStandardField'
-                  customFields:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ContactCustomField'
-                    maxItems: 10
-              examples:
-                GetContactsFields:
-                  summary: Get Contact Fields
-                  value:
-                    fields:
-                      - name: firstName
-                        type: STRING
-                        isFilterable: true
-                      - name: lastName
-                        type: STRING
-                        isFilterable: true
-                    customFields:
-                      - id: comms_customfield_01h9krwprkeee8fzqspvwy6nq8
-                        name: favoriteColor
-                        type: STRING
-                        values: []
-                        isFilterable: false
-                        createdAt: '2019-08-24T14:15:22Z'
-                        updatedAt: '2023-10-02T11:20:00Z'
-                        deletedAt: null
-                      - id: comms_customfield_01h9krwprkeee8fzqspvwy6nq9
-                        name: isPurpleMyFavoriteColor
-                        type: BOOLEAN
-                        values: []
-                        isFilterable: false
-                        createdAt: '2019-08-24T14:15:22Z'
-                        updatedAt: '2023-10-02T11:20:00Z'
-                        deletedAt: null
-                      - id: comms_customfield_01h9krwprkeee8fzqspvwy6nq7
-                        name: favoriteNumber
-                        type: STRING
-                        values: []
-                        isFilterable: false
-                        createdAt: '2019-08-24T14:15:22Z'
-                        updatedAt: '2023-10-02T11:20:00Z'
-                        deletedAt: null
-                      - id: comms_customfield_01h9krwprkeee8fzqspvwy6nq6
-                        name: favoriteSports
-                        type: ENUM
-                        values:
-                          - soccer
-                          - football
-                          - baseball
-                          - hockey
-                          - basketball
-                          - pickle ball
-                        isFilterable: false
-                        createdAt: '2019-08-24T14:15:22Z'
-                        updatedAt: '2023-10-02T11:20:00Z'
-                        deletedAt: null
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Contacts/Fields/{customFieldId}:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/ContactCustomFieldId'
-        name: customFieldId
-        in: path
-        required: true
-    get:
-      summary: Fetch a Contact Field
-      operationId: FetchSingleContactField
-      description: This operation fetches a single contact field using its ID. *Currently it's only applicable to custom fields.*
-      tags:
-        - Contacts
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ContactCustomField'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-    patch:
-      summary: Update a Contact Custom Field
-      operationId: UpdateContactCustomField
-      description: This operation partially updates a Contact Custom Field
-      tags:
-        - Contacts
-      responses:
-        '202':
-          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/ResourceLocation'
-              description: The location (uri) of the resource identified by `Resource-Id`.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
-              examples:
-                UpdateContactCustomFieldAccepted:
-                  summary: Update Contact Custom Field request accepted
-                  value:
-                    resourceId: comms_customfield_01h9krwprkeee8fzqspvwy6nq8
-                    resourceLocation: https://comms.twilio.com/v1/Contacts/Fields/comms_customfield_01h9krwprkeee8fzqspvwy6nq8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              title: UpdateContactCustomFieldRequest
-              type: object
-              properties:
-                values:
-                  type: array
-                  items:
-                    type: string
-            examples:
-              UpdateContactCustomFieldValues:
-                summary: Update Contact Custom Field values
-                value:
-                  values:
-                    - purple
-                    - red
-                    - green
-    delete:
-      summary: Delete a Contact Custom Field
-      operationId: DeleteContactCustomField
-      description: This operation deletes a Contact Custom Field.
-      tags:
-        - Contacts
-      responses:
-        '202':
-          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/ResourceLocation'
-              description: The location (uri) of the resource identified by `Resource-Id`.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
-              examples:
-                DeleteContactCustomFieldAccepted:
-                  summary: Delete Contact Custom Field request accepted
-                  value:
-                    resourceId: comms_customfield_01h9krwprkeee8fzqspvwy6nq8
-                    resourceLocation: https://comms.twilio.com/v1/Contacts/Fields/comms_customfield_01h9krwprkeee8fzqspvwy6nq8
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
   /Emails:
     post:
       summary: Send Emails
@@ -1365,11 +101,7 @@ paths:
               properties:
                 from:
                   title: SendEmailsRequestFrom
-                  description: |-
-                    The sending identity to associate with the `Email`.
-
-                    - Use `EmailAddressSender` to directly specify the email address that the Email
-                       will appear to come 'from'.
+                  description: The sending identity to associate with the `Email`.
                   oneOf:
                     - $ref: '#/components/schemas/EmailAddressSender'
                 to:
@@ -1380,7 +112,7 @@ paths:
                     title: SendEmailsRecipient
                     oneOf:
                       - title: SendEmailsAddressRecipient
-                        description: An email address and associated name that define a recipient.
+                        description: Specify a recipient using their email address and associated name.
                         type: object
                         properties:
                           address:
@@ -1396,7 +128,7 @@ paths:
                           - address
                       - title: SendEmailsProfileRecipient
                         type: object
-                        description: A Twilio `Profile` identified by ID & Memory Store ID.
+                        description: Specify a recipient by their Twilio `Profile` identified by ID & Memory Store ID.
                         properties:
                           profileId:
                             $ref: '#/components/schemas/ProfileId'
@@ -1409,7 +141,7 @@ paths:
                           - memoryStoreId
                       - title: SendEmailsAudienceRecipient
                         type: object
-                        description: A Twilio `Audience` identified by `Audience.Id`.
+                        description: Specify recipients using a Twilio `Audience` identified by `Audience.Id`.
                         properties:
                           audienceId:
                             $ref: '#/components/schemas/AudienceId'
@@ -1429,7 +161,7 @@ paths:
                             type: array
                             items:
                               oneOf:
-                                - $ref: '#/components/schemas/EmailAddressRecipient'
+                                - $ref: '#/components/schemas/EmailAddress'
                                 - $ref: '#/components/schemas/ProfileRecipient'
                           variables:
                             $ref: '#/components/schemas/ContentPersonalization'
@@ -1439,16 +171,12 @@ paths:
                   title: SendEmailsRequestContent
                   description: |-
                     The content of the Email.
-                    - Use `EmailContent` to supply a `text/html` email body.
-                      Optionally provide a `plain/text` body for clients that do not support HTML.
-                      If none is specified, Twilio will auto-create one from your HTML email body.
-
                     ***
                     * Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.
                     * When using a templated content, use the `variables` field on each recipient to specify the values to substitute.
                     * For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.
                                 
-                    * When targeting `Profile` recipients, you may specify `variables` with values that reference stored fields, on the `Profile` -- for example: `${Twilio.Profile.dateLastPurchase}` `${Twilio.Profile.firstName}` or `${Twilio.Profile.myCustomField}`.
+                    * When targeting `Profile` recipients, you may specify `variables` with values that reference stored traits, on the `Profile` -- for example: `${Twilio.Profile.dateLastPurchase}` `${Twilio.Profile.firstName}` or `${Twilio.Profile.myCustomField}`.
                   oneOf:
                     - $ref: '#/components/schemas/EmailHtmlContent'
                 tags:
@@ -1513,8 +241,8 @@ paths:
                   to:
                     - audienceId: aud_audience_01h9krwprkeee8fzqspvwy6nq8
                       variables:
-                        firstName: ${Twilio.Contact.firstName}
-                        lastName: ${Twilio.Contact.lastName}
+                        firstName: ${Twilio.Profile.firstName}
+                        lastName: ${Twilio.Profile.lastName}
                   content:
                     subject: Special Offer Just for You!
                     text: 'Hi {{ firstName | default: ''Valued Customer'' }}, check out our latest deals.'
@@ -1709,7 +437,6 @@ paths:
                           html: <html><body>Hello, World!</body></html>
                           attachments: []
                         from:
-                          senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           address: support@example.com
                           name: Cool Support
                         to:
@@ -1747,7 +474,6 @@ paths:
                           html: <html><body>Hello, World!</body></html>
                           attachments: []
                         from:
-                          senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           address: support@example.com
                           name: Acme Support
                         to:
@@ -1816,7 +542,6 @@ paths:
                       html: <html><body>Hello, World!</body></html>
                       attachments: []
                     from:
-                      senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                       address: support@example.com
                       name: Cool Support
                     to:
@@ -1865,12 +590,9 @@ paths:
                           </body>
                         </html>
                       attachments:
-                        - id: comms_media_01h9krwprkeee8fzqspvwy6nq9
-                          uploadStatus: uploaded
-                          fileName: customers.csv
+                        - fileName: customers.csv
                           fileSize: 1024
                           mimeType: text/csv
-                          tags: {}
                           contentReference:
                             temporaryUrl: https://comms.twilio.com/cdn/media_01h9krwprkeee8fzqspvwy6nq9
                             expiresAt: '2023-11-29T19:05:10Z'
@@ -2031,7 +753,6 @@ paths:
                       total: 1
                       recipients: 1
                       attempts: 1
-                      unaddressable: 0
                       queued: 0
                       sent: 0
                       scheduled: 0
@@ -2051,7 +772,6 @@ paths:
                       total: 2
                       recipients: 2
                       attempts: 2
-                      unaddressable: 0
                       queued: 0
                       sent: 0
                       scheduled: 0
@@ -2071,7 +791,6 @@ paths:
                       total: 1
                       recipients: 3
                       attempts: 3
-                      unaddressable: 0
                       queued: 0
                       sent: 0
                       scheduled: 0
@@ -2082,77 +801,6 @@ paths:
                       canceled: 0
                     createdAt: '2024-04-05T06:20:00Z'
                     updatedAt: '2024-04-05T06:20:00Z'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Emails/Operations/{operationId}/Errors:
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/OperationId'
-        name: operationId
-        in: path
-        required: true
-    get:
-      summary: List Email Operation Errors
-      operationId: ListEmailOperationErrors
-      description: This operation retrieves a paginated list of Email Operation Errors.
-      tags:
-        - Emails
-      parameters:
-        - in: query
-          name: code
-          description: Filter to Operations with a specific Twilio error code.
-          schema:
-            type: integer
-        - in: query
-          name: startDate
-          description: Filter to Errors created after the specified date and time.
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: endDate
-          description: Filter to Errors created before the specified date and time.
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: pageToken
-          description: The token to retrieve the next page of results.
-          schema:
-            $ref: '#/components/schemas/PageToken'
-        - in: query
-          name: pageSize
-          description: The number of resources to return in a page.
-          schema:
-            $ref: '#/components/schemas/PageSize'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationErrorsResponse'
-              examples:
-                NoIPAddressesAvailable:
-                  summary: Async error when the specified ip pool has no available ips.
-                  value:
-                    errors:
-                      - code: 81337
-                        message: No IP addresses available.
-                        infoUrl: https://www.twilio.com/docs/errors/00000
-                        createdAt: '2024-04-05T06:20:00Z'
-                        context: 'null'
-                    pagination:
-                      next: null
-                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -2355,17 +1003,7 @@ paths:
               properties:
                 to:
                   title: SendMessagesRequestTo
-                  description: |-
-                    An array of recipient objects to send the message(s) to.
-
-                    - Use `AddressRecipient` to describe the recipient by their
-                    address.
-
-                    - Use `ConnectedAddressRecipient` to send a message to a recipient
-                      with multiple addresses, Twilio will select the optimal channel and perform
-                      retries across channels (if necessary).
-
-                    - Use `ProfileRecipient` to reference a stored `Profile`.
+                  description: An array of recipient objects to send the Message(s) to.
                   type: array
                   minItems: 1
                   maxItems: 10000
@@ -2374,18 +1012,31 @@ paths:
                     oneOf:
                       - type: object
                         title: SendMessagesAddressRecipient
-                        description: The address and channel to reach your recipient.
-                        allOf:
-                          - $ref: '#/components/schemas/MessageAddressRecipient'
-                          - $ref: '#/components/schemas/RecipientVariables'
+                        description: Describe the recipient by their address and channel.
+                        properties:
+                          address:
+                            type: string
+                            description: The recipient’s communication address within a channel, e.g. phone number
+                          channel:
+                            $ref: '#/components/schemas/MessageAddressChannel'
+                          variables:
+                            $ref: '#/components/schemas/ContentPersonalization'
+                        required:
+                          - address
+                          - channel
+                        additionalProperties: false
                       - type: object
                         title: SendMessagesConnectedAddressRecipient
-                        description: A recipient with multiple address for Messaging. Provide a list of addresses for a recipient and Twilio will pick the best one.  Twilio will automatically handle errors and retry across channels if necessary.
+                        description: |-
+                          Provide a list of addresses for a recipient and Twilio will pick the best
+                          one. 
+
+                          Twilio will automatically handle errors and retry across channels when necessary.
                         properties:
                           addresses:
                             type: array
                             items:
-                              $ref: '#/components/schemas/MessageAddressRecipient'
+                              $ref: '#/components/schemas/MessageAddress'
                             minItems: 1
                             maxItems: 10
                           variables:
@@ -2394,7 +1045,7 @@ paths:
                           - addresses
                       - type: object
                         title: SendMessagesProfileRecipient
-                        description: A Twilio `Profile` identified by `Profile.Id`.
+                        description: Describe your recipient by their Twilio `Profile` identified by `Profile.Id`.
                         properties:
                           profileId:
                             $ref: '#/components/schemas/ProfileId'
@@ -2406,18 +1057,8 @@ paths:
                           - profileId
                           - memoryStoreId
                       - type: object
-                        title: SendMessagesContactRecipient
-                        description: A Twilio `Contact` identified by `Contact.Id`.
-                        properties:
-                          contactId:
-                            $ref: '#/components/schemas/ContactId'
-                          variables:
-                            $ref: '#/components/schemas/ContentPersonalization'
-                        required:
-                          - contactId
-                      - type: object
                         title: SendMessagesAudienceRecipient
-                        description: A Twilio `Audience` identified by `Audience.Id`.
+                        description: Describe your recipients using a Twilio `Audience` identified by `Audience.Id`.
                         properties:
                           audienceId:
                             $ref: '#/components/schemas/AudienceId'
@@ -2430,13 +1071,6 @@ paths:
                   type: object
                   description: |-
                     The content of the Message.
-
-                    - Use `MessageContentTextWithMedia` to send a Message with just text and/or media.
-
-                    - Use `MessageContentTemplate` to reference a stored `Content` template.
-
-                    - Use `MessageContentChannelModules` to send rich content and 
-                      different content per channel.
 
                     ***
 
@@ -2451,8 +1085,7 @@ paths:
                     a matching key in each recipient's `variables` object.
 
                     * When targeting `Audience` or `Profile` recipients, you may specify `variables`
-                    with values that reference stored fields, including custom fields,
-                    on the `Profile` -- for example:
+                    with values that reference stored traits on the `Profile` -- for example:
                     `${Twilio.Profile.firstName}` or `${Twilio.Profile.myCustomField}`.
                   oneOf:
                     - $ref: '#/components/schemas/MessageContentTextWithMedia'
@@ -2685,14 +1318,14 @@ paths:
                   to:
                     - audienceId: aud_audience_01h9krwprkeee8fzqspvwy6nq8
                       variables:
-                        firstName: ${Twilio.Contact.firstName}
-                        lastName: ${Twilio.Contact.lastName}
-                        gender: ${Twilio.Contact.gender}
+                        firstName: ${Twilio.Profile.firstName}
+                        lastName: ${Twilio.Profile.lastName}
+                        gender: ${Twilio.Profile.gender}
                     - audienceId: aud_audience_01h9krwprkeee8fzqspvwy6nq8
                       variables:
-                        firstName: ${Twilio.Contact.firstName}
-                        lastName: ${Twilio.Contact.lastName}
-                        gender: ${Twilio.Contact.gender}
+                        firstName: ${Twilio.Profile.firstName}
+                        lastName: ${Twilio.Profile.lastName}
+                        gender: ${Twilio.Profile.gender}
                   content:
                     text: 'Hello, {% unless lastName == '''' or gender == ''other'' %} {% case gender %} {% when ''male'' %} Mr. {{lastName}} ! {% when ''female'' %} Ms. {{lastName}} ! {% else %} {{firstName}} ! {% endcase %} {% else %} {{firstName | default: ''Valued Customer''}} ! {% endif %}'
               SendMessagesConstrainedToWhatsappAndSms:
@@ -2758,19 +1391,6 @@ paths:
                   schedule:
                     sendAt:
                       - '2030-04-01T10:04:01Z'
-              SendAMessageWithAutomaticSuppressionManagement:
-                summary: Send a message with automatic suppression management
-                value:
-                  from:
-                    address: '+14153901002'
-                    channel: SMS
-                  to:
-                    - address: '+12065558844'
-                      channel: PHONE
-                  content:
-                    text: Hello, World!
-                  usePreference:
-                    preferenceId: comms_preference_01h9krwprkeee8fzqspvwy6nq8
               SendAMessageWithJustRecipientAndContent:
                 summary: Send a Message with just recipient and content
                 value:
@@ -2863,11 +1483,6 @@ paths:
           description: Filter Messages sent or received by Profile ID.
           schema:
             $ref: '#/components/schemas/ProfileId'
-        - in: query
-          name: contact
-          description: Filter Messages sent or received by Contact ID.
-          schema:
-            $ref: '#/components/schemas/ContactId'
         - in: query
           name: channel
           description: Filter Messages by channel.
@@ -3151,7 +1766,8 @@ paths:
                     from:
                       address: '+12065558844'
                       channel: PHONE
-                      contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
+                      profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+                      memoryStoreId: mem_store_01h9krwprkeee8fzqspvwy6nq8
                     to:
                       - address: '+14153902337'
                         channel: SMS
@@ -3180,7 +1796,6 @@ paths:
                     to:
                       - address: '+14153901002'
                         channel: PHONE
-                        contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                     content:
                       modules:
                         - rcs:
@@ -3214,7 +1829,6 @@ paths:
                         to:
                           - address: '+14153901002'
                             channel: PHONE
-                            contactId: comms_contact_01h9krwprkeee8fzqspvwy6nq8
                         status: DELIVERED
                         attemptedAt: '2023-08-24T14:15:22Z'
                         infoUrl: https://console.twilio.com/us1/monitor/logs/sms/AC77ec7f777777f7a77ce7777aeef7777f/SMbffad777cc7777777777777dfcdc7f77
@@ -3806,7 +2420,7 @@ paths:
     post:
       summary: Send Push Notifications
       operationId: SendPushNotifications
-      description: This operation creates and sends out push notifications to the specified recipients.
+      description: This operation creates and sends out Push Notifications to the specified recipients.
       tags:
         - PushNotifications
       responses:
@@ -3849,23 +2463,14 @@ paths:
                   title: SendPushNotificationRequestFrom
                   description: |-
                     The sender of the Push Notification(s).
-                    - Leave unspecified to automatically use the default `App`.
-
-                    - Use `PushNotificationCredentialSender` to specify `Credential(s)`'
-                      (one per provider) to be used for sending the Push Notification(s).
-
-                    - Use `PushNotificationAppSender` to specify the name of the `App`
-                      to be used for sending the Push Notification(s).
-
-                    - Use `SenderIdSender` or `SenderIdSender` to send the Push Notification(s)
-                      from a `Sender` or `Sender Pool`.
+                    Leave unspecified to automatically use the default `App`.
                   type: object
                   oneOf:
                     - $ref: '#/components/schemas/PushNotificationCredentialSender'
                     - $ref: '#/components/schemas/PushNotificationAppSender'
                 to:
                   title: SendPushNotificationsRequestTo
-                  description: A list of recipients to send the push notifications(s) to.
+                  description: A list of recipients to send the Push Notifications(s) to.
                   type: array
                   items:
                     title: SendPushNotificationsRecipient
@@ -3877,10 +2482,18 @@ paths:
                   title: SendPushNotificationsContent
                   description: |-
                     The content of the Push Notification.
+
                     ***
-                    * Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.
-                    * When using a templated content, use the `variables` field on each recipient to specify the values to substitute.
-                    * For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.
+
+                    * Use the [Liquid](https://shopify.github.io/liquid/)
+                    templating language for personalization in any text-based field.
+
+                    * When using a templated content,
+                    use the `variables` field on each recipient to specify
+                    the values to substitute.
+
+                    * For each variable you specify in your template, you should have
+                    a matching key in each recipient's `variables` object.
                   oneOf:
                     - $ref: '#/components/schemas/PushNotificationContentBody'
                 priority:
@@ -3889,7 +2502,7 @@ paths:
                   type:
                     - string
                     - 'null'
-                  description: The name of the sound to be played for the push notification.
+                  description: The name of the sound to be played for the Push Notification.
                 schedule:
                   $ref: '#/components/schemas/Schedule'
                 tags:
@@ -6229,24 +4842,44 @@ components:
       type: string
       pattern: ^comms_operation_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-    ContactId:
-      description: A reference to a Contact.
-      title: ContactId
+    ProfileId:
+      title: ProfileId
+      description: A reference to a Profile
       type: string
-      pattern: ^comms_contact_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: comms_contact_01h9krwprkeee8fzqspvwy6nq8
-    PageToken:
-      description: The token that identifies the page of resources to fetch.
-      title: PageToken
+      pattern: ^mem_profile_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: mem_profile_01h9krwprkeee8fzqspvwy6nq8
+    EmailStatus:
+      title: EmailStatus
+      description: |-
+        The status of an `Email`. The status can be one of the following:
+        - `SCHEDULED` The `Email` is scheduled to be sent by
+          Twilio in the future.
+
+        - `QUEUED` The `Email` is queued in Twilio for sending.
+        - `SENT` The `Email` has been sent by Twilio.
+        - `DELIVERED` The `Email` has been successfully
+            delivered to the recipient.
+
+        - `UNDELIVERED` The `Email` was successfully sent by Twilio
+            but has not been delivered to the recipient.
+
+        - `OPENED` The `Email` has been opened by the recipient.
+        - `FAILED` The `Email` processing failed inside Twilio.
+           Use `GET /Emails/Operations/{operationId}/Errors` for more details.
+
+        - `CANCELED` The `Email` was canceled via API request.
+        - `INBOUND` The `Email` was received by Twilio from an external source.
       type: string
-    PageSize:
-      description: Total number of items returned in a single page, the minimum is 1 and maximum is 1000. Default is 50.
-      title: PageSize
-      type: integer
-      minimum: 1
-      maximum: 1000
-      default: 50
-      example: 50
+      enum:
+        - SCHEDULED
+        - QUEUED
+        - SENT
+        - DELIVERED
+        - UNDELIVERED
+        - OPENED
+        - FAILED
+        - CANCELED
+        - INBOUND
     TagsString:
       title: TagsString
       type: string
@@ -6268,138 +4901,114 @@ components:
         ```
       pattern: ^(?:[a-zA-Z0-9._~-]+:[a-zA-Z0-9._~-]+;){1,10}$
       example: key_1:value;key_2:value;
-    UserIdentifier:
-      title: UserIdentifier
+    PageToken:
+      description: The token that identifies the page of resources to fetch.
+      title: PageToken
       type: string
-      description: |-
-        A custom string that uniquely identifies a person or end-user.
-        For example, this can be the end-user's username or a UUID4 string or an SHA256 hash.
-      minLength: 1
-      maxLength: 36
-    ContactLocation:
-      type: object
-      title: ContactLocation
-      description: The physical geo-location of the Contact.
-      properties:
-        latitude:
-          description: |-
-            The latitude coordinate of the Contact's location in decimal degrees.
-            Positive values indicate locations north of the equator.
-          type: number
-          format: float
-        longitude:
-          description: |-
-            The longitude coordinate of the Contact's location in decimal degrees.
-            Positive values indicate locations east of the prime meridian.
-          type: number
-          format: float
-        addressLine1:
-          description: Contact's first address line.
-          type: string
-        addressLine2:
-          description: Contact's second address line.
-          type: string
-        city:
-          description: Contact's city.
-          type: string
-        state:
-          description: Contact's state.
-          type: string
-        postalCode:
-          description: Contact's postal zip code.
-          type: string
-        countryCode:
-          description: Contact's ISO 3166-1 alpha-2 country code.
-          type: string
-          format: iso-country-code
-          pattern: ^[A-Z]{2}$
-          example: US
-    ContactIdentity:
-      title: ContactIdentity
-      type: object
-      description: An Identity is the schema of a person or user.
-      properties:
-        firstName:
-          type: string
-          description: The first name of the Contact.
-        lastName:
-          type: string
-          description: The last name of the Contact.
-        displayName:
-          type: string
-          description: The name associated with the address for sending and receiving communications, visible for some types of communications like email.
-        userIdentifier:
-          $ref: '#/components/schemas/UserIdentifier'
-        location:
-          $ref: '#/components/schemas/ContactLocation'
-        dateOfBirth:
-          description: Contact's date of birth.
-          format: YYYY-MM-DD
-          type: string
-    Address:
-      title: Address
+    PageSize:
+      description: Total number of items returned in a single page, the minimum is 1 and maximum is 1000. Default is 50.
+      title: PageSize
+      type: integer
+      minimum: 1
+      maximum: 1000
+      default: 50
+      example: 50
+    EmailId:
+      title: EmailId
+      description: A reference to an Email.
       type: string
-      description: The identifier that uniquely addresses a user within a communications channel.
-    ContactCommunicationChannel:
-      title: ContactCommunicationChannel
-      description: |-
-        The medium which a unit of communication is transmitted through.
-        These are differentiated by a mix of transmission protocol, network controller/owner, endpoint and address model,
-        as well as the model for content of the atomic unit of communication itself.
-      type: string
-      enum:
-        - EMAIL
-        - PHONE
-        - WHATSAPP
-        - PUSH
-    ContactAddress:
+      pattern: ^comms_email_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: comms_email_01h9krwprkeee8fzqspvwy6nq8
+    EmailAddress:
+      title: EmailAddress
+      description: An email address and associated name.
       type: object
-      title: ContactAddress
       properties:
         address:
-          $ref: '#/components/schemas/Address'
-        channel:
-          $ref: '#/components/schemas/ContactCommunicationChannel'
+          type: string
+          description: The email address of the person or entity.
+          format: email
+        name:
+          type: string
+          description: The name of the person or entity.
       required:
         - address
-        - channel
-    ExternalIdentifier:
-      title: ExternalIdentifier
-      description: An external identifier is a unique identifier for a Contact in an external system, such as a CRM or CDP.
+      additionalProperties: false
+    MemoryStoreId:
+      title: MemoryStoreId
+      description: A reference to a Memory Store
       type: string
-    ContactFieldValue:
-      title: ContactFieldValue
-      description: |-
-        A custom field value for Contacts.
-        This field can be used to store various types of values such as strings, booleans, numbers, or arrays.
+      pattern: ^mem_store_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: mem_store_00000000000000000000000000
+    EmailProfile:
+      title: EmailProfile
+      description: An email Profile is a person or entity identified by an email address and associated with a Profile ID and Memory Store ID.
       type: object
       properties:
-        value: {}
+        address:
+          description: The email address of the Profile.
+          type: string
+        name:
+          description: The name of the profile (e.g. "Acme Corp")
+          type: string
+        profileId:
+          $ref: '#/components/schemas/ProfileId'
+        memoryStoreId:
+          $ref: '#/components/schemas/MemoryStoreId'
       required:
-        - value
-    ContactCustomFields:
-      title: ContactCustomFields
+        - address
+        - profileId
+        - memoryStoreId
+    SenderId:
+      description: A reference to a Sender.
+      title: SenderId
+      type: string
+      pattern: ^comms_sender_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: comms_sender_01h9krwprkeee8fzqspvwy6nq8
+    EmailSenderIdSender:
+      title: EmailSenderIdSender
+      description: An email sender identified by Sender Id.
       type: object
-      description: |-
-        Custom fields in the form of key-value pairs.
-        Maximum size of a custom field key is 128 characters.
-        Maximum size of a custom field is 256 characters.
-        There can be a maximum of 10 custom fields.
-      additionalProperties:
-        $ref: '#/components/schemas/ContactFieldValue'
-      maxProperties: 10
-      example:
-        favoriteColor:
-          value: purple
-        favoriteNumber:
-          value: 42
-        isFavoriteColorPurple:
-          value: true
-        colors:
-          value:
-            - purple
-            - blue
-            - green
+      properties:
+        address:
+          description: The email address of the person or entity.
+          type: string
+        name:
+          description: The name of the person or entity associated with the email address.
+          type: string
+        senderId:
+          $ref: '#/components/schemas/SenderId'
+      required:
+        - address
+        - senderId
+    RelatedResource:
+      title: RelatedResource
+      type: object
+      description: A reference to a related resource.
+      properties:
+        name:
+          type: string
+          description: The name of the related resource.
+          enum:
+            - EMAIL
+            - MESSAGE
+            - PUSH_NOTIFICATION
+            - SESSION
+            - MEDIA
+            - SENDER
+            - SENDER_POOL
+            - OPERATION
+            - ENGAGEMENT
+            - CREDENTIAL
+            - PUSH_NOTIFICATION_APP
+            - PUSH_NOTIFICATION_USER
+            - DEVICE_REGISTRATION
+        id:
+          description: The identifier of the related resource.
+          type: string
+        uri:
+          description: The path to the related resource.
+          type: string
     Tags:
       title: Tags
       type: object
@@ -6420,82 +5029,109 @@ components:
         type: string
         maxLength: 256
         pattern: ^[a-zA-Z0-9._~-]+$
-    RelatedResource:
-      title: RelatedResource
+    EmailBase:
+      title: EmailBase
       type: object
-      description: A reference to a related resource.
+      description: The atomic unit of communication for the email channel.
       properties:
-        name:
-          type: string
-          description: The name of the related resource.
-          enum:
-            - EMAIL
-            - MESSAGE
-            - PUSH_NOTIFICATION
-            - SESSION
-            - CONTACT
-            - MEDIA
-            - SENDER
-            - SENDER_POOL
-            - OPERATION
-            - ENGAGEMENT
-            - CREDENTIAL
-            - PUSH_NOTIFICATION_APP
-            - PUSH_NOTIFICATION_USER
-            - DEVICE_REGISTRATION
         id:
-          description: The identifier of the related resource.
+          $ref: '#/components/schemas/EmailId'
+        from:
+          title: EmailFrom
+          description: The sender of the email.
+          oneOf:
+            - $ref: '#/components/schemas/EmailAddress'
+            - $ref: '#/components/schemas/EmailProfile'
+            - $ref: '#/components/schemas/EmailSenderIdSender'
+        to:
+          title: EmailRecipients
+          description: The recipients of the email on the `to` line.
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/EmailAddress'
+              - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailSenderIdSender'
+        replyTo:
+          title: EmailReplyToRecipients
+          description: The recipients set on the reply-to line of the email.
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/EmailAddress'
+              - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailSenderIdSender'
+        cc:
+          title: EmailCCRecipients
+          description: The recipients of the email on the `cc` line.
+          type: array
+          maxItems: 50
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/EmailAddress'
+              - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailSenderIdSender'
+        bcc:
+          title: EmailBCCRecipients
+          description: The recipients of the email on the `bcc` line.
+          type: array
+          maxItems: 50
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/EmailAddress'
+              - $ref: '#/components/schemas/EmailProfile'
+              - $ref: '#/components/schemas/EmailSenderIdSender'
+        status:
+          $ref: '#/components/schemas/EmailStatus'
+        related:
+          description: A list of resources that are associated with the Email.
+          type: array
+          items:
+            $ref: '#/components/schemas/RelatedResource'
+        tags:
+          $ref: '#/components/schemas/Tags'
+        scheduledFor:
+          description: |-
+            The scheduled send time of the `Email`.
+            This field is only present if the `Email` was created with a `schedule`.
+          type:
+            - string
+            - 'null'
+          format: date-time
+        createdAt:
+          description: The date and time when the Email was created.
           type: string
-        uri:
-          description: The path to the related resource.
+          format: date-time
+        updatedAt:
+          description: The date and time when the Email was last updated.
           type: string
-    Contact:
-      title: Contact
+          format: date-time
+        deletedAt:
+          description: The date and time when the Email was deleted.
+          type:
+            - string
+            - 'null'
+          format: date-time
+      required:
+        - id
+        - from
+        - to
+        - replyTo
+        - cc
+        - bcc
+        - status
+        - related
+        - tags
+        - scheduledFor
+        - createdAt
+        - updatedAt
+        - deletedAt
+    EmailMetadata:
+      title: EmailMetadata
       type: object
-      description: |-
-        A Contact represents a person or entity to communicate with.
-        It is composed of one more addresses and some additional identity info.
+      description: The EmailMetadata provides information about the Email. Does not include the Content.
       allOf:
-        - $ref: '#/components/schemas/ContactIdentity'
-        - title: ContactBase
-          type: object
-          properties:
-            id:
-              $ref: '#/components/schemas/ContactId'
-            addresses:
-              title: ContactAddresses
-              description: The Contact’s communication addresses, such as phone number, email address, and push device token.
-              type: array
-              items:
-                $ref: '#/components/schemas/ContactAddress'
-            externalIdentifier:
-              $ref: '#/components/schemas/ExternalIdentifier'
-            customFields:
-              $ref: '#/components/schemas/ContactCustomFields'
-            tags:
-              $ref: '#/components/schemas/Tags'
-            related:
-              title: ContactRelatedResources
-              description: A list of resources that are associated with the Contact.
-              type: array
-              items:
-                $ref: '#/components/schemas/RelatedResource'
-            createdAt:
-              type: string
-              format: date-time
-            updatedAt:
-              type: string
-              format: date-time
-            deletedAt:
-              type:
-                - string
-                - 'null'
-              format: date-time
-          required:
-            - id
-            - createdAt
-            - updatedAt
-            - deletedAt
+        - $ref: '#/components/schemas/EmailBase'
     PaginationMetadata:
       title: PaginationMetadata
       description: |-
@@ -6567,393 +5203,14 @@ components:
           - code: 21614
             message: The address specified in the request is not a valid phone number.
             infoUrl: https://www.twilio.com/docs/api/errors/21614
-            status: 400
             context: $.to[0].address
           - code: 21617
             message: The concatenated message text exceeds the 1600 character limit
             infoUrl: https://www.twilio.com/docs/api/errors/21617
-            status: 400
             context: $.content.text
-    OperationLocation:
-      type: string
-      format: uri
-      description: The location (uri) of the Operation resource identified by `operationId`.
-    Http202ResponseWithOperationBody:
-      title: Http202ResponseWithOperationBody
-      description: Response body for HTTP 202 response with Operation data.
-      type: object
-      properties:
-        operationId:
-          $ref: '#/components/schemas/OperationId'
-        operationLocation:
-          $ref: '#/components/schemas/OperationLocation'
-      required:
-        - operationId
-        - operationLocation
-    ResourceLocation:
-      type: string
-      format: uri
-      description: The location (uri) of the resource identified by `Resource-Id`.
-    ResourceId:
-      type: string
-      description: |-
-        The Resource ID is an identifier for the resource that was created or updated
-          in response to the request.
-    Http202ResponseWithResourceBody:
-      title: Http202ResponseWithResourceBody
-      description: Response body for HTTP 202 response with Resource data.
-      type: object
-      properties:
-        resourceId:
-          $ref: '#/components/schemas/ResourceId'
-        resourceLocation:
-          $ref: '#/components/schemas/ResourceLocation'
-      required:
-        - resourceId
-        - resourceLocation
-    TagsNullable:
-      title: TagsNullable
-      type:
-        - object
-        - 'null'
-      nullable: true
-      description: |-
-        Custom metadata in the form of key-value pairs.
-        Maximum size of a tag key is 128 characters.
-        Maximum size of a tag value is 256 characters.
-        There can be a maximum of 10 key-value pairs.
-      additionalProperties:
-        type: string
-      maxProperties: 10
-    ContactCustomFieldsNullable:
-      title: ContactCustomFieldsNullable
-      type:
-        - object
-        - 'null'
-      nullable: true
-      description: |-
-        Custom fields in the form of key-value pairs.
-        Maximum size of a custom field key is 128 characters.
-        Maximum size of a custom field is 256 characters.
-        There can be a maximum of 10 custom fields.
-      additionalProperties:
-        $ref: '#/components/schemas/ContactFieldValue'
-      maxProperties: 10
-      example:
-        favoriteColor:
-          value: purple
-        favoriteNumber:
-          value: 42
-        isFavoriteColorPurple:
-          value: true
-        colors:
-          value:
-            - purple
-            - blue
-            - green
-    CommunicationChannel:
-      title: CommunicationChannel
-      description: |-
-        The medium which a unit of communication is transmitted through.
-        These are differentiated by a mix of transmission protocol, network controller/owner, endpoint and address model,
-        as well as the model for content of the atomic unit of communication itself.
-      type: string
-      enum:
-        - EMAIL
-        - PHONE
-        - WHATSAPP
-        - PUSH
-    OperationStatus:
-      title: OperationStatus
-      type: string
-      description: The status of an Operation.
-      enum:
-        - PROCESSING
-        - COMPLETED
-        - CANCELED
-    ContactOperation:
-      title: ContactOperation
-      type: object
-      description: |-
-        A Operation represents the aggregate work to be completed for a POST request to the /Contacts.
-        The work maybe be performed asynchronously and the Contact Operation resource can be used to track the progress of the work.
-      properties:
-        id:
-          $ref: '#/components/schemas/OperationId'
-        status:
-          $ref: '#/components/schemas/OperationStatus'
-        stats:
-          title: ContactOperationStats
-          type: object
-          properties:
-            total:
-              type: integer
-              minimum: 0
-            queued:
-              type: integer
-              minimum: 0
-            created:
-              type: integer
-              minimum: 0
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-      required:
-        - id
-        - status
-        - stats
-        - createdAt
-        - updatedAt
-    ContactStandardField:
-      title: ContactStandardField
-      type: object
-      description: A standard field that exists on a contact, every account has these.
-      properties:
-        name:
-          type: string
-          description: Name of the field, for example 'first_name'.
-          maxLength: 128
-        type:
-          type: string
-          description: Type of the field.
-          enum:
-            - STRING
-            - BOOLEAN
-            - ENUM
-            - NUMBER
-        values:
-          type: array
-          description: List of possible values for the field when the type is enum.
-          maxItems: 10
-          items:
-            type: string
-          default: []
-        isFilterable:
-          type: boolean
-          description: Whether the custom field can be used as a filter. Limited to 3 per account.
-          default: false
-      required:
-        - name
-        - type
-        - isFilterable
-    ContactCustomFieldId:
-      description: A reference to a Contact Custom Field.
-      title: ContactCustomFieldId
-      type: string
-      pattern: ^comms_customfield_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: comms_customfield_01h9krwprkeee8fzqspvwy6nq8
-    ContactCustomField:
-      title: ContactCustomField
-      type: object
-      description: A custom field that can be added to a contact.
-      properties:
-        id:
-          $ref: '#/components/schemas/ContactCustomFieldId'
-          description: Unique identifier for the custom field, this is generated upon creation of the custom field.
-        name:
-          type: string
-          description: Name of the custom field, for example 'favorite_color'.
-          maxLength: 128
-        type:
-          type: string
-          description: Type of the custom field.
-          enum:
-            - STRING
-            - BOOLEAN
-            - ENUM
-            - NUMBER
-            - ARRAY
-        values:
-          type: array
-          description: List of possible values for the custom field when the type is enum.
-          maxItems: 10
-          items:
-            type: string
-          default: []
-        isFilterable:
-          type: boolean
-          description: Whether the custom field can be used as a filter. Limited to 3 per account.
-          default: false
-        createdAt:
-          type: string
-          description: Date and time when the custom field was created.
-          format: date-time
-        updatedAt:
-          type: string
-          description: Date and time when the custom field was last updated.
-          format: date-time
-        deletedAt:
-          type:
-            - string
-            - 'null'
-          description: Date and time when the custom field was deleted.
-          format: date-time
-      required:
-        - id
-        - name
-        - type
-        - isFilterable
-        - values
-        - createdAt
-        - updatedAt
-        - deletedAt
-    ContactFieldString:
-      title: ContactFieldString
-      description: |-
-        A custom field of type 'string' for Contacts.
-        This field can be used to store text values.
-      type: object
-      properties:
-        type:
-          type: string
-          const: STRING
-        name:
-          type: string
-          maxLength: 128
-        isFilterable:
-          type: boolean
-          default: false
-          description: Whether the custom field can be used as a filter. Limited to 3 per account.
-      required:
-        - type
-        - name
-    ContactFieldNumber:
-      title: ContactFieldNumber
-      description: |-
-        A custom field of type 'number' for Contacts.
-        This field can be used to store numeric values.
-      type: object
-      properties:
-        type:
-          type: string
-          const: NUMBER
-        name:
-          type: string
-          maxLength: 128
-        isFilterable:
-          type: boolean
-          default: false
-          description: Whether the custom field can be used as a filter. Limited to 3 per account.
-      required:
-        - type
-        - name
-    ContactFieldBoolean:
-      title: ContactFieldBoolean
-      description: |-
-        A custom field of type boolean for Contacts.
-        This field can be used to store true/false values.
-      type: object
-      properties:
-        type:
-          type: string
-          const: BOOLEAN
-        name:
-          type: string
-          maxLength: 128
-        isFilterable:
-          type: boolean
-          default: false
-          description: Whether the custom field can be used as a filter. Limited to 3 per account.
-      required:
-        - type
-        - name
-    ContactFieldStringArray:
-      title: ContactFieldStringArray
-      description: |-
-        A custom field of type 'array' for Contacts.
-        This field can be used to store a list of text values.
-      type: object
-      properties:
-        type:
-          type: string
-          const: ARRAY
-        name:
-          type: string
-          maxLength: 128
-        isFilterable:
-          type: boolean
-          default: false
-          description: Whether the custom field can be used as a filter. Limited to 3 per account.
-      required:
-        - type
-        - name
-    ContactFieldEnum:
-      title: ContactFieldEnum
-      description: |-
-        Represents a custom field of type 'enum' for contacts.
-        This field type allows you to define a set of predefined, allowed values.
-        The `values` property contains the list of possible values.
-      type: object
-      properties:
-        name:
-          type: string
-          maxLength: 128
-        type:
-          type: string
-          const: ENUM
-        values:
-          type: array
-          maxItems: 10
-          items:
-            type: string
-        isFilterable:
-          type: boolean
-          default: false
-          description: Whether the custom field can be used as a filter. Limited to 3 per account.
-      required:
-        - type
-        - name
-        - values
-    ProfileId:
-      title: ProfileId
-      description: A reference to a Profile
-      type: string
-      pattern: ^mem_profile_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: mem_profile_01h9krwprkeee8fzqspvwy6nq8
-    EmailStatus:
-      title: EmailStatus
-      description: |-
-        The status of an `Email`. The status can be one of the following:
-        - `SCHEDULED` The `Email` is scheduled to be sent by
-          Twilio in the future.
-
-        - `QUEUED` The `Email` is queued in Twilio for sending.
-        - `SENT` The `Email` has been sent by Twilio.
-        - `DELIVERED` The `Email` has been successfully
-            delivered to the recipient.
-
-        - `UNDELIVERED` The `Email` was successfully sent by Twilio
-            but has not been delivered to the recipient.
-
-        - `OPENED` The `Email` has been opened by the recipient.
-        - `FAILED` The `Email` processing failed inside Twilio.
-           Use `GET /Emails/Operations/{operationId}/Errors` for more details.
-
-        - `CANCELED` The `Email` was canceled via API request.
-        - `INBOUND` The `Email` was received by Twilio from an external source.
-      type: string
-      enum:
-        - SCHEDULED
-        - QUEUED
-        - SENT
-        - DELIVERED
-        - UNDELIVERED
-        - OPENED
-        - FAILED
-        - CANCELED
-        - INBOUND
-    EmailId:
-      title: EmailId
-      description: A reference to an Email.
-      type: string
-      pattern: ^comms_email_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: comms_email_01h9krwprkeee8fzqspvwy6nq8
-    EmailAddressRecipient:
-      title: EmailAddressRecipient
-      description: An email address and associated name that define a recipient.
+    EmailAddressSender:
+      title: EmailAddressSender
+      description: An email address and associated name for a sender. The name is required for senders.
       type: object
       properties:
         address:
@@ -6963,181 +5220,6 @@ components:
         name:
           type: string
           description: The name of the person or entity.
-      required:
-        - address
-      additionalProperties: false
-    MemoryStoreId:
-      title: MemoryStoreId
-      description: A reference to a Memory Store
-      type: string
-      pattern: ^mem_store_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: mem_store_00000000000000000000000000
-    EmailProfile:
-      title: EmailProfile
-      description: An email Profile is a person or entity identified by an email address and associated with a Profile ID and Memory Store ID.
-      type: object
-      properties:
-        address:
-          description: The email address of the Profile.
-          type: string
-        name:
-          description: The name of the profile (e.g. "Acme Corp")
-          type: string
-        profileId:
-          $ref: '#/components/schemas/ProfileId'
-        memoryStoreId:
-          $ref: '#/components/schemas/MemoryStoreId'
-      required:
-        - address
-        - profileId
-        - memoryStoreId
-    EmailContact:
-      title: EmailContact
-      description: An Email Contact is a person or entity identified by an email address and associated with a Contact ID.
-      type: object
-      properties:
-        address:
-          description: The email address of the Contact.
-          type: string
-        name:
-          description: The name of the Contact (e.g. "John Smith")
-          type: string
-        contactId:
-          $ref: '#/components/schemas/ContactId'
-      required:
-        - address
-        - contactId
-    SenderId:
-      description: A reference to a Sender.
-      title: SenderId
-      type: string
-      pattern: ^comms_sender_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-    EmailSenderIdSender:
-      title: EmailSenderIdSender
-      description: A Message Sender is a person or entity whose communication identity is hosted by Twilio.
-      type: object
-      properties:
-        address:
-          description: The email address of the person or entity.
-          type: string
-        name:
-          description: The name of the person or entity associated with the email address.
-          type: string
-        senderId:
-          $ref: '#/components/schemas/SenderId'
-      required:
-        - address
-        - senderId
-    EmailBase:
-      title: EmailBase
-      type: object
-      description: The atomic unit of communication for the email channel.
-      properties:
-        id:
-          $ref: '#/components/schemas/EmailId'
-        from:
-          title: EmailFrom
-          oneOf:
-            - $ref: '#/components/schemas/EmailAddressRecipient'
-            - $ref: '#/components/schemas/EmailProfile'
-            - $ref: '#/components/schemas/EmailContact'
-            - $ref: '#/components/schemas/EmailSenderIdSender'
-        to:
-          title: EmailRecipients
-          type: array
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/EmailAddressRecipient'
-              - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailContact'
-              - $ref: '#/components/schemas/EmailSenderIdSender'
-        replyTo:
-          title: EmailReplyToRecipients
-          type: array
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/EmailAddressRecipient'
-              - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailContact'
-              - $ref: '#/components/schemas/EmailSenderIdSender'
-        cc:
-          title: EmailCCRecipients
-          type: array
-          maxItems: 50
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/EmailAddressRecipient'
-              - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailContact'
-              - $ref: '#/components/schemas/EmailSenderIdSender'
-        bcc:
-          title: EmailBCCRecipients
-          type: array
-          maxItems: 50
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/EmailAddressRecipient'
-              - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailContact'
-              - $ref: '#/components/schemas/EmailSenderIdSender'
-        status:
-          $ref: '#/components/schemas/EmailStatus'
-        related:
-          description: A list of resources that are associated with the Email.
-          type: array
-          items:
-            $ref: '#/components/schemas/RelatedResource'
-        tags:
-          $ref: '#/components/schemas/Tags'
-        scheduledFor:
-          type:
-            - string
-            - 'null'
-          format: date-time
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-        deletedAt:
-          type:
-            - string
-            - 'null'
-          format: date-time
-      required:
-        - id
-        - from
-        - to
-        - replyTo
-        - cc
-        - bcc
-        - status
-        - related
-        - tags
-        - scheduledFor
-        - createdAt
-        - updatedAt
-        - deletedAt
-    EmailMetadata:
-      title: EmailMetadata
-      type: object
-      description: The EmailMetadata provides information about the Email. Does not include the Content.
-      allOf:
-        - $ref: '#/components/schemas/EmailBase'
-    EmailAddressSender:
-      title: EmailAddressSender
-      description: An email address and associated name
-      type: object
-      properties:
-        address:
-          type: string
-          description: The email address of the person or entity.
-          format: email
-        name:
-          type: string
-          description: The name of the person or entity associated with the email address.
       required:
         - address
         - name
@@ -7212,6 +5294,7 @@ components:
     EmailHtmlContent:
       title: EmailHtmlContent
       type: object
+      description: Specify the `text/html` email body.
       properties:
         html:
           type: string
@@ -7223,7 +5306,8 @@ components:
         text:
           type: string
           description: |-
-            The plain-text email body (`text/plain` MIME).
+            The plain-text email body (`text/plain` MIME) for clients that do not support HTML.
+            If none is specified, Twilio will auto-create one from your HTML email body.
 
             This field can be templated with [Liquid](https://shopify.github.io/liquid/).
             Specify `variables` with each recipient for personalization.
@@ -7252,7 +5336,7 @@ components:
         footer:
           title: EmailFooter
           type: object
-          description: Inserts a custom footer at the bottom of the text and HTML bodies of your messages.
+          description: Inserts a custom footer at the bottom of the text and HTML bodies of your email.
           properties:
             enabled:
               type: boolean
@@ -7297,6 +5381,22 @@ components:
             type: string
       minProperties: 1
       additionalProperties: false
+    OperationLocation:
+      type: string
+      format: uri
+      description: The location (uri) of the Operation resource identified by `operationId`.
+    Http202ResponseWithOperationBody:
+      title: Http202ResponseWithOperationBody
+      description: Response body for HTTP 202 response with Operation data.
+      type: object
+      properties:
+        operationId:
+          $ref: '#/components/schemas/OperationId'
+        operationLocation:
+          $ref: '#/components/schemas/OperationLocation'
+      required:
+        - operationId
+        - operationLocation
     MimeType:
       title: MimeType
       type: string
@@ -7349,7 +5449,7 @@ components:
         - createdAt
     EmailContentResolved:
       title: EmailContentResolved
-      description: The resolved content of the Email. If no `plain/text` MIME is provided,  one will be generated from the `text/html` MIME.
+      description: The resolved content of the Email.
       type: object
       properties:
         subject:
@@ -7385,6 +5485,27 @@ components:
               $ref: '#/components/schemas/EmailContentResolved'
           required:
             - content
+    ResourceLocation:
+      type: string
+      format: uri
+      description: The location (uri) of the resource identified by `Resource-Id`.
+    ResourceId:
+      type: string
+      description: |-
+        The Resource ID is an identifier for the resource that was created or updated
+          in response to the request.
+    Http202ResponseWithResourceBody:
+      title: Http202ResponseWithResourceBody
+      description: Response body for HTTP 202 response with Resource data.
+      type: object
+      properties:
+        resourceId:
+          $ref: '#/components/schemas/ResourceId'
+        resourceLocation:
+          $ref: '#/components/schemas/ResourceLocation'
+      required:
+        - resourceId
+        - resourceLocation
     CommunicationOperationStatus:
       title: CommunicationOperationStatus
       type: string
@@ -7507,20 +5628,6 @@ components:
         - stats
         - createdAt
         - updatedAt
-    OperationErrorsResponse:
-      title: OperationErrorsResponse
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/TwilioErrors'
-        - title: OperationErrorsResponseMetadata
-          type: object
-          properties:
-            createdAt:
-              description: The date and time the error occurred.
-              type: string
-              format: date-time
-            pagination:
-              $ref: '#/components/schemas/PaginationMetadata'
     SessionId:
       title: SessionId
       description: A reference to a Session.
@@ -7626,9 +5733,9 @@ components:
       description: |-
         The channels available for specifying a Message Profile.
 
-        - `phone`: Includes SMS, MMS, and RCS, pair it with a phone number in the `address` field.
+        - `PHONE`: Includes SMS, MMS, and RCS, pair it with a phone number in the `address` field.
 
-        - `whatsapp`: WhatsApp channel, pair it with a WhatsApp number in the `address` field.
+        - `WHATSAPP`: WhatsApp channel, pair it with a WhatsApp number in the `address` field.
       type: string
       enum:
         - PHONE
@@ -7654,32 +5761,29 @@ components:
         - profileId
         - memoryStoreId
       additionalProperties: false
-    MessageContactChannel:
-      title: MessageContactChannel
+    MessageAddressChannel:
+      title: MessageAddressChannel
       description: |-
-        The channels available for specifying a Message Contact.
+        The corresponding channel name for a Message address.
 
-        - `phone`: Includes SMS, MMS, and RCS, pair it with a phone number in the `address` field.
+        - `PHONE`: Includes SMS, MMS, and RCS, pair it with a phone number in the `address` field.
 
-        - `whatsapp`: WhatsApp channel, pair it with a WhatsApp number in the `address` field.
+        - `WHATSAPP`: WhatsApp channel, pair it with a WhatsApp number in the `address` field.
       type: string
       enum:
         - PHONE
         - WHATSAPP
       example: PHONE
-    MessageContact:
-      title: MessageContact
-      description: A Message Contact is a person or entity that is not hosted by Twilio.
+    MessageAddress:
+      title: MessageAddress
+      description: A messaging address and channel.
       type: object
       properties:
         address:
-          description: The identifier within a channel address space for a contact (e.g. phone number)
           type: string
+          description: The communication address within a Messaging channel, such as a phone number.
         channel:
-          $ref: '#/components/schemas/MessageContactChannel'
-        contactId:
-          x-twilio-version: preview
-          $ref: '#/components/schemas/ContactId'
+          $ref: '#/components/schemas/MessageAddressChannel'
       required:
         - address
         - channel
@@ -7697,7 +5801,7 @@ components:
             - $ref: '#/components/schemas/MessageSender'
             - $ref: '#/components/schemas/MessageSenderAndPool'
             - $ref: '#/components/schemas/MessageProfile'
-            - $ref: '#/components/schemas/MessageContact'
+            - $ref: '#/components/schemas/MessageAddress'
         to:
           title: MessageRecipients
           description: |-
@@ -7708,9 +5812,9 @@ components:
           type: array
           items:
             oneOf:
+              - $ref: '#/components/schemas/MessageAddress'
               - $ref: '#/components/schemas/MessageSender'
               - $ref: '#/components/schemas/MessageProfile'
-              - $ref: '#/components/schemas/MessageContact'
         status:
           $ref: '#/components/schemas/MessageStatus'
         related:
@@ -7753,25 +5857,6 @@ components:
       description: The MessageMetadata provides information about the Message but does not include the Content or Attempts.
       allOf:
         - $ref: '#/components/schemas/MessageBase'
-    MessageAddressRecipient:
-      title: MessageAddressRecipient
-      description: A messaging address and channel that defines the recipient of a Message.
-      type: object
-      properties:
-        address:
-          type: string
-          description: The Sender’s communication address within a channel, such as a phone number, email address, or device token.
-        channel:
-          $ref: '#/components/schemas/MessageContactChannel'
-      required:
-        - address
-        - channel
-    RecipientVariables:
-      title: RecipientVariables
-      type: object
-      properties:
-        variables:
-          $ref: '#/components/schemas/ContentPersonalization'
     MediaUrl:
       title: MediaUrl
       type: object
@@ -7800,8 +5885,8 @@ components:
         $ref: '#/components/schemas/MediaUrl'
     MessageContentTextWithMedia:
       title: MessageContentTextWithMedia
-      description: The text and media content of a `Message`.
       type: object
+      description: The text and media content of a `Message`.
       properties:
         text:
           type: string
@@ -8417,8 +6502,8 @@ components:
           type: array
           items:
             oneOf:
+              - $ref: '#/components/schemas/MessageAddress'
               - $ref: '#/components/schemas/MessageProfile'
-              - $ref: '#/components/schemas/MessageContact'
         status:
           $ref: '#/components/schemas/MessageStatus'
           description: The status of the Message Attempt. The status of the Message is the status of the last attempt.
@@ -8725,9 +6810,6 @@ components:
                   description: Identifies a single device for delivering push notifications via the specified provider.
                 provider:
                   $ref: '#/components/schemas/PushNotificationProvider'
-                contactId:
-                  $ref: '#/components/schemas/ContactId'
-                  x-twilio-version: preview
               required:
                 - token
                 - provider
@@ -9203,7 +7285,7 @@ components:
       description: |-
         A Sender is a sending and receiving communication identity associated with a Twilio application.
         For 'outbound' communications, it is used as the sender of the communication in the 'from' field.
-        For 'inbound' communications (sent by a Contact/end-user), it is used as the recipient and populated in the 'to' field.
+        For 'inbound' communications (sent by an end-user), it is used as the recipient and populated in the 'to' field.
         A Sender represents existing inventory created and setup in other Twilio APIs, such as Phone Numbers.
       properties:
         id:
@@ -9242,12 +7324,24 @@ components:
         - tags
         - updatedAt
         - createdAt
+    CommunicationChannel:
+      title: CommunicationChannel
+      description: |-
+        The medium which a unit of communication is transmitted through.
+        These are differentiated by a mix of transmission protocol, network controller/owner, endpoint and address model,
+        as well as the model for content of the atomic unit of communication itself.
+      type: string
+      enum:
+        - EMAIL
+        - PHONE
+        - WHATSAPP
+        - PUSH
     CommunicationRecipient:
       title: CommunicationRecipient
       type: object
       properties:
         address:
-          description: The Sender’s communication address within a channel, such as a phone number, email address, or device token.
+          description: The recipient’s communication address within a channel, such as a phone number, email address, or device token.
           type: string
         channel:
           $ref: '#/components/schemas/CommunicationChannel'
@@ -9298,7 +7392,7 @@ components:
         A SenderPool is a set of sending (and receiving) identities associated with a Twilio application.
         It can contain one or more Senders for use in multi-channel use-cases or to achieve pooling functionalities.
         For 'outbound' communications, it is used as the sender of the communication in the 'from' field.
-        For 'inbound' communications sent by a Contact, it is used as the recipient, and populated in the 'to' field.
+        For 'inbound' communications sent by an end-user, it is used as the recipient, and populated in the 'to' field.
       type: object
       properties:
         id:
@@ -9319,6 +7413,14 @@ components:
         - tags
         - createdAt
         - updatedAt
+    OperationStatus:
+      title: OperationStatus
+      type: string
+      description: The status of an Operation.
+      enum:
+        - PROCESSING
+        - COMPLETED
+        - CANCELED
     SenderPoolOperation:
       title: SenderPoolOperation
       type: object
