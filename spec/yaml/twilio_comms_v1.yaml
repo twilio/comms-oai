@@ -20,36 +20,12 @@ security:
 tags:
   - name: Messages
     description: |-
-      *Use `Messages` to send and receive RCS, SMS and MMS, Group MMS, and WhatsApp messages.*
+      *Use `Messages` to send and receive RCS, SMS and MMS, and WhatsApp messages.*
 
       *Send with precise control over every aspect of your message
        or let Twilio share control and up-level your messaging with data-driven optimizations.*
-
-      Messages supports:
-       - Sending a Message to a single recipient
-       - Sending Messages to many recipients in a single request
-       - Sending Group Messages to facilitate communication between multiple people
-       - Sending to both stored Profiles and/or directly specified messaging addresses (e.g. phone number)
-       - Sending Messages to Profiles with multiple communication addresses: Twilio will choose the best channel.
-       - Sending Messages to stored Audiences with per-recipient content personalization
-       - Sending Messages with templated content that reference attributes of your stored Profiles
-       - Sending Messages with rich content
-       - Sending Messages with shortened, branded links that support click tracking.
-       - Sending Messages scheduled for future delivery.
-       - Receiving inbound Messages sent to your Twilio phone numbers.
-       - Maintaining history of distinct communication sessions including both inbound and outbound Messages.
   - name: Emails
-    description: |-
-      *Use `Emails` to send and receive email with Twilio SendGrid.*
-
-      Emails supports:
-       - Sending an Email to a single recipient
-       - Sending Emails to many recipients in a single request
-       - Sending to both stored Profiles and directly specified email addresses
-       - Sending Emails with merged content that reference attributes of your stored Profiles
-       - Sending Emails with branded links that support click tracking
-       - Sending Emails scheduled for future delivery
-       - Receiving inbound Email replies and relaying the event to you for handling
+    description: '*Use `Emails` to send and receive email with Twilio SendGrid.*'
   - name: PushNotifications
     description: |-
       *Use `PushNotifications` to send push notifications to your mobile apps
@@ -130,11 +106,7 @@ paths:
               properties:
                 from:
                   title: SendEmailsRequestFrom
-                  description: |-
-                    The sending identity to associate with the `Email`.
-
-                    - Use `EmailAddressSender` to directly specify the email address that the Email
-                       will appear to come 'from'.
+                  description: The sending identity to associate with the `Email`.
                   oneOf:
                     - $ref: '#/components/schemas/EmailAddressSender'
                 to:
@@ -145,7 +117,7 @@ paths:
                     title: SendEmailsRecipient
                     oneOf:
                       - title: SendEmailsAddressRecipient
-                        description: An email address and associated name that define a recipient.
+                        description: Specify a recipient using their email address and associated name.
                         type: object
                         properties:
                           address:
@@ -161,7 +133,7 @@ paths:
                           - address
                       - title: SendEmailsProfileRecipient
                         type: object
-                        description: A Twilio `Profile` identified by ID & Memory Store ID.
+                        description: Specify a recipient by their Twilio `Profile` identified by ID & Memory Store ID.
                         properties:
                           profileId:
                             $ref: '#/components/schemas/ProfileId'
@@ -184,7 +156,7 @@ paths:
                             type: array
                             items:
                               oneOf:
-                                - $ref: '#/components/schemas/EmailAddressRecipient'
+                                - $ref: '#/components/schemas/EmailAddress'
                                 - $ref: '#/components/schemas/ProfileRecipient'
                           variables:
                             $ref: '#/components/schemas/ContentPersonalization'
@@ -194,16 +166,12 @@ paths:
                   title: SendEmailsRequestContent
                   description: |-
                     The content of the Email.
-                    - Use `EmailContent` to supply a `text/html` email body.
-                      Optionally provide a `plain/text` body for clients that do not support HTML.
-                      If none is specified, Twilio will auto-create one from your HTML email body.
-
                     ***
                     * Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.
                     * When using a templated content, use the `variables` field on each recipient to specify the values to substitute.
                     * For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.
-                    
-                    * When targeting `Profile` recipients, you may specify `variables` with values that reference stored fields, on the `Profile` -- for example: `${Twilio.Profile.dateLastPurchase}` `${Twilio.Profile.firstName}` or `${Twilio.Profile.myCustomField}`.
+                                
+                    * When targeting `Profile` recipients, you may specify `variables` with values that reference stored traits, on the `Profile` -- for example: `${Twilio.Profile.dateLastPurchase}` `${Twilio.Profile.firstName}` or `${Twilio.Profile.myCustomField}`.
                   oneOf:
                     - $ref: '#/components/schemas/EmailHtmlContent'
                 tags:
@@ -458,7 +426,6 @@ paths:
                           html: <html><body>Hello, World!</body></html>
                           attachments: []
                         from:
-                          senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           address: support@example.com
                           name: Cool Support
                         to:
@@ -496,7 +463,6 @@ paths:
                           html: <html><body>Hello, World!</body></html>
                           attachments: []
                         from:
-                          senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                           address: support@example.com
                           name: Acme Support
                         to:
@@ -569,7 +535,6 @@ paths:
                       html: <html><body>Hello, World!</body></html>
                       attachments: []
                     from:
-                      senderId: comms_sender_01h9krwprkeee8fzqspvwy6nq8
                       address: support@example.com
                       name: Cool Support
                     to:
@@ -619,12 +584,9 @@ paths:
                           </body>
                         </html>
                       attachments:
-                        - id: comms_media_01h9krwprkeee8fzqspvwy6nq9
-                          uploadStatus: uploaded
-                          fileName: customers.csv
+                        - fileName: customers.csv
                           fileSize: 1024
                           mimeType: text/csv
-                          tags: {}
                           contentReference:
                             temporaryUrl: https://comms.twilio.com/cdn/media_01h9krwprkeee8fzqspvwy6nq9
                             expiresAt: '2023-11-29T19:05:10Z'
@@ -795,7 +757,6 @@ paths:
                       total: 1
                       recipients: 1
                       attempts: 1
-                      unaddressable: 0
                       queued: 0
                       sent: 0
                       scheduled: 0
@@ -816,7 +777,6 @@ paths:
                       total: 2
                       recipients: 2
                       attempts: 2
-                      unaddressable: 0
                       queued: 0
                       sent: 0
                       scheduled: 0
@@ -837,7 +797,6 @@ paths:
                       total: 1
                       recipients: 3
                       attempts: 3
-                      unaddressable: 0
                       queued: 0
                       sent: 0
                       scheduled: 0
@@ -848,81 +807,6 @@ paths:
                       canceled: 0
                     createdAt: '2024-04-05T06:20:00Z'
                     updatedAt: '2024-04-05T06:20:00Z'
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-  /Emails/Operations/{operationId}/Errors:
-    x-twilio-domain: emails
-    parameters:
-      - schema:
-          $ref: '#/components/schemas/OperationId'
-        x-twilio-version: 1
-        name: operationId
-        in: path
-        required: true
-    get:
-      summary: List Email Operation Errors
-      operationId: ListEmailOperationErrors
-      x-twilio-version: 1
-      description: This operation retrieves a paginated list of Email Operation Errors.
-      tags:
-        - Emails
-      parameters:
-        - in: query
-          name: code
-          description: Filter to Operations with a specific Twilio error code.
-          schema:
-            type: integer
-        - in: query
-          name: startDate
-          description: Filter to Errors created after the specified date and time.
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: endDate
-          description: Filter to Errors created before the specified date and time.
-          schema:
-            type: string
-            format: date-time
-        - in: query
-          name: pageToken
-          description: The token to retrieve the next page of results.
-          schema:
-            $ref: '#/components/schemas/PageToken'
-        - in: query
-          name: pageSize
-          description: The number of resources to return in a page.
-          schema:
-            $ref: '#/components/schemas/PageSize'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationErrorsResponse'
-              examples:
-                NoIPAddressesAvailable:
-                  summary: Async error when the specified ip pool has no available ips.
-                  x-twilio-version: 1
-                  value:
-                    errors:
-                      - code: 81337
-                        message: No IP addresses available.
-                        infoUrl: https://www.twilio.com/docs/errors/00000
-                        createdAt: '2024-04-05T06:20:00Z'
-                        context: 'null'
-                    pagination:
-                      next: null
-                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -1065,17 +949,7 @@ paths:
               properties:
                 to:
                   title: SendMessagesRequestTo
-                  description: |-
-                    An array of recipient objects to send the message(s) to.
-
-                    - Use `AddressRecipient` to describe the recipient by their
-                    address.
-
-                    - Use `ConnectedAddressRecipient` to send a message to a recipient
-                      with multiple addresses, Twilio will select the optimal channel and perform
-                      retries across channels (if necessary).
-
-                    - Use `ProfileRecipient` to reference a stored `Profile`.
+                  description: An array of recipient objects to send the Message(s) to.
                   x-twilio-version: 1
                   type: array
                   minItems: 1
@@ -1086,19 +960,32 @@ paths:
                       - type: object
                         title: SendMessagesAddressRecipient
                         x-twilio-version: 1
-                        description: The address and channel to reach your recipient.
-                        allOf:
-                          - $ref: '#/components/schemas/MessageAddressRecipient'
-                          - $ref: '#/components/schemas/RecipientVariables'
+                        description: Describe the recipient by their address and channel.
+                        properties:
+                          address:
+                            type: string
+                            description: The recipient’s communication address within a channel, e.g. phone number
+                          channel:
+                            $ref: '#/components/schemas/MessageAddressChannel'
+                          variables:
+                            $ref: '#/components/schemas/ContentPersonalization'
+                        required:
+                          - address
+                          - channel
+                        additionalProperties: false
                       - type: object
                         title: SendMessagesConnectedAddressRecipient
-                        description: A recipient with multiple address for Messaging. Provide a list of addresses for a recipient and Twilio will pick the best one.  Twilio will automatically handle errors and retry across channels if necessary.
+                        description: |-
+                          Provide a list of addresses for a recipient and Twilio will pick the best
+                          one. 
+
+                          Twilio will automatically handle errors and retry across channels when necessary.
                         x-twilio-version: 1
                         properties:
                           addresses:
                             type: array
                             items:
-                              $ref: '#/components/schemas/MessageAddressRecipient'
+                              $ref: '#/components/schemas/MessageAddress'
                             minItems: 1
                             maxItems: 10
                           variables:
@@ -1107,7 +994,7 @@ paths:
                           - addresses
                       - type: object
                         title: SendMessagesProfileRecipient
-                        description: A Twilio `Profile` identified by `Profile.Id`.
+                        description: Describe your recipient by their Twilio `Profile` identified by `Profile.Id`.
                         x-twilio-version: 1
                         properties:
                           profileId:
@@ -1125,13 +1012,6 @@ paths:
                   description: |-
                     The content of the Message.
 
-                    - Use `MessageContentTextWithMedia` to send a Message with just text and/or media.
-
-                    - Use `MessageContentTemplate` to reference a stored `Content` template.
-
-                    - Use `MessageContentChannelModules` to send rich content and 
-                      different content per channel.
-
                     ***
 
                     * Use the [Liquid](https://shopify.github.io/liquid/)
@@ -1145,8 +1025,7 @@ paths:
                     a matching key in each recipient's `variables` object.
 
                     * When targeting `Audience` or `Profile` recipients, you may specify `variables`
-                    with values that reference stored fields, including custom fields,
-                    on the `Profile` -- for example:
+                    with values that reference stored traits on the `Profile` -- for example:
                     `${Twilio.Profile.firstName}` or `${Twilio.Profile.myCustomField}`.
                   x-twilio-version: 1
                   oneOf:
@@ -1439,20 +1318,6 @@ paths:
                   schedule:
                     sendAt:
                       - '2030-04-01T10:04:01Z'
-              SendAMessageWithAutomaticSuppressionManagement:
-                summary: Send a message with automatic suppression management
-                x-twilio-version: 1
-                value:
-                  from:
-                    address: '+14153901002'
-                    channel: SMS
-                  to:
-                    - address: '+12065558844'
-                      channel: PHONE
-                  content:
-                    text: Hello, World!
-                  usePreference:
-                    preferenceId: comms_preference_01h9krwprkeee8fzqspvwy6nq8
               SendAMessageWithJustRecipientAndContent:
                 summary: Send a Message with just recipient and content
                 x-twilio-version: 1
@@ -1506,7 +1371,7 @@ paths:
             --data '{
                 "to": [{
                     "address": "+12065551337",
-                    "channel": "phone"
+                    "channel": "PHONE"
                 }],
                 "content": {
                     "text": "What day is it?"
@@ -2192,10 +2057,10 @@ paths:
             curl -X POST 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations' \
             --header 'Content-Type: application/json' \
             --data '{
-                "contact_id": "comms_contact_01h9krwprkeee8fzqspvwy6nq8",
-                "app_name": "limonade_app",
+                "userId": "comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8",
+                "appName": "limonade_app",
                 "token": "token",
-                "provider": "fcm"
+                "provider": "FCM"
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
     get:
@@ -2296,7 +2161,7 @@ paths:
           lang: curl
           label: cURL
           source: |-
-            curl -X GET 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations?contact_id=comms_contact_01h9krwprkeee8fzqspvwy6nq8' \
+            curl -X GET 'https://comms.twilio.com/preview/PushNotifications/DeviceRegistrations?userId=comms_pushnotificationuser_01h9krwprkeee8fzqspvwy6nq8' \
             --header 'Content-Type: application/json' \
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
   /PushNotifications/DeviceRegistrations/{deviceRegistrationId}:
@@ -2411,7 +2276,7 @@ paths:
       summary: Send Push Notifications
       operationId: SendPushNotifications
       x-twilio-version: 1
-      description: This operation creates and sends out push notifications to the specified recipients.
+      description: This operation creates and sends out Push Notifications to the specified recipients.
       tags:
         - PushNotifications
       responses:
@@ -2457,23 +2322,14 @@ paths:
                   title: SendPushNotificationRequestFrom
                   description: |-
                     The sender of the Push Notification(s).
-                    - Leave unspecified to automatically use the default `App`.
-
-                    - Use `PushNotificationCredentialSender` to specify `Credential(s)`'
-                      (one per provider) to be used for sending the Push Notification(s).
-
-                    - Use `PushNotificationAppSender` to specify the name of the `App`
-                      to be used for sending the Push Notification(s).
-
-                    - Use `SenderIdSender` or `SenderIdSender` to send the Push Notification(s)
-                      from a `Sender` or `Sender Pool`.
+                    Leave unspecified to automatically use the default `App`.
                   type: object
                   oneOf:
                     - $ref: '#/components/schemas/PushNotificationCredentialSender'
                     - $ref: '#/components/schemas/PushNotificationAppSender'
                 to:
                   title: SendPushNotificationsRequestTo
-                  description: A list of recipients to send the push notifications(s) to.
+                  description: A list of recipients to send the Push Notifications(s) to.
                   type: array
                   items:
                     title: SendPushNotificationsRecipient
@@ -2484,10 +2340,18 @@ paths:
                   title: SendPushNotificationsContent
                   description: |-
                     The content of the Push Notification.
+
                     ***
-                    * Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.
-                    * When using a templated content, use the `variables` field on each recipient to specify the values to substitute.
-                    * For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.
+
+                    * Use the [Liquid](https://shopify.github.io/liquid/)
+                    templating language for personalization in any text-based field.
+
+                    * When using a templated content,
+                    use the `variables` field on each recipient to specify
+                    the values to substitute.
+
+                    * For each variable you specify in your template, you should have
+                    a matching key in each recipient's `variables` object.
                   oneOf:
                     - $ref: '#/components/schemas/PushNotificationContentBody'
                 priority:
@@ -2496,7 +2360,7 @@ paths:
                   type:
                     - string
                     - 'null'
-                  description: The name of the sound to be played for the push notification.
+                  description: The name of the sound to be played for the Push Notification.
                 schedule:
                   $ref: '#/components/schemas/Schedule'
                 tags:
@@ -2634,7 +2498,7 @@ paths:
             --header 'Content-Type: application/json' \
             --data '{
                 "to": [
-                    { "provider": "fcm", "token": "token" }
+                    { "provider": "FCM", "token": "token" }
                 ],
                 "content": {
                     "title": "Limon Eats",
@@ -3030,13 +2894,13 @@ paths:
             curl -X POST 'https://comms.twilio.com/preview/PushNotifications/Credentials' \
             --header 'Content-Type: application/json' \
             --data '{
-                "credential_type": "apn",
-                "app_name": "limonade_app",
+                "credentialType": "APN",
+                "appName": "limonade_app",
                 "content": {
                     "certificate": "certificate",
-                    "private_key": "private_key"
+                    "privateKey": "private_key"
                 },
-                "is_default": true
+                "isDefault": true
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
     get:
@@ -3212,7 +3076,7 @@ paths:
             curl -X PATCH 'https://comms.twilio.com/preview/PushNotifications/Credentials/comms_credential_01h9krwprkeee8fzqspvwy6nq8' \
             --header 'Content-Type: application/json' \
             --data '{
-                "is_default": true,
+                "isDefault": true,
                 "tags": {
                     "environment": "production",
                     "region": "us-east-1"
@@ -3511,7 +3375,7 @@ paths:
             curl -X PATCH 'https://comms.twilio.com/preview/PushNotifications/Apps/limonade_app' \
             --header 'Content-Type: application/json' \
             --data '{
-                "is_default": true
+                "isDefault": true
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
     get:
@@ -4008,7 +3872,7 @@ paths:
             --header 'Content-Type: application/json' \
             --data '{
                 "address": "+14153902337",
-                "channel": "sms"
+                "channel": "SMS"
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
   /Senders/Resolve:
@@ -4265,9 +4129,9 @@ paths:
             curl -X POST 'https://comms.twilio.com/preview/Senders/Resolve' \
             --header 'Content-Type: application/json' \
             --data '{
-                "recipient_addresses": [
-                    { "address": "+14153902337", "channel": "phone" },
-                    { "address": "davidpletnjov@example.com", "channel": "email" }
+                "recipientAddresses": [
+                    { "address": "+14153902337", "channel": "PHONE" },
+                    { "address": "davidpletnjov@example.com", "channel": "EMAIL" }
                 ]
             }'\
             -u $TWILIO_ACCOUNT_SID:$TWILIO_AUTH_TOKEN
@@ -5092,10 +4956,10 @@ components:
       type: string
       pattern: ^comms_email_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_email_01h9krwprkeee8fzqspvwy6nq8
-    EmailAddressRecipient:
+    EmailAddress:
       x-twilio-version: 1
-      title: EmailAddressRecipient
-      description: An email address and associated name that define a recipient.
+      title: EmailAddress
+      description: An email address and associated name.
       type: object
       properties:
         address:
@@ -5134,29 +4998,6 @@ components:
         - address
         - profileId
         - memoryStoreId
-    SenderId:
-      x-twilio-version: 1
-      description: A reference to a Sender.
-      title: SenderId
-      type: string
-      pattern: ^comms_sender_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-    EmailSenderIdSender:
-      title: EmailSenderIdSender
-      description: A Message Sender is a person or entity whose communication identity is hosted by Twilio.
-      type: object
-      properties:
-        address:
-          description: The email address of the person or entity.
-          type: string
-        name:
-          description: The name of the person or entity associated with the email address.
-          type: string
-        senderId:
-          $ref: '#/components/schemas/SenderId'
-      required:
-        - address
-        - senderId
     RelatedResource:
       x-twilio-version: 1
       title: RelatedResource
@@ -5171,7 +5012,6 @@ components:
             - MESSAGE
             - PUSH_NOTIFICATION
             - SESSION
-            - CONTACT
             - MEDIA
             - SENDER
             - SENDER_POOL
@@ -5218,44 +5058,44 @@ components:
           $ref: '#/components/schemas/EmailId'
         from:
           title: EmailFrom
+          description: The sender of the email.
           oneOf:
-            - $ref: '#/components/schemas/EmailAddressRecipient'
+            - $ref: '#/components/schemas/EmailAddress'
             - $ref: '#/components/schemas/EmailProfile'
-            - $ref: '#/components/schemas/EmailSenderIdSender'
         to:
           title: EmailRecipients
+          description: The recipients of the email on the `to` line.
           type: array
           items:
             oneOf:
-              - $ref: '#/components/schemas/EmailAddressRecipient'
+              - $ref: '#/components/schemas/EmailAddress'
               - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailSenderIdSender'
         replyTo:
           title: EmailReplyToRecipients
+          description: The recipients set on the reply-to line of the email.
           type: array
           items:
             oneOf:
-              - $ref: '#/components/schemas/EmailAddressRecipient'
+              - $ref: '#/components/schemas/EmailAddress'
               - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailSenderIdSender'
         cc:
           title: EmailCCRecipients
+          description: The recipients of the email on the `cc` line.
           type: array
           maxItems: 50
           items:
             oneOf:
-              - $ref: '#/components/schemas/EmailAddressRecipient'
+              - $ref: '#/components/schemas/EmailAddress'
               - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailSenderIdSender'
         bcc:
           title: EmailBCCRecipients
+          description: The recipients of the email on the `bcc` line.
           type: array
           maxItems: 50
           items:
             oneOf:
-              - $ref: '#/components/schemas/EmailAddressRecipient'
+              - $ref: '#/components/schemas/EmailAddress'
               - $ref: '#/components/schemas/EmailProfile'
-              - $ref: '#/components/schemas/EmailSenderIdSender'
         status:
           $ref: '#/components/schemas/EmailStatus'
         related:
@@ -5266,17 +5106,23 @@ components:
         tags:
           $ref: '#/components/schemas/Tags'
         scheduledFor:
+          description: |-
+            The scheduled send time of the `Email`.
+            This field is only present if the `Email` was created with a `schedule`.
           type:
             - string
             - 'null'
           format: date-time
         createdAt:
+          description: The date and time when the Email was created.
           type: string
           format: date-time
         updatedAt:
+          description: The date and time when the Email was last updated.
           type: string
           format: date-time
         deletedAt:
+          description: The date and time when the Email was deleted.
           type:
             - string
             - 'null'
@@ -5376,17 +5222,15 @@ components:
           - code: 21614
             message: The address specified in the request is not a valid phone number.
             infoUrl: https://www.twilio.com/docs/api/errors/21614
-            status: 400
             context: $.to[0].address
           - code: 21617
             message: The concatenated message text exceeds the 1600 character limit
             infoUrl: https://www.twilio.com/docs/api/errors/21617
-            status: 400
             context: $.content.text
     EmailAddressSender:
       x-twilio-version: 1
       title: EmailAddressSender
-      description: An email address and associated name
+      description: An email address and associated name for a sender. The name is required for senders.
       type: object
       properties:
         address:
@@ -5395,7 +5239,7 @@ components:
           format: email
         name:
           type: string
-          description: The name of the person or entity associated with the email address.
+          description: The name of the person or entity.
       required:
         - address
         - name
@@ -5468,6 +5312,7 @@ components:
       x-twilio-version: 1
       title: EmailHtmlContent
       type: object
+      description: Specify the `text/html` email body.
       properties:
         html:
           type: string
@@ -5479,7 +5324,8 @@ components:
         text:
           type: string
           description: |-
-            The plain-text email body (`text/plain` MIME).
+            The plain-text email body (`text/plain` MIME) for clients that do not support HTML.
+            If none is specified, Twilio will auto-create one from your HTML email body.
 
             This field can be templated with [Liquid](https://shopify.github.io/liquid/).
             Specify `variables` with each recipient for personalization.
@@ -5508,7 +5354,7 @@ components:
         footer:
           title: EmailFooter
           type: object
-          description: Inserts a custom footer at the bottom of the text and HTML bodies of your messages.
+          description: Inserts a custom footer at the bottom of the text and HTML bodies of your email.
           properties:
             enabled:
               type: boolean
@@ -5626,7 +5472,7 @@ components:
     EmailContentResolved:
       x-twilio-version: 1
       title: EmailContentResolved
-      description: The resolved content of the Email. If no `plain/text` MIME is provided,  one will be generated from the `text/html` MIME.
+      description: The resolved content of the Email.
       type: object
       properties:
         subject:
@@ -5811,21 +5657,6 @@ components:
         - stats
         - createdAt
         - updatedAt
-    OperationErrorsResponse:
-      x-twilio-version: 1
-      title: OperationErrorsResponse
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/TwilioErrors'
-        - title: OperationErrorsResponseMetadata
-          type: object
-          properties:
-            createdAt:
-              description: The date and time the error occurred.
-              type: string
-              format: date-time
-            pagination:
-              $ref: '#/components/schemas/PaginationMetadata'
     SessionId:
       x-twilio-version: 1
       title: SessionId
@@ -5888,6 +5719,13 @@ components:
       type: string
       pattern: ^comms_message_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_message_01h9krwprkeee8fzqspvwy6nq8
+    SenderId:
+      x-twilio-version: 1
+      description: A reference to a Sender.
+      title: SenderId
+      type: string
+      pattern: ^comms_sender_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: comms_sender_01h9krwprkeee8fzqspvwy6nq8
     MessageSender:
       x-twilio-version: 1
       title: MessageSender
@@ -5939,9 +5777,9 @@ components:
       description: |-
         The channels available for specifying a Message Profile.
 
-        - `phone`: Includes SMS, MMS, and RCS, pair it with a phone number in the `address` field.
+        - `PHONE`: Includes SMS, MMS, and RCS, pair it with a phone number in the `address` field.
 
-        - `whatsapp`: WhatsApp channel, pair it with a WhatsApp number in the `address` field.
+        - `WHATSAPP`: WhatsApp channel, pair it with a WhatsApp number in the `address` field.
       type: string
       enum:
         - PHONE
@@ -5968,31 +5806,31 @@ components:
         - profileId
         - memoryStoreId
       additionalProperties: false
-    MessageContactChannel:
+    MessageAddressChannel:
       x-twilio-version: 1
-      title: MessageContactChannel
+      title: MessageAddressChannel
       description: |-
-        The channels available for specifying a Message Contact.
+        The corresponding channel name for a Message address.
 
-        - `phone`: Includes SMS, MMS, and RCS, pair it with a phone number in the `address` field.
+        - `PHONE`: Includes SMS, MMS, and RCS, pair it with a phone number in the `address` field.
 
-        - `whatsapp`: WhatsApp channel, pair it with a WhatsApp number in the `address` field.
+        - `WHATSAPP`: WhatsApp channel, pair it with a WhatsApp number in the `address` field.
       type: string
       enum:
         - PHONE
         - WHATSAPP
       example: PHONE
-    MessageContact:
+    MessageAddress:
       x-twilio-version: 1
-      title: MessageContact
-      description: A Message Contact is a person or entity that is not hosted by Twilio.
+      title: MessageAddress
+      description: A messaging address and channel.
       type: object
       properties:
         address:
-          description: The identifier within a channel address space for a contact (e.g. phone number)
           type: string
+          description: The communication address within a Messaging channel, such as a phone number.
         channel:
-          $ref: '#/components/schemas/MessageContactChannel'
+          $ref: '#/components/schemas/MessageAddressChannel'
       required:
         - address
         - channel
@@ -6011,7 +5849,7 @@ components:
             - $ref: '#/components/schemas/MessageSender'
             - $ref: '#/components/schemas/MessageSenderAndPool'
             - $ref: '#/components/schemas/MessageProfile'
-            - $ref: '#/components/schemas/MessageContact'
+            - $ref: '#/components/schemas/MessageAddress'
         to:
           title: MessageRecipients
           description: |-
@@ -6022,9 +5860,9 @@ components:
           type: array
           items:
             oneOf:
+              - $ref: '#/components/schemas/MessageAddress'
               - $ref: '#/components/schemas/MessageSender'
               - $ref: '#/components/schemas/MessageProfile'
-              - $ref: '#/components/schemas/MessageContact'
         status:
           $ref: '#/components/schemas/MessageStatus'
         related:
@@ -6068,27 +5906,6 @@ components:
       description: The MessageMetadata provides information about the Message but does not include the Content or Attempts.
       allOf:
         - $ref: '#/components/schemas/MessageBase'
-    MessageAddressRecipient:
-      x-twilio-version: 1
-      title: MessageAddressRecipient
-      description: A messaging address and channel that defines the recipient of a Message.
-      type: object
-      properties:
-        address:
-          type: string
-          description: The Sender’s communication address within a channel, such as a phone number, email address, or device token.
-        channel:
-          $ref: '#/components/schemas/MessageContactChannel'
-      required:
-        - address
-        - channel
-    RecipientVariables:
-      x-twilio-version: 1
-      title: RecipientVariables
-      type: object
-      properties:
-        variables:
-          $ref: '#/components/schemas/ContentPersonalization'
     MediaUrl:
       x-twilio-version: 1
       title: MediaUrl
@@ -6119,9 +5936,9 @@ components:
         $ref: '#/components/schemas/MediaUrl'
     MessageContentTextWithMedia:
       title: MessageContentTextWithMedia
-      description: The text and media content of a `Message`.
       x-twilio-version: 1
       type: object
+      description: The text and media content of a `Message`.
       properties:
         text:
           type: string
@@ -6765,8 +6582,8 @@ components:
           type: array
           items:
             oneOf:
+              - $ref: '#/components/schemas/MessageAddress'
               - $ref: '#/components/schemas/MessageProfile'
-              - $ref: '#/components/schemas/MessageContact'
         status:
           $ref: '#/components/schemas/MessageStatus'
           description: The status of the Message Attempt. The status of the Message is the status of the last attempt.
@@ -7215,8 +7032,8 @@ components:
           type: string
           description: |-
             The title of the push notification. Defaults to the app name.
-            
-            
+
+              
             This field can be templated with [Liquid](https://shopify.github.io/liquid/). Specify `variables` with each recipient for personalization.
         body:
           type: string
@@ -7557,7 +7374,7 @@ components:
       description: |-
         A Sender is a sending and receiving communication identity associated with a Twilio application.
         For 'outbound' communications, it is used as the sender of the communication in the 'from' field.
-        For 'inbound' communications (sent by a Contact/end-user), it is used as the recipient and populated in the 'to' field.
+        For 'inbound' communications (sent by an end-user), it is used as the recipient and populated in the 'to' field.
         A Sender represents existing inventory created and setup in other Twilio APIs, such as Phone Numbers.
       properties:
         id:
@@ -7615,7 +7432,7 @@ components:
       type: object
       properties:
         address:
-          description: The Sender’s communication address within a channel, such as a phone number, email address, or device token.
+          description: The recipient’s communication address within a channel, such as a phone number, email address, or device token.
           type: string
         channel:
           $ref: '#/components/schemas/CommunicationChannel'
@@ -7668,7 +7485,7 @@ components:
         A SenderPool is a set of sending (and receiving) identities associated with a Twilio application.
         It can contain one or more Senders for use in multi-channel use-cases or to achieve pooling functionalities.
         For 'outbound' communications, it is used as the sender of the communication in the 'from' field.
-        For 'inbound' communications sent by a Contact, it is used as the recipient, and populated in the 'to' field.
+        For 'inbound' communications sent by an end-user, it is used as the recipient, and populated in the 'to' field.
       type: object
       properties:
         id:
