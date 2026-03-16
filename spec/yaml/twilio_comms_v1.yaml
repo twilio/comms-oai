@@ -6323,6 +6323,29 @@ components:
               - $ref: '#/components/schemas/MessageContentRcsSuggestedReply'
       minProperties: 1
       additionalProperties: false
+    MessageContentRcsCarouselCard:
+      x-twilio-version: 1
+      title: MessageContentRcsCarouselCard
+      description: An RCS carousel card.
+      type: object
+      properties:
+        cardWidth:
+          title: MessageContentRcsCarouselCardWidth
+          description: The width of the cards in the carousel.
+          type: string
+          enum:
+            - SMALL
+            - MEDIUM
+        cardContents:
+          title: MessageContentRcsCarouselCardContents
+          description: The contents of the carousel card.
+          type: array
+          minItems: 2
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/MessageContentRcsCardContent'
+      required:
+        - cardContents
     MessageContentRcsStandaloneCard:
       x-twilio-version: 1
       title: MessageContentRcsStandaloneCard
@@ -6394,6 +6417,14 @@ components:
                   description: An RCS rich card.
                   type: object
                   oneOf:
+                    - title: MessageContentRcsRichCardCarousel
+                      description: A carousel card.
+                      type: object
+                      properties:
+                        carouselCard:
+                          $ref: '#/components/schemas/MessageContentRcsCarouselCard'
+                      required:
+                        - carouselCard
                     - title: MessageContentRcsRichCardStandalone
                       description: A standalone card.
                       type: object
