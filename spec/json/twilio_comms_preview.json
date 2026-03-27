@@ -117,6 +117,9 @@
                     "oneOf": [
                       {
                         "$ref": "#/components/schemas/EmailAddressSender"
+                      },
+                      {
+                        "$ref": "#/components/schemas/SenderIdSender"
                       }
                     ]
                   },
@@ -188,7 +191,7 @@
                         {
                           "title": "SendEmailsGroupRecipient",
                           "type": "object",
-                          "description": "A group recipient contains a list of recipients \nand one set of personalization variables for the group.",
+                          "description": "A group recipient contains a list of recipients\nand one set of personalization variables for the group.",
                           "properties": {
                             "group": {
                               "title": "SendEmailsGroup",
@@ -218,7 +221,7 @@
                   },
                   "content": {
                     "title": "SendEmailsRequestContent",
-                    "description": "The content of the Email.\n***\n* Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.\n* When using a templated content, use the `variables` field on each recipient to specify the values to substitute.\n* For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.\n            \n* When targeting `Profile` recipients, you may specify `variables` with values that reference stored traits, on the `Profile` -- for example: `${Twilio.Profile.dateLastPurchase}` `${Twilio.Profile.firstName}` or `${Twilio.Profile.myCustomField}`.",
+                    "description": "The content of the Email.\n***\n* Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.\n* When using a templated content, use the `variables` field on each recipient to specify the values to substitute.\n* For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.\n* When targeting `Profile` recipients, you may specify `variables` with values that reference stored traits, on the `Profile` -- for example: `${Twilio.Profile.dateLastPurchase}` `${Twilio.Profile.firstName}` or `${Twilio.Profile.myCustomField}`.",
                     "oneOf": [
                       {
                         "$ref": "#/components/schemas/EmailHtmlContent"
@@ -233,7 +236,7 @@
                   },
                   "ipPoolName": {
                     "type": "string",
-                    "description": "The name of the IP Pool to use for sending Emails.\n\nIf not specified, all dedicated IPs associated with your\naccount will be considered for sending. \n\nIP pools are only available to accounts with dedicated IPs.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization.",
+                    "description": "The name of the IP Pool to use for sending Emails.\n\nIf not specified, all dedicated IPs associated with your\naccount will be considered for sending.\n\nIP pools are only available to accounts with dedicated IPs.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization.",
                     "minLength": 2,
                     "maxLength": 64
                   }
@@ -340,8 +343,8 @@
                     ],
                     "content": {
                       "subject": "Wedding Cake",
-                      "text": "Hey {{ firstName | default: 'there' }} {{ lastName }}, your cake is ready.",
-                      "html": "<html><body>Hey {{ firstName | default: 'there' }} {{ lastName }}, your cake is ready.<br/><br/></body></html>",
+                      "text": "Hey {{ firstName | default: 'there' }} {{ lastName | default: '' }}, your cake is ready.",
+                      "html": "<html><body>Hey {{ firstName | default: 'there' }} {{ lastName | default: '' }}, your cake is ready.<br/><br/></body></html>",
                       "attachments": []
                     }
                   }
@@ -397,7 +400,7 @@
                   }
                 },
                 "SendWithCustomHeaders": {
-                  "summary": "Send email with custom headers and footer",
+                  "summary": "Send email with custom headers",
                   "value": {
                     "from": {
                       "address": "marketing@example.com",
@@ -417,11 +420,6 @@
                         "X-Campaign-ID": "CAMPAIGN-2025-Q1",
                         "X-Customer-Segment": "VIP",
                         "X-Priority": "1"
-                      },
-                      "footer": {
-                        "enabled": true,
-                        "html": "<p style=\"font-size:11px;color:#666;\">Marketing Team, Example Inc. | <a href=\"[unsubscribe]\">Unsubscribe</a> | 123 Main St, San Francisco, CA 94105</p>",
-                        "text": "Marketing Team, Example Inc. | Unsubscribe: [unsubscribe] | 123 Main St, San Francisco, CA 94105"
                       }
                     }
                   }
@@ -535,7 +533,7 @@
           {
             "in": "query",
             "name": "tags",
-            "description": "Match emails by one or many tags. If more than one tag is specified in the query, the search will return emails that have all the tags.\nFor Example:  ``` GET /Emails?tags=ageGroup:20s;industry:engineering; ```",
+            "description": "Match emails by one or many tags. If more than one tag is specified in the query, the search will return emails that have all the tags.\nFor Example: ``` GET /Emails?tags=ageGroup:20s;industry:engineering; ```",
             "schema": {
               "$ref": "#/components/schemas/TagsString"
             }
@@ -600,40 +598,12 @@
                           },
                           "to": [
                             {
-                              "profileId": "mem_profile_01h9krwprkeee8fzqspvwy6nq8",
-                              "memoryStoreId": "mem_store_00000000000000000000000000",
                               "address": "janedoe@example.com",
                               "name": "Jane Doe"
                             }
                           ],
-                          "replyTo": [],
-                          "cc": [
-                            {
-                              "profileId": "mem_profile_01h9krwprkeee8fzqspvwy6nq8",
-                              "memoryStoreId": "mem_store_00000000000000000000000000",
-                              "address": "jane.doe@example.com",
-                              "name": "Jane Doe"
-                            }
-                          ],
-                          "bcc": [],
-                          "status": "OPENED",
-                          "related": [
-                            {
-                              "name": "OPERATION",
-                              "id": "comms_operation_01h9krwprkeee8fzqspvwy6nq8",
-                              "uri": "https://comms.twilio.com/v1/Emails/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8"
-                            },
-                            {
-                              "name": "SESSION",
-                              "id": "comms_session_01h9krwprkeee8fzqspvwy6nq8",
-                              "uri": "https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq8"
-                            },
-                            {
-                              "name": "SENDER",
-                              "id": "comms_sender_01h9krwprkeee8fzqspvwy6nq8",
-                              "uri": "https://comms.twilio.com/v1/Senders/comms_sender_01h9krwprkeee8fzqspvwy6nq8"
-                            }
-                          ],
+                          "status": "DELIVERED",
+                          "related": [],
                           "tags": {},
                           "scheduledFor": null,
                           "createdAt": "2023-08-24T14:15:22Z",
@@ -654,33 +624,12 @@
                           },
                           "to": [
                             {
-                              "profileId": "mem_profile_01h9krwprkeee8fzqspvwy6nq8",
-                              "memoryStoreId": "mem_store_00000000000000000000000000",
                               "address": "janedoe@example.com",
                               "name": "Jane Doe"
                             }
                           ],
-                          "replyTo": [],
-                          "cc": [],
-                          "bcc": [],
-                          "status": "OPENED",
-                          "related": [
-                            {
-                              "name": "OPERATION",
-                              "id": "comms_operation_01h9krwprkeee8fzqspvwy6nq8",
-                              "uri": "https://comms.twilio.com/v1/Emails/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8"
-                            },
-                            {
-                              "name": "SESSION",
-                              "id": "comms_session_01h9krwprkeee8fzqspvwy6nq8",
-                              "uri": "https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq8"
-                            },
-                            {
-                              "name": "SENDER",
-                              "id": "comms_sender_01h9krwprkeee8fzqspvwy6nq8",
-                              "uri": "https://comms.twilio.com/v1/Senders/comms_sender_01h9krwprkeee8fzqspvwy6nq8"
-                            }
-                          ],
+                          "status": "DELIVERED",
+                          "related": [],
                           "tags": {},
                           "scheduledFor": null,
                           "createdAt": "2023-08-24T14:15:22Z",
@@ -740,8 +689,8 @@
                   "$ref": "#/components/schemas/Email"
                 },
                 "examples": {
-                  "OutboundEmailGroup": {
-                    "summary": "Outbound email, group",
+                  "IntroEmail": {
+                    "summary": "Intro Email",
                     "value": {
                       "id": "comms_email_01h9krwprkeee8fzqspvwy6nq8",
                       "content": {
@@ -756,40 +705,43 @@
                       },
                       "to": [
                         {
-                          "profileId": "mem_profile_01h9krwprkeee8fzqspvwy6nq8",
-                          "memoryStoreId": "mem_store_00000000000000000000000000",
                           "address": "janedoe@example.com",
                           "name": "Jane Doe"
                         }
                       ],
-                      "replyTo": [],
-                      "cc": [
+                      "status": "DELIVERED",
+                      "related": [],
+                      "tags": {},
+                      "scheduledFor": null,
+                      "createdAt": "2023-08-24T14:15:22Z",
+                      "updatedAt": "2023-08-24T14:15:22Z",
+                      "deletedAt": null
+                    }
+                  },
+                  "FetchEmailWithProfile": {
+                    "summary": "Email sent to Profile",
+                    "value": {
+                      "id": "comms_email_01h9krwprkeee8fzqspvwy6nq7",
+                      "content": {
+                        "subject": "Welcome Back",
+                        "text": "Hello, your order is ready.",
+                        "html": "<html><body>Hello, your order is ready.</body></html>",
+                        "attachments": []
+                      },
+                      "from": {
+                        "address": "support@example.com",
+                        "name": "Support Team"
+                      },
+                      "to": [
                         {
                           "profileId": "mem_profile_01h9krwprkeee8fzqspvwy6nq8",
                           "memoryStoreId": "mem_store_00000000000000000000000000",
-                          "address": "jane.doe@example.com",
-                          "name": "Jane Doe"
+                          "address": "customer@example.com",
+                          "name": "Customer Name"
                         }
                       ],
-                      "bcc": [],
-                      "status": "OPENED",
-                      "related": [
-                        {
-                          "name": "OPERATION",
-                          "id": "comms_operation_01h9krwprkeee8fzqspvwy6nq8",
-                          "uri": "https://comms.twilio.com/v1/Emails/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8"
-                        },
-                        {
-                          "name": "SESSION",
-                          "id": "comms_session_01h9krwprkeee8fzqspvwy6nq8",
-                          "uri": "https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq8"
-                        },
-                        {
-                          "name": "SENDER",
-                          "id": "comms_sender_01h9krwprkeee8fzqspvwy6nq8",
-                          "uri": "https://comms.twilio.com/v1/Senders/comms_sender_01h9krwprkeee8fzqspvwy6nq8"
-                        }
-                      ],
+                      "status": "DELIVERED",
+                      "related": [],
                       "tags": {},
                       "scheduledFor": null,
                       "createdAt": "2023-08-24T14:15:22Z",
@@ -829,13 +781,6 @@
                           "name": "Gary Stu"
                         }
                       ],
-                      "replyTo": [],
-                      "cc": [
-                        {
-                          "address": "team-billing@example.com"
-                        }
-                      ],
-                      "bcc": [],
                       "status": "INBOUND",
                       "related": [
                         {
@@ -1000,6 +945,57 @@
                     "operations",
                     "pagination"
                   ]
+                },
+                "examples": {
+                  "ListOfEmailOperations": {
+                    "summary": "List of Email Operations",
+                    "value": {
+                      "operations": [
+                        {
+                          "id": "comms_operation_01h9krwprkeee8fzqspvwy6nq8",
+                          "status": "COMPLETED",
+                          "stats": {
+                            "total": 2,
+                            "recipients": 2,
+                            "attempts": 2,
+                            "queued": 0,
+                            "sent": 0,
+                            "scheduled": 0,
+                            "delivered": 2,
+                            "opened": 0,
+                            "undelivered": 0,
+                            "failed": 0,
+                            "canceled": 0
+                          },
+                          "createdAt": "2025-01-01T00:00:00Z",
+                          "updatedAt": "2025-01-01T00:01:00Z"
+                        },
+                        {
+                          "id": "comms_operation_01h9krwprkeee8fzqspvwy6nq9",
+                          "status": "SCHEDULED",
+                          "stats": {
+                            "total": 1,
+                            "recipients": 1,
+                            "attempts": 0,
+                            "queued": 0,
+                            "sent": 0,
+                            "scheduled": 1,
+                            "delivered": 0,
+                            "opened": 0,
+                            "undelivered": 0,
+                            "failed": 0,
+                            "canceled": 0
+                          },
+                          "createdAt": "2025-01-02T00:00:00Z",
+                          "updatedAt": "2025-01-02T00:01:00Z"
+                        }
+                      ],
+                      "pagination": {
+                        "next": null,
+                        "self": "eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ=="
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -1068,8 +1064,8 @@
                       "updatedAt": "2024-04-05T06:20:00Z"
                     }
                   },
-                  "EmailOperationWithTwoSeparateEmails": {
-                    "summary": "Fetch an Email Operation - two separate Emails",
+                  "EmailOperationWithTwoEmails": {
+                    "summary": "Fetch an Email Operation - two Emails",
                     "value": {
                       "id": "comms_operation_01h2xcejqtf2nbrexx3vqjhp41",
                       "status": "COMPLETED",
@@ -6942,7 +6938,7 @@
       },
       "EmailStatus": {
         "title": "EmailStatus",
-        "description": "The status of an `Email`. The status can be one of the following:\n- `SCHEDULED` The `Email` is scheduled to be sent by\n  Twilio in the future.\n\n- `QUEUED` The `Email` is queued in Twilio for sending.\n- `SENT` The `Email` has been sent by Twilio.\n- `DELIVERED` The `Email` has been successfully\n    delivered to the recipient.\n\n- `UNDELIVERED` The `Email` was successfully sent by Twilio\n    but has not been delivered to the recipient.\n\n- `OPENED` The `Email` has been opened by the recipient.\n- `FAILED` The `Email` processing failed inside Twilio.\n   Use `GET /Emails/Operations/{operationId}/Errors` for more details.\n\n- `CANCELED` The `Email` was canceled via API request.\n- `INBOUND` The `Email` was received by Twilio from an external source.",
+        "description": "The status of an `Email`. The status can be one of the following:\n- `SCHEDULED` The `Email` is scheduled to be sent by\n  Twilio in the future.\n\n- `QUEUED` The `Email` is queued in Twilio for sending.\n- `SENT` The `Email` has been sent by Twilio.\n- `DELIVERED` The `Email` has been successfully\n    delivered to the recipient.\n\n- `UNDELIVERED` The `Email` was successfully sent by Twilio\n    but has not been delivered to the recipient.\n\n- `OPENED` The `Email` has been opened by the recipient.\n- `FAILED` The `Email` processing failed inside Twilio.\n- `CANCELED` The `Email` was canceled via API request.\n- `INBOUND` The `Email` was received by Twilio from an external source.",
         "type": "string",
         "enum": [
           "SCHEDULED",
@@ -7257,9 +7253,6 @@
           "id",
           "from",
           "to",
-          "replyTo",
-          "cc",
-          "bcc",
           "status",
           "related",
           "tags",
@@ -7392,6 +7385,19 @@
           "name"
         ]
       },
+      "SenderIdSender": {
+        "title": "SenderIdSender",
+        "description": "A reference to a Sender.",
+        "type": "object",
+        "properties": {
+          "senderId": {
+            "$ref": "#/components/schemas/SenderId"
+          }
+        },
+        "required": [
+          "senderId"
+        ]
+      },
       "ContentPersonalization": {
         "title": "ContentPersonalization",
         "type": "object",
@@ -7498,26 +7504,6 @@
             "description": "Custom email headers as key-value pairs.\nYou may not override the following headers: `x-sg-id`, `x-sg-eid`,\n`received`, `dkim-signature`, `Content-Type`, `Content-Transfer-Encoding`,\n`To`, `From`, `Subject`, `Reply-To`, `CC`, `BCC`.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization.",
             "additionalProperties": {
               "type": "string"
-            }
-          },
-          "footer": {
-            "title": "EmailFooter",
-            "type": "object",
-            "description": "Inserts a custom footer at the bottom of the text and HTML bodies of your email.",
-            "properties": {
-              "enabled": {
-                "type": "boolean",
-                "description": "Indicates if this setting is enabled.",
-                "default": false
-              },
-              "text": {
-                "type": "string",
-                "description": "The plain text content of your footer.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization."
-              },
-              "html": {
-                "type": "string",
-                "description": "The HTML content of your footer.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization."
-              }
             }
           }
         },
@@ -7839,7 +7825,8 @@
         "enum": [
           "SMS",
           "RCS",
-          "WHATSAPP"
+          "WHATSAPP",
+          "APPLE"
         ],
         "example": "SMS"
       },
@@ -7929,7 +7916,8 @@
         "type": "string",
         "enum": [
           "PHONE",
-          "WHATSAPP"
+          "WHATSAPP",
+          "APPLE"
         ],
         "example": "PHONE"
       },
@@ -7966,7 +7954,8 @@
         "type": "string",
         "enum": [
           "PHONE",
-          "WHATSAPP"
+          "WHATSAPP",
+          "APPLE"
         ],
         "example": "PHONE"
       },
@@ -8767,7 +8756,7 @@
               ]
             },
             "minItems": 1,
-            "maxItems": 3
+            "maxItems": 4
           }
         },
         "required": [
@@ -8790,19 +8779,6 @@
         "required": [
           "address",
           "channel"
-        ]
-      },
-      "SenderIdSender": {
-        "title": "SenderIdSender",
-        "description": "A reference to a Sender.",
-        "type": "object",
-        "properties": {
-          "senderId": {
-            "$ref": "#/components/schemas/SenderId"
-          }
-        },
-        "required": [
-          "senderId"
         ]
       },
       "MessageSenderChannelControl": {
@@ -9885,7 +9861,8 @@
           "RCS",
           "EMAIL",
           "WHATSAPP",
-          "PUSH"
+          "PUSH",
+          "APPLE"
         ]
       },
       "SenderStatus": {
