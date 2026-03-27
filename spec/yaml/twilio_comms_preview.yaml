@@ -104,6 +104,7 @@ paths:
                   description: The sending identity to associate with the `Email`.
                   oneOf:
                     - $ref: '#/components/schemas/EmailAddressSender'
+                    - $ref: '#/components/schemas/SenderIdSender'
                 to:
                   title: SendEmailsRequestTo
                   type: array
@@ -152,7 +153,7 @@ paths:
                       - title: SendEmailsGroupRecipient
                         type: object
                         description: |-
-                          A group recipient contains a list of recipients 
+                          A group recipient contains a list of recipients
                           and one set of personalization variables for the group.
                         properties:
                           group:
@@ -175,7 +176,6 @@ paths:
                     * Use the [Liquid](https://shopify.github.io/liquid/) templating language for personalization in any text-based field.
                     * When using a templated content, use the `variables` field on each recipient to specify the values to substitute.
                     * For each variable you specify in your template, you should have a matching key in each recipient's `variables` object.
-                                
                     * When targeting `Profile` recipients, you may specify `variables` with values that reference stored traits, on the `Profile` -- for example: `${Twilio.Profile.dateLastPurchase}` `${Twilio.Profile.firstName}` or `${Twilio.Profile.myCustomField}`.
                   oneOf:
                     - $ref: '#/components/schemas/EmailHtmlContent'
@@ -189,7 +189,7 @@ paths:
                     The name of the IP Pool to use for sending Emails.
 
                     If not specified, all dedicated IPs associated with your
-                    account will be considered for sending. 
+                    account will be considered for sending.
 
                     IP pools are only available to accounts with dedicated IPs.
 
@@ -265,8 +265,8 @@ paths:
                         lastName: Doe
                   content:
                     subject: Wedding Cake
-                    text: 'Hey {{ firstName | default: ''there'' }} {{ lastName }}, your cake is ready.'
-                    html: '<html><body>Hey {{ firstName | default: ''there'' }} {{ lastName }}, your cake is ready.<br/><br/></body></html>'
+                    text: 'Hey {{ firstName | default: ''there'' }} {{ lastName | default: '''' }}, your cake is ready.'
+                    html: '<html><body>Hey {{ firstName | default: ''there'' }} {{ lastName | default: '''' }}, your cake is ready.<br/><br/></body></html>'
                     attachments: []
               SendToProfileWithPersonalization:
                 summary: Send to Profile with Profile-referencing personalization
@@ -302,7 +302,7 @@ paths:
                     sendAt:
                       - '2023-12-15T14:15:22Z'
               SendWithCustomHeaders:
-                summary: Send email with custom headers and footer
+                summary: Send email with custom headers
                 value:
                   from:
                     address: marketing@example.com
@@ -318,10 +318,6 @@ paths:
                       X-Campaign-ID: CAMPAIGN-2025-Q1
                       X-Customer-Segment: VIP
                       X-Priority: '1'
-                    footer:
-                      enabled: true
-                      html: <p style="font-size:11px;color:#666;">Marketing Team, Example Inc. | <a href="[unsubscribe]">Unsubscribe</a> | 123 Main St, San Francisco, CA 94105</p>
-                      text: 'Marketing Team, Example Inc. | Unsubscribe: [unsubscribe] | 123 Main St, San Francisco, CA 94105'
               SendWithIPPool:
                 summary: Send email using dedicated IP pool
                 value:
@@ -394,7 +390,7 @@ paths:
           name: tags
           description: |-
             Match emails by one or many tags. If more than one tag is specified in the query, the search will return emails that have all the tags.
-            For Example:  ``` GET /Emails?tags=ageGroup:20s;industry:engineering; ```
+            For Example: ``` GET /Emails?tags=ageGroup:20s;industry:engineering; ```
           schema:
             $ref: '#/components/schemas/TagsString'
         - in: query
@@ -440,28 +436,10 @@ paths:
                           address: support@example.com
                           name: Cool Support
                         to:
-                          - profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq8
-                            memoryStoreId: mem_store_00000000000000000000000000
-                            address: janedoe@example.com
+                          - address: janedoe@example.com
                             name: Jane Doe
-                        replyTo: []
-                        cc:
-                          - profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq8
-                            memoryStoreId: mem_store_00000000000000000000000000
-                            address: jane.doe@example.com
-                            name: Jane Doe
-                        bcc: []
-                        status: OPENED
-                        related:
-                          - name: OPERATION
-                            id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Emails/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                          - name: SESSION
-                            id: comms_session_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq8
-                          - name: SENDER
-                            id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Senders/comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                        status: DELIVERED
+                        related: []
                         tags: {}
                         scheduledFor: null
                         createdAt: '2023-08-24T14:15:22Z'
@@ -477,24 +455,10 @@ paths:
                           address: support@example.com
                           name: Acme Support
                         to:
-                          - profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq8
-                            memoryStoreId: mem_store_00000000000000000000000000
-                            address: janedoe@example.com
+                          - address: janedoe@example.com
                             name: Jane Doe
-                        replyTo: []
-                        cc: []
-                        bcc: []
-                        status: OPENED
-                        related:
-                          - name: OPERATION
-                            id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Emails/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                          - name: SESSION
-                            id: comms_session_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq8
-                          - name: SENDER
-                            id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-                            uri: https://comms.twilio.com/v1/Senders/comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                        status: DELIVERED
+                        related: []
                         tags: {}
                         scheduledFor: null
                         createdAt: '2023-08-24T14:15:22Z'
@@ -532,8 +496,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/Email'
               examples:
-                OutboundEmailGroup:
-                  summary: Outbound email, group
+                IntroEmail:
+                  summary: Intro Email
                   value:
                     id: comms_email_01h9krwprkeee8fzqspvwy6nq8
                     content:
@@ -545,28 +509,34 @@ paths:
                       address: support@example.com
                       name: Cool Support
                     to:
+                      - address: janedoe@example.com
+                        name: Jane Doe
+                    status: DELIVERED
+                    related: []
+                    tags: {}
+                    scheduledFor: null
+                    createdAt: '2023-08-24T14:15:22Z'
+                    updatedAt: '2023-08-24T14:15:22Z'
+                    deletedAt: null
+                FetchEmailWithProfile:
+                  summary: Email sent to Profile
+                  value:
+                    id: comms_email_01h9krwprkeee8fzqspvwy6nq7
+                    content:
+                      subject: Welcome Back
+                      text: Hello, your order is ready.
+                      html: <html><body>Hello, your order is ready.</body></html>
+                      attachments: []
+                    from:
+                      address: support@example.com
+                      name: Support Team
+                    to:
                       - profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq8
                         memoryStoreId: mem_store_00000000000000000000000000
-                        address: janedoe@example.com
-                        name: Jane Doe
-                    replyTo: []
-                    cc:
-                      - profileId: mem_profile_01h9krwprkeee8fzqspvwy6nq8
-                        memoryStoreId: mem_store_00000000000000000000000000
-                        address: jane.doe@example.com
-                        name: Jane Doe
-                    bcc: []
-                    status: OPENED
-                    related:
-                      - name: OPERATION
-                        id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                        uri: https://comms.twilio.com/v1/Emails/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
-                      - name: SESSION
-                        id: comms_session_01h9krwprkeee8fzqspvwy6nq8
-                        uri: https://comms.twilio.com/v1/Sessions/comms_session_01h9krwprkeee8fzqspvwy6nq8
-                      - name: SENDER
-                        id: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-                        uri: https://comms.twilio.com/v1/Senders/comms_sender_01h9krwprkeee8fzqspvwy6nq8
+                        address: customer@example.com
+                        name: Customer Name
+                    status: DELIVERED
+                    related: []
                     tags: {}
                     scheduledFor: null
                     createdAt: '2023-08-24T14:15:22Z'
@@ -604,10 +574,6 @@ paths:
                     to:
                       - address: gary.stu@example.com
                         name: Gary Stu
-                    replyTo: []
-                    cc:
-                      - address: team-billing@example.com
-                    bcc: []
                     status: INBOUND
                     related:
                       - name: SESSION
@@ -715,6 +681,46 @@ paths:
                 required:
                   - operations
                   - pagination
+              examples:
+                ListOfEmailOperations:
+                  summary: List of Email Operations
+                  value:
+                    operations:
+                      - id: comms_operation_01h9krwprkeee8fzqspvwy6nq8
+                        status: COMPLETED
+                        stats:
+                          total: 2
+                          recipients: 2
+                          attempts: 2
+                          queued: 0
+                          sent: 0
+                          scheduled: 0
+                          delivered: 2
+                          opened: 0
+                          undelivered: 0
+                          failed: 0
+                          canceled: 0
+                        createdAt: '2025-01-01T00:00:00Z'
+                        updatedAt: '2025-01-01T00:01:00Z'
+                      - id: comms_operation_01h9krwprkeee8fzqspvwy6nq9
+                        status: SCHEDULED
+                        stats:
+                          total: 1
+                          recipients: 1
+                          attempts: 0
+                          queued: 0
+                          sent: 0
+                          scheduled: 1
+                          delivered: 0
+                          opened: 0
+                          undelivered: 0
+                          failed: 0
+                          canceled: 0
+                        createdAt: '2025-01-02T00:00:00Z'
+                        updatedAt: '2025-01-02T00:01:00Z'
+                    pagination:
+                      next: null
+                      self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
         '429':
@@ -763,8 +769,8 @@ paths:
                       canceled: 0
                     createdAt: '2024-04-05T06:20:00Z'
                     updatedAt: '2024-04-05T06:20:00Z'
-                EmailOperationWithTwoSeparateEmails:
-                  summary: Fetch an Email Operation - two separate Emails
+                EmailOperationWithTwoEmails:
+                  summary: Fetch an Email Operation - two Emails
                   value:
                     id: comms_operation_01h2xcejqtf2nbrexx3vqjhp41
                     status: COMPLETED
@@ -4865,8 +4871,6 @@ components:
 
         - `OPENED` The `Email` has been opened by the recipient.
         - `FAILED` The `Email` processing failed inside Twilio.
-           Use `GET /Emails/Operations/{operationId}/Errors` for more details.
-
         - `CANCELED` The `Email` was canceled via API request.
         - `INBOUND` The `Email` was received by Twilio from an external source.
       type: string
@@ -5116,9 +5120,6 @@ components:
         - id
         - from
         - to
-        - replyTo
-        - cc
-        - bcc
         - status
         - related
         - tags
@@ -5223,6 +5224,15 @@ components:
       required:
         - address
         - name
+    SenderIdSender:
+      title: SenderIdSender
+      description: A reference to a Sender.
+      type: object
+      properties:
+        senderId:
+          $ref: '#/components/schemas/SenderId'
+      required:
+        - senderId
     ContentPersonalization:
       title: ContentPersonalization
       type: object
@@ -5333,29 +5343,6 @@ components:
             Specify `variables` with each recipient for personalization.
           additionalProperties:
             type: string
-        footer:
-          title: EmailFooter
-          type: object
-          description: Inserts a custom footer at the bottom of the text and HTML bodies of your email.
-          properties:
-            enabled:
-              type: boolean
-              description: Indicates if this setting is enabled.
-              default: false
-            text:
-              type: string
-              description: |-
-                The plain text content of your footer.
-
-                This field can be templated with [Liquid](https://shopify.github.io/liquid/).
-                Specify `variables` with each recipient for personalization.
-            html:
-              type: string
-              description: |-
-                The HTML content of your footer.
-
-                This field can be templated with [Liquid](https://shopify.github.io/liquid/).
-                Specify `variables` with each recipient for personalization.
       required:
         - html
         - subject
@@ -5642,6 +5629,7 @@ components:
         - SMS
         - RCS
         - WHATSAPP
+        - APPLE
       example: SMS
     MessageStatus:
       title: MessageStatus
@@ -5740,6 +5728,7 @@ components:
       enum:
         - PHONE
         - WHATSAPP
+        - APPLE
       example: PHONE
     MessageProfile:
       title: MessageProfile
@@ -5773,6 +5762,7 @@ components:
       enum:
         - PHONE
         - WHATSAPP
+        - APPLE
       example: PHONE
     MessageAddress:
       title: MessageAddress
@@ -6388,7 +6378,7 @@ components:
               - $ref: '#/components/schemas/MessageContentModuleSms'
               - $ref: '#/components/schemas/MessageContentModuleRcs'
           minItems: 1
-          maxItems: 3
+          maxItems: 4
       required:
         - modules
     MessageAddressSender:
@@ -6404,15 +6394,6 @@ components:
       required:
         - address
         - channel
-    SenderIdSender:
-      title: SenderIdSender
-      description: A reference to a Sender.
-      type: object
-      properties:
-        senderId:
-          $ref: '#/components/schemas/SenderId'
-      required:
-        - senderId
     MessageSenderChannelControl:
       title: MessageSenderChannelControl
       description: Define controls to `filter` and `prioritize` Senders based on their `channel`.
@@ -7300,6 +7281,7 @@ components:
         - EMAIL
         - WHATSAPP
         - PUSH
+        - APPLE
     SenderStatus:
       title: SenderStatus
       description: |-
