@@ -291,7 +291,10 @@ paths:
       summary: List Emails
       operationId: ListEmails
       x-twilio-version: 1
-      description: This operation fetches a paginated list of Emails.
+      description: |-
+        This operation fetches a paginated list of Emails.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - Emails
       parameters:
@@ -420,7 +423,10 @@ paths:
       summary: Fetch an Email
       operationId: FetchEmail
       x-twilio-version: 1
-      description: This operation fetches a single Email using its ID.
+      description: |-
+        This operation fetches a single Email using its ID.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - Emails
       responses:
@@ -508,7 +514,10 @@ paths:
       summary: List Email Operations
       operationId: ListEmailOperations
       x-twilio-version: 1
-      description: This operation fetches a paginated list of Email Operations.
+      description: |-
+        This operation fetches a paginated list of Email Operations.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - Emails
       parameters:
@@ -618,7 +627,10 @@ paths:
       summary: Fetch an Email Operation
       operationId: FetchEmailOperation
       x-twilio-version: 1
-      description: This operation fetches a single Email Operation using its ID.
+      description: |-
+        This operation fetches a single Email Operation using its ID.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - Emails
       responses:
@@ -1163,7 +1175,10 @@ paths:
       summary: List Messages
       operationId: ListMessages
       x-twilio-version: 1
-      description: This operation fetches a paginated list of Messages.
+      description: |-
+        This operation fetches a paginated list of Messages.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - Messages
       parameters:
@@ -1427,7 +1442,10 @@ paths:
       summary: Fetch a Message
       operationId: FetchMessage
       x-twilio-version: 1
-      description: This operation fetches a single Message using its ID.
+      description: |-
+        This operation fetches a single Message using its ID.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - Messages
       responses:
@@ -1506,7 +1524,10 @@ paths:
       summary: List Message Operations
       operationId: ListMessageOperations
       x-twilio-version: 1
-      description: This operation fetches a paginated list of Message Operations.
+      description: |-
+        This operation fetches a paginated list of Message Operations.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - Messages
       parameters:
@@ -1590,7 +1611,10 @@ paths:
       summary: Fetch a Message Operation
       operationId: FetchMessageOperation
       x-twilio-version: 1
-      description: This operation fetches a single Message Operation using its ID.
+      description: |-
+        This operation fetches a single Message Operation using its ID.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - Messages
       responses:
@@ -1709,7 +1733,10 @@ paths:
       summary: Seek a Message by an Identifier
       operationId: SeekMessageByIdentifier
       x-twilio-version: 1
-      description: This operation seeks out a message based upon an identifier retrieved by another system.
+      description: |-
+        This operation seeks out a message based upon an identifier retrieved by another system.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - Messages
       responses:
@@ -2290,7 +2317,10 @@ paths:
       summary: List Push Notifications
       operationId: ListPushNotifications
       x-twilio-version: 1
-      description: This operation fetches a paginated list of Push Notifications.
+      description: |-
+        This operation fetches a paginated list of Push Notifications.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - PushNotifications
       parameters:
@@ -2416,7 +2446,10 @@ paths:
       summary: Fetch a Push Notification
       operationId: FetchPushNotification
       x-twilio-version: 1
-      description: This operation fetches a single Push Notification using its ID.
+      description: |-
+        This operation fetches a single Push Notification using its ID.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - PushNotifications
       responses:
@@ -2461,7 +2494,10 @@ paths:
       summary: List Push Notification Operations
       operationId: ListPushNotificationOperations
       x-twilio-version: 1
-      description: This operation fetches a paginated list of Push Notification Operations.
+      description: |-
+        This operation fetches a paginated list of Push Notification Operations.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - PushNotifications
       parameters:
@@ -2534,7 +2570,10 @@ paths:
       summary: Fetch a Push Notification Operation
       operationId: FetchPushNotificationOperation
       x-twilio-version: 1
-      description: This operation fetches a single Push Notification Operation using its ID.
+      description: |-
+        This operation fetches a single Push Notification Operation using its ID.
+
+        **Data retention:** Records are available for 7 days after creation. Requests for data older than 7 days may return incomplete results.
       tags:
         - PushNotifications
       responses:
@@ -5097,7 +5136,7 @@ components:
             The supported expression formats are:
               - RFC 3339 date-time string. e.g `"2025-11-11T11:11:00Z"`
 
-            The maximum time you can schedule a communication is 30 days in the future.
+            The maximum time you can schedule a communication is 7 days in the future.
 
             Currently, you may specify only a single expression.
             If you specify multiple expressions, only the first will be used.
