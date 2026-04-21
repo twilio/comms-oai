@@ -109,6 +109,8 @@ paths:
                   title: SendEmailsRequestTo
                   type: array
                   description: A list of recipients to send the email(s) to.
+                  minItems: 1
+                  maxItems: 10000
                   items:
                     title: SendEmailsRecipient
                     oneOf:
@@ -590,40 +592,6 @@ paths:
                     createdAt: '2023-11-29T19:00:22Z'
                     updatedAt: '2023-11-29T19:00:22Z'
                     deletedAt: null
-        '400':
-          $ref: '#/components/responses/Http400Response'
-        '404':
-          $ref: '#/components/responses/Http404Response'
-        '429':
-          $ref: '#/components/responses/Http429Response'
-        '500':
-          $ref: '#/components/responses/Http500Response'
-        '503':
-          $ref: '#/components/responses/Http503Response'
-    delete:
-      summary: Delete an Email
-      operationId: DeleteEmail
-      description: This operation deletes an Email
-      tags:
-        - Emails
-      responses:
-        '202':
-          description: The request was accepted and a resource ID is available to check the result. The response body contains the resource ID and link to the resource.
-          headers:
-            Location:
-              schema:
-                $ref: '#/components/schemas/ResourceLocation'
-              description: The location (uri) of the resource identified by `Resource-Id`.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Http202ResponseWithResourceBody'
-              examples:
-                DeleteEmailAccepted:
-                  summary: Delete Email request accepted
-                  value:
-                    resourceId: comms_email_01h9krwprkeee8fzqspvwy6nq8
-                    resourceLocation: https://comms.twilio.com/v1/Emails/comms_email_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
         '404':
@@ -3786,6 +3754,8 @@ paths:
                       self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -3857,6 +3827,8 @@ paths:
           $ref: '#/components/responses/Http400Response'
         '404':
           $ref: '#/components/responses/Http404Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -3954,6 +3926,8 @@ paths:
           $ref: '#/components/responses/Http400Response'
         '404':
           $ref: '#/components/responses/Http404Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4202,6 +4176,8 @@ paths:
                         priority: 0
         '400':
           $ref: '#/components/responses/Http400Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4250,6 +4226,8 @@ paths:
                     operationLocation: https://comms.twilio.com/v1/SenderPools/Operations/comms_operation_01h9krwprkeee8fzqspvwy6nq8
         '400':
           $ref: '#/components/responses/Http400Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4349,6 +4327,8 @@ paths:
                     $ref: '#/components/schemas/PaginationMetadata'
         '400':
           $ref: '#/components/responses/Http400Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4395,6 +4375,8 @@ paths:
           $ref: '#/components/responses/Http400Response'
         '404':
           $ref: '#/components/responses/Http404Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4429,6 +4411,8 @@ paths:
           $ref: '#/components/responses/Http400Response'
         '404':
           $ref: '#/components/responses/Http404Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4494,6 +4478,8 @@ paths:
           $ref: '#/components/responses/Http400Response'
         '404':
           $ref: '#/components/responses/Http404Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4537,6 +4523,8 @@ paths:
           $ref: '#/components/responses/Http400Response'
         '404':
           $ref: '#/components/responses/Http404Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4671,6 +4659,8 @@ paths:
           $ref: '#/components/responses/Http400Response'
         '404':
           $ref: '#/components/responses/Http404Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4724,6 +4714,8 @@ paths:
           $ref: '#/components/responses/Http400Response'
         '404':
           $ref: '#/components/responses/Http404Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4812,6 +4804,8 @@ paths:
                       self: eyJTSyI6IkEjMDFqbmVoYm5xYWZmNDlrazUxZHA1bmN5bXciLCJTSzEiOiJBI2FjdGl2YXRlZCMyMDI1LTAzLTAzVDE3OjM3OjQ3WiMwMWpuZWhibnFhZmY0OWtrNTFkcDVuY3ltdyIsIlBLIjoiQyNBQzYwMzg4ODJiZDY5ZWIyNGM4YzU4ZGI5NjE4NjE3OTE4I0EifQ==
         '400':
           $ref: '#/components/responses/Http400Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -4862,6 +4856,8 @@ paths:
           $ref: '#/components/responses/Http400Response'
         '404':
           $ref: '#/components/responses/Http404Response'
+        '409':
+          $ref: '#/components/responses/Http409Response'
         '429':
           $ref: '#/components/responses/Http429Response'
         '500':
@@ -5514,27 +5510,6 @@ components:
               $ref: '#/components/schemas/EmailContentResolved'
           required:
             - content
-    ResourceLocation:
-      type: string
-      format: uri
-      description: The location (uri) of the resource identified by `Resource-Id`.
-    ResourceId:
-      type: string
-      description: |-
-        The Resource ID is an identifier for the resource that was created or updated
-          in response to the request.
-    Http202ResponseWithResourceBody:
-      title: Http202ResponseWithResourceBody
-      description: Response body for HTTP 202 response with Resource data.
-      type: object
-      properties:
-        resourceId:
-          $ref: '#/components/schemas/ResourceId'
-        resourceLocation:
-          $ref: '#/components/schemas/ResourceLocation'
-      required:
-        - resourceId
-        - resourceLocation
     CommunicationOperationStatus:
       title: CommunicationOperationStatus
       type: string
@@ -6786,6 +6761,27 @@ components:
         - userId
         - devices
         - related
+    ResourceLocation:
+      type: string
+      format: uri
+      description: The location (uri) of the resource identified by `Resource-Id`.
+    ResourceId:
+      type: string
+      description: |-
+        The Resource ID is an identifier for the resource that was created or updated
+          in response to the request.
+    Http202ResponseWithResourceBody:
+      title: Http202ResponseWithResourceBody
+      description: Response body for HTTP 202 response with Resource data.
+      type: object
+      properties:
+        resourceId:
+          $ref: '#/components/schemas/ResourceId'
+        resourceLocation:
+          $ref: '#/components/schemas/ResourceLocation'
+      required:
+        - resourceId
+        - resourceLocation
     PushNotificationStatus:
       title: PushNotificationStatus
       description: |-
@@ -7605,3 +7601,23 @@ components:
                     message: The resource was not found.
                     infoUrl: https://www.twilio.com/docs/api/errors/20404
                     context: 'null'
+    Http409Response:
+      description: This error indicates a request conflict with the current state of the target resource. You should retry according to the `Retry-After` response header.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TwilioErrors'
+          examples:
+            Conflict:
+              summary: Conflict
+              value:
+                errors:
+                  - code: 77701
+                    message: Account not ready. Please retry according to the Retry-After response header.
+                    infoUrl: https://www.twilio.com/docs/api/errors/77701
+                    context: 'null'
+      headers:
+        Retry-After:
+          schema:
+            type: string
+          description: The amount of time in seconds that the customer should wait before issuing a new request towards the API.
