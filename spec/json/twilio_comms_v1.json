@@ -122,9 +122,6 @@
                     "oneOf": [
                       {
                         "$ref": "#/components/schemas/EmailAddressSender"
-                      },
-                      {
-                        "$ref": "#/components/schemas/SenderIdSender"
                       }
                     ]
                   },
@@ -6837,28 +6834,6 @@
           "name"
         ]
       },
-      "SenderId": {
-        "x-twilio-version": 1,
-        "description": "A reference to a Sender.",
-        "title": "SenderId",
-        "type": "string",
-        "pattern": "^comms_sender_[0-7][a-hjkmnpqrstv-z0-9]{25,34}",
-        "example": "comms_sender_01h9krwprkeee8fzqspvwy6nq8"
-      },
-      "SenderIdSender": {
-        "title": "SenderIdSender",
-        "description": "A reference to a Sender.",
-        "x-twilio-version": 1,
-        "type": "object",
-        "properties": {
-          "senderId": {
-            "$ref": "#/components/schemas/SenderId"
-          }
-        },
-        "required": [
-          "senderId"
-        ]
-      },
       "ContentPersonalization": {
         "x-twilio-version": 1,
         "title": "ContentPersonalization",
@@ -7292,6 +7267,14 @@
         "type": "string",
         "pattern": "^comms_message_[0-7][a-hjkmnpqrstv-z0-9]{25,34}",
         "example": "comms_message_01h9krwprkeee8fzqspvwy6nq8"
+      },
+      "SenderId": {
+        "x-twilio-version": 1,
+        "description": "A reference to a Sender.",
+        "title": "SenderId",
+        "type": "string",
+        "pattern": "^comms_sender_[0-7][a-hjkmnpqrstv-z0-9]{25,34}",
+        "example": "comms_sender_01h9krwprkeee8fzqspvwy6nq8"
       },
       "MessageSender": {
         "x-twilio-version": 1,
@@ -8250,6 +8233,20 @@
         "required": [
           "address",
           "channel"
+        ]
+      },
+      "SenderIdSender": {
+        "title": "SenderIdSender",
+        "description": "A reference to a Sender.",
+        "x-twilio-version": 1,
+        "type": "object",
+        "properties": {
+          "senderId": {
+            "$ref": "#/components/schemas/SenderId"
+          }
+        },
+        "required": [
+          "senderId"
         ]
       },
       "MessageSenderChannelControl": {

@@ -109,7 +109,6 @@ paths:
                   description: The sending identity to associate with the `Email`.
                   oneOf:
                     - $ref: '#/components/schemas/EmailAddressSender'
-                    - $ref: '#/components/schemas/SenderIdSender'
                 to:
                   title: SendEmailsRequestTo
                   type: array
@@ -4988,23 +4987,6 @@ components:
       required:
         - address
         - name
-    SenderId:
-      x-twilio-version: 1
-      description: A reference to a Sender.
-      title: SenderId
-      type: string
-      pattern: ^comms_sender_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
-      example: comms_sender_01h9krwprkeee8fzqspvwy6nq8
-    SenderIdSender:
-      title: SenderIdSender
-      description: A reference to a Sender.
-      x-twilio-version: 1
-      type: object
-      properties:
-        senderId:
-          $ref: '#/components/schemas/SenderId'
-      required:
-        - senderId
     ContentPersonalization:
       x-twilio-version: 1
       title: ContentPersonalization
@@ -5434,6 +5416,13 @@ components:
       type: string
       pattern: ^comms_message_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
       example: comms_message_01h9krwprkeee8fzqspvwy6nq8
+    SenderId:
+      x-twilio-version: 1
+      description: A reference to a Sender.
+      title: SenderId
+      type: string
+      pattern: ^comms_sender_[0-7][a-hjkmnpqrstv-z0-9]{25,34}
+      example: comms_sender_01h9krwprkeee8fzqspvwy6nq8
     MessageSender:
       x-twilio-version: 1
       title: MessageSender
@@ -6186,6 +6175,16 @@ components:
       required:
         - address
         - channel
+    SenderIdSender:
+      title: SenderIdSender
+      description: A reference to a Sender.
+      x-twilio-version: 1
+      type: object
+      properties:
+        senderId:
+          $ref: '#/components/schemas/SenderId'
+      required:
+        - senderId
     MessageSenderChannelControl:
       title: MessageSenderChannelControl
       description: Define controls to `filter` and `prioritize` Senders based on their `channel`.

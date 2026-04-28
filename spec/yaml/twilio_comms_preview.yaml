@@ -104,7 +104,6 @@ paths:
                   description: The sending identity to associate with the `Email`.
                   oneOf:
                     - $ref: '#/components/schemas/EmailAddressSender'
-                    - $ref: '#/components/schemas/SenderIdSender'
                 to:
                   title: SendEmailsRequestTo
                   type: array
@@ -5262,15 +5261,6 @@ components:
       required:
         - address
         - name
-    SenderIdSender:
-      title: SenderIdSender
-      description: A reference to a Sender.
-      type: object
-      properties:
-        senderId:
-          $ref: '#/components/schemas/SenderId'
-      required:
-        - senderId
     ContentPersonalization:
       title: ContentPersonalization
       type: object
@@ -6411,6 +6401,15 @@ components:
       required:
         - address
         - channel
+    SenderIdSender:
+      title: SenderIdSender
+      description: A reference to a Sender.
+      type: object
+      properties:
+        senderId:
+          $ref: '#/components/schemas/SenderId'
+      required:
+        - senderId
     MessageSenderChannelControl:
       title: MessageSenderChannelControl
       description: Define controls to `filter` and `prioritize` Senders based on their `channel`.

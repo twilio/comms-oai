@@ -117,9 +117,6 @@
                     "oneOf": [
                       {
                         "$ref": "#/components/schemas/EmailAddressSender"
-                      },
-                      {
-                        "$ref": "#/components/schemas/SenderIdSender"
                       }
                     ]
                   },
@@ -7377,19 +7374,6 @@
           "name"
         ]
       },
-      "SenderIdSender": {
-        "title": "SenderIdSender",
-        "description": "A reference to a Sender.",
-        "type": "object",
-        "properties": {
-          "senderId": {
-            "$ref": "#/components/schemas/SenderId"
-          }
-        },
-        "required": [
-          "senderId"
-        ]
-      },
       "ContentPersonalization": {
         "title": "ContentPersonalization",
         "type": "object",
@@ -8745,6 +8729,19 @@
         "required": [
           "address",
           "channel"
+        ]
+      },
+      "SenderIdSender": {
+        "title": "SenderIdSender",
+        "description": "A reference to a Sender.",
+        "type": "object",
+        "properties": {
+          "senderId": {
+            "$ref": "#/components/schemas/SenderId"
+          }
+        },
+        "required": [
+          "senderId"
         ]
       },
       "MessageSenderChannelControl": {
