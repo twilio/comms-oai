@@ -2547,11 +2547,6 @@ paths:
                   content:
                     title: 10% off your wishlist item!
                     body: 'Hey {{name | default: ''there'' }}, your wishlist item {{item}} is on sale this weekend only!'
-                    providerPassthrough:
-                      fcm:
-                        message:
-                          data:
-                            analyticsLabel: wishlistItemOnSale
               SendAScheduledPush:
                 summary: Send a scheduled push
                 value:
@@ -2596,7 +2591,7 @@ paths:
                     appName: limonade_eats
                   to:
                     - provider: FCM
-                      token: etYMhHDxzwEWPRZCYmuDiz:APA91bGCX-LEiWPL2EKGbwPL-6Z3Obp_BBTpNjX8Hv-upBUwWq-fVoooNj9PCY5KX6JxyN1v8t5HngcpEJLB8Nmg3-TFWX21u2Lr3o56jGxE8nCW46bNBBA
+                      token: dQvBnKpXmRtYwLzHjFsEuA:APA91bHNaWc-KdLePfQgShTiUjVk_WlXmYnZoApBqCr-DsEtFuGvHwIxJy_KzLaMbNcOdPeQfRgShTiUjVk-WlXmYnZoApBqCrDsEtFuGvHwIxJy_KzLaMbNcO
                     - provider: APN
                       token: a544872136bcf3f7c69abc6b142a51a0308c2991bd7c6d25d788a282091ddb36
                   content:
@@ -2740,7 +2735,7 @@ paths:
                           fcm: comms_credential_b554a2dc48d74ff03500c2a582349cad
                         to:
                           provider: FCM
-                          token: etYMhHDxzwEWPRZCYmuDiz:APA91bGCX-LEiWPL2EKGbwPL-6Z3Obp_BBTpNjX8Hv-upBUwWq-fVoooNj9PCY5KX6JxyN1v8t5HngcpEJLB8Nmg3-TFWX21u2Lr3o56jGxE8nCW46bNBBA
+                          token: dQvBnKpXmRtYwLzHjFsEuA:APA91bHNaWc-KdLePfQgShTiUjVk_WlXmYnZoApBqCr-DsEtFuGvHwIxJy_KzLaMbNcOdPeQfRgShTiUjVk-WlXmYnZoApBqCrDsEtFuGvHwIxJy_KzLaMbNcO
                         status: SENT
                         priority: HIGH
                         sound: bell_ring
@@ -2796,7 +2791,7 @@ paths:
                       fcm: comms_credential_b554a2dc48d74ff03500c2a582349cad
                     to:
                       provider: FCM
-                      token: etYMhHDxzwEWPRZCYmuDiz:APA91bGCX-LEiWPL2EKGbwPL-6Z3Obp_BBTpNjX8Hv-upBUwWq-fVoooNj9PCY5KX6JxyN1v8t5HngcpEJLB8Nmg3-TFWX21u2Lr3o56jGxE8nCW46bNBBA
+                      token: dQvBnKpXmRtYwLzHjFsEuA:APA91bHNaWc-KdLePfQgShTiUjVk_WlXmYnZoApBqCr-DsEtFuGvHwIxJy_KzLaMbNcOdPeQfRgShTiUjVk-WlXmYnZoApBqCrDsEtFuGvHwIxJy_KzLaMbNcO
                     content:
                       title: Limon Eats
                       body: Your order is on the way!
