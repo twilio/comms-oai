@@ -3574,16 +3574,7 @@
                     ],
                     "content": {
                       "title": "10% off your wishlist item!",
-                      "body": "Hey {{name | default: 'there' }}, your wishlist item {{item}} is on sale this weekend only!",
-                      "providerPassthrough": {
-                        "fcm": {
-                          "message": {
-                            "data": {
-                              "analyticsLabel": "wishlistItemOnSale"
-                            }
-                          }
-                        }
-                      }
+                      "body": "Hey {{name | default: 'there' }}, your wishlist item {{item}} is on sale this weekend only!"
                     }
                   }
                 },
@@ -3655,7 +3646,7 @@
                     "to": [
                       {
                         "provider": "FCM",
-                        "token": "etYMhHDxzwEWPRZCYmuDiz:APA91bGCX-LEiWPL2EKGbwPL-6Z3Obp_BBTpNjX8Hv-upBUwWq-fVoooNj9PCY5KX6JxyN1v8t5HngcpEJLB8Nmg3-TFWX21u2Lr3o56jGxE8nCW46bNBBA"
+                        "token": "dQvBnKpXmRtYwLzHjFsEuA:APA91bHNaWc-KdLePfQgShTiUjVk_WlXmYnZoApBqCr-DsEtFuGvHwIxJy_KzLaMbNcOdPeQfRgShTiUjVk-WlXmYnZoApBqCrDsEtFuGvHwIxJy_KzLaMbNcO"
                       },
                       {
                         "provider": "APN",
@@ -3841,7 +3832,7 @@
                           },
                           "to": {
                             "provider": "FCM",
-                            "token": "etYMhHDxzwEWPRZCYmuDiz:APA91bGCX-LEiWPL2EKGbwPL-6Z3Obp_BBTpNjX8Hv-upBUwWq-fVoooNj9PCY5KX6JxyN1v8t5HngcpEJLB8Nmg3-TFWX21u2Lr3o56jGxE8nCW46bNBBA"
+                            "token": "dQvBnKpXmRtYwLzHjFsEuA:APA91bHNaWc-KdLePfQgShTiUjVk_WlXmYnZoApBqCr-DsEtFuGvHwIxJy_KzLaMbNcOdPeQfRgShTiUjVk-WlXmYnZoApBqCrDsEtFuGvHwIxJy_KzLaMbNcO"
                           },
                           "status": "SENT",
                           "priority": "HIGH",
@@ -3918,7 +3909,7 @@
                       },
                       "to": {
                         "provider": "FCM",
-                        "token": "etYMhHDxzwEWPRZCYmuDiz:APA91bGCX-LEiWPL2EKGbwPL-6Z3Obp_BBTpNjX8Hv-upBUwWq-fVoooNj9PCY5KX6JxyN1v8t5HngcpEJLB8Nmg3-TFWX21u2Lr3o56jGxE8nCW46bNBBA"
+                        "token": "dQvBnKpXmRtYwLzHjFsEuA:APA91bHNaWc-KdLePfQgShTiUjVk_WlXmYnZoApBqCr-DsEtFuGvHwIxJy_KzLaMbNcOdPeQfRgShTiUjVk-WlXmYnZoApBqCrDsEtFuGvHwIxJy_KzLaMbNcO"
                       },
                       "content": {
                         "title": "Limon Eats",

@@ -2985,16 +2985,7 @@
                     ],
                     "content": {
                       "title": "10% off your wishlist item!",
-                      "body": "Hey {{name | default: 'there' }}, your wishlist item {{item}} is on sale this weekend only!",
-                      "providerPassthrough": {
-                        "fcm": {
-                          "message": {
-                            "data": {
-                              "analyticsLabel": "wishlistItemOnSale"
-                            }
-                          }
-                        }
-                      }
+                      "body": "Hey {{name | default: 'there' }}, your wishlist item {{item}} is on sale this weekend only!"
                     }
                   }
                 },
@@ -3056,71 +3047,6 @@
                       "body": "Hey John, your food has arrived!"
                     },
                     "priority": "HIGH"
-                  }
-                },
-                "SendTextPushWithProviderPassthrough": {
-                  "summary": "Real-world example using providerPassthrough for APNs and FCM",
-                  "x-twilio-version": 1,
-                  "value": {
-                    "from": {
-                      "appName": "limonade_eats"
-                    },
-                    "to": [
-                      {
-                        "provider": "FCM",
-                        "token": "etYMhHDxzwEWPRZCYmuDiz:APA91bGCX-LEiWPL2EKGbwPL-6Z3Obp_BBTpNjX8Hv-upBUwWq-fVoooNj9PCY5KX6JxyN1v8t5HngcpEJLB8Nmg3-TFWX21u2Lr3o56jGxE8nCW46bNBBA"
-                      },
-                      {
-                        "provider": "APN",
-                        "token": "a544872136bcf3f7c69abc6b142a51a0308c2991bd7c6d25d788a282091ddb36"
-                      }
-                    ],
-                    "content": {
-                      "title": "Your order is out for delivery!",
-                      "body": "Track your courier in real time.",
-                      "providerPassthrough": {
-                        "apn": {
-                          "aps": {
-                            "alert": {
-                              "title": "Your order is out for delivery!",
-                              "body": "Track your courier in real time."
-                            },
-                            "badge": 3,
-                            "sound": "delivery_arrived.wav"
-                          },
-                          "deliveryId": "123456789",
-                          "deeplink": "limoneats://order/123456789"
-                        },
-                        "fcm": {
-                          "message": {
-                            "notification": {
-                              "title": "Your order is out for delivery!",
-                              "body": "Track your courier in real time.",
-                              "clickAction": "OPEN_ORDER_TRACKING"
-                            },
-                            "data": {
-                              "deliveryId": "123456789",
-                              "deeplink": "limoneats://order/123456789",
-                              "analyticsLabel": "orderOutForDelivery"
-                            },
-                            "android": {
-                              "priority": "HIGH",
-                              "notification": {
-                                "sound": "deliveryArrived"
-                              }
-                            },
-                            "webpush": {
-                              "headers": {
-                                "Urgency": "HIGH"
-                              },
-                              "notification": {
-                                "icon": "https://limoneats.com/assets/delivery.png"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
                   }
                 }
               }
@@ -3257,7 +3183,7 @@
                           },
                           "to": {
                             "provider": "FCM",
-                            "token": "etYMhHDxzwEWPRZCYmuDiz:APA91bGCX-LEiWPL2EKGbwPL-6Z3Obp_BBTpNjX8Hv-upBUwWq-fVoooNj9PCY5KX6JxyN1v8t5HngcpEJLB8Nmg3-TFWX21u2Lr3o56jGxE8nCW46bNBBA"
+                            "token": "dQvBnKpXmRtYwLzHjFsEuA:APA91bHNaWc-KdLePfQgShTiUjVk_WlXmYnZoApBqCr-DsEtFuGvHwIxJy_KzLaMbNcOdPeQfRgShTiUjVk-WlXmYnZoApBqCrDsEtFuGvHwIxJy_KzLaMbNcO"
                           },
                           "status": "SENT",
                           "priority": "HIGH",
@@ -3339,7 +3265,7 @@
                       },
                       "to": {
                         "provider": "FCM",
-                        "token": "etYMhHDxzwEWPRZCYmuDiz:APA91bGCX-LEiWPL2EKGbwPL-6Z3Obp_BBTpNjX8Hv-upBUwWq-fVoooNj9PCY5KX6JxyN1v8t5HngcpEJLB8Nmg3-TFWX21u2Lr3o56jGxE8nCW46bNBBA"
+                        "token": "dQvBnKpXmRtYwLzHjFsEuA:APA91bHNaWc-KdLePfQgShTiUjVk_WlXmYnZoApBqCr-DsEtFuGvHwIxJy_KzLaMbNcOdPeQfRgShTiUjVk-WlXmYnZoApBqCrDsEtFuGvHwIxJy_KzLaMbNcO"
                       },
                       "content": {
                         "title": "Limon Eats",
@@ -8921,53 +8847,6 @@
           "userId"
         ]
       },
-      "PushNotificationContentApnPassthrough": {
-        "x-twilio-version": 1,
-        "title": "PushNotificationContentApnPassthrough",
-        "description": "APNs-specific passthrough properties for push notifications.",
-        "type": "object",
-        "properties": {
-          "aps": {
-            "title": "ApnPassthroughRoot",
-            "type": "object",
-            "description": "The root APNs aps object. Can be extended with any properties.",
-            "additionalProperties": true
-          }
-        },
-        "additionalProperties": true
-      },
-      "PushNotificationContentFcmPassthrough": {
-        "x-twilio-version": 1,
-        "title": "PushNotificationContentFcmPassthrough",
-        "description": "FCM-specific passthrough properties for push notifications.",
-        "type": "object",
-        "properties": {
-          "message": {
-            "title": "FcmPassthroughRoot",
-            "type": "object",
-            "description": "The root FCM message object. Can be extended with any properties.",
-            "additionalProperties": true
-          }
-        },
-        "required": [
-          "message"
-        ]
-      },
-      "PushNotificationContentPassthrough": {
-        "x-twilio-version": 1,
-        "title": "PushNotificationContentPassthrough",
-        "description": "Provider-specific passthrough properties for push notifications. Use this object to supply advanced options for APNs, FCM, or other providers.",
-        "type": "object",
-        "properties": {
-          "apn": {
-            "$ref": "#/components/schemas/PushNotificationContentApnPassthrough"
-          },
-          "fcm": {
-            "$ref": "#/components/schemas/PushNotificationContentFcmPassthrough"
-          }
-        },
-        "additionalProperties": false
-      },
       "PushNotificationContentBody": {
         "x-twilio-version": 1,
         "title": "PushNotificationContentBody",
@@ -8981,9 +8860,6 @@
           "body": {
             "type": "string",
             "description": "A simple string or templated content.\n\nThis field can be templated with [Liquid](https://shopify.github.io/liquid/).\nSpecify `variables` with each recipient for personalization."
-          },
-          "providerPassthrough": {
-            "$ref": "#/components/schemas/PushNotificationContentPassthrough"
           }
         },
         "required": [
